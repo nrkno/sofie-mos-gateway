@@ -1,8 +1,6 @@
-let ddp: any = require("ddp");
+let DDP = require("ddp");
 
 import {EventEmitter} from 'events';
-
-
 
 
 export interface DDPConnectorOptions {
@@ -46,10 +44,7 @@ export interface DDPClient {
 	autoReconnect: 		boolean;
 	autoReconnectTimer:	number;
 	ddpVersion:			any;
-} 
-
-
-
+}
 
 export class DDPConnector extends EventEmitter {
 	private _options:DDPConnectorOptions;
@@ -83,7 +78,9 @@ export class DDPConnector extends EventEmitter {
 		};
 		if (!this.ddpClient) {
 
-			this.ddpClient = new ddp(o);
+			
+
+			this.ddpClient = new DDP(o);
 			this.ddpClient.on("socket-close", () => {
 				
 				this._onclientConnectionChange(false)
@@ -128,18 +125,18 @@ export class DDPConnector extends EventEmitter {
 			if (!this.ddpClient) {
 				this.createClient();
 			}
-
 			if (this.ddpClient && !this._connecting) {
 
 				this._connecting = true;
 				
-				this.ddpClient.connect((error: Object, isReconnecting: boolean) => {
+				this.ddpClient.connect((error: Object/*, isReconnecting: boolean*/) => {
 					this._connecting = false;
 
 
 					if (error) {
 						reject(error);
 					} else {
+						this._connected = true;
 						resolve();
 					}
 				});

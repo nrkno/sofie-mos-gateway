@@ -1,10 +1,27 @@
-import {MosConnection} from "mos-connection"
+import {
+	MosConnection, 
+	IMosconnection,
+	IMOSDevice,
+	IMOSDeviceP0, 
+	IMOSDeviceP1,
+	IMOSDeviceP2,
+	IMOSDeviceP3,
+	IMOSDeviceP4,
+	IMOSDeviceP5,
+	IMOSDeviceP6
+} from "mos-connection"
+
+import {CoreHandler} from "./coreHandler"
+
+interface IMyMOSDevice extends IMOSDeviceP1, IMOSDeviceP0 {}
 
 export class MosHandler {
 
 	public mos:MosConnection;
 
-	init() {
+	private mosDevices:{[id:string]:IMOSDevice}
+
+	init(coreHandler:CoreHandler) {
 
 		this.mos = new MosConnection({
 			acceptConnections: true, // default:true
@@ -22,9 +39,28 @@ export class MosHandler {
 			}
 		});
 
-		this.mos.onConnection(() => {
+		this.mos.onConnection((mosDevice:IMyMOSDevice) => {
 			// a new connection has been made
 
+			this.mosDevices[mosDevice.id] = mosDevice;
+			
+
+			// Setup messages [ MOSDevice >>>> Core ] -----------------------
+			/*mosDevice.onMessage((message:string) => {-
+
+			});
+			*/
+			mosDevice.onConnectionChange((connectionStatus:IMOSConnectionStatus) => {
+				coreHandler.connected = connected;
+			});
+
+
+			let coreMosHandler = coreHandler.registerMosDevice(mosDevice)
+
+			// Setup messages [ MOSDevice <<<< Core     ] -----------------------
+			coreMosHandler.onGetMachineInfo(() => {
+				return mosDevice.getMachineInfo();
+			});
 
 
 		});
@@ -32,7 +68,7 @@ export class MosHandler {
 		// Connect to ENPS:
 		return this.mos.connect({
 			ncs: {
-				ncsID: "WINSERVERSOMETHINGENPS",
+				id: "WINSERVERSOMETHINGENPS",
 				host: "192.168.0.1"
 			},
 			/*ncsBuddy?: {
