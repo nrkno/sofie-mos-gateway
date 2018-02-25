@@ -1,13 +1,15 @@
 
 
 
-import MosIntegration from "../MosIntegration"
+import {Connector} from "../connector"
 
-test('Simple test', () => {
+test('Simple test', async () => {
 	
-	var myMosC = new MosIntegration();
+	var c = new Connector();
 
-	MosIntegration.init();
+	await c.init()
 
-	expect(myMosC).toBeInstanceOf(MosIntegration)
+	expect(c).toBeInstanceOf(Connector)
+
+	return 1;
 })

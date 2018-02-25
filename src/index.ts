@@ -1,5 +1,7 @@
 
 
-import MosIntegration from "./MosIntegration"
+import {Connector} from "./connector"
 
-MosIntegration.init();
+var c = new Connector();
+
+c.init();
