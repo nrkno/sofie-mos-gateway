@@ -1,44 +1,28 @@
 
-import {MosHandler} from "./mosHandler"
-import {CoreHandler} from "./coreHandler"
-
-
+import {MosHandler} from './mosHandler'
+import {CoreHandler} from './coreHandler'
 
 export class Connector {
-	
-	private mosHandler:MosHandler;
-	private coreHandler:CoreHandler;
 
+	private mosHandler: MosHandler
+	private coreHandler: CoreHandler
 
-	async init():Promise<number> {
+	async init (): Promise<number> {
 
 		await this.initCore()
 
-		
+		await this.initMos()
 
-		await this.initMos();
-
-
-
-		return 0;
-		
+		return 0
 	}
-	initCore() {
-
-		this.coreHandler = new CoreHandler();
-		
-		return this.coreHandler.init();
-
+	initCore () {
+		this.coreHandler = new CoreHandler()
+		return this.coreHandler.init()
 	}
-	initMos():Promise<number> {
-
-
+	initMos (): Promise<number> {
 		// TODO: maybe get some config data from core here?
-
-		this.mosHandler = new MosHandler();
-		
-		return this.mosHandler.init();
+		this.mosHandler = new MosHandler()
+		return this.mosHandler.init(this.coreHandler)
 
 	}
 }
-

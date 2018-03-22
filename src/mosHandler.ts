@@ -1,76 +1,63 @@
 import {
-	MosConnection, 
-	IMosconnection,
-	IMOSDevice,
-	IMOSDeviceP0, 
-	IMOSDeviceP1,
-	IMOSDeviceP2,
-	IMOSDeviceP3,
-	IMOSDeviceP4,
-	IMOSDeviceP5,
-	IMOSDeviceP6
-} from "mos-connection"
+	MosConnection,
+	IMOSDevice
+} from 'mos-connection'
 
-import {CoreHandler} from "./coreHandler"
-
-interface IMyMOSDevice extends IMOSDeviceP1, IMOSDeviceP0 {}
+import { CoreHandler } from './coreHandler'
 
 export class MosHandler {
 
-	public mos:MosConnection;
+	public mos: MosConnection
 
-	private mosDevices:{[id:string]:IMOSDevice}
+	private mosDevices: {[id: string]: IMOSDevice}
 
-	init(coreHandler:CoreHandler) {
+	init (coreHandler: CoreHandler) {
 
 		this.mos = new MosConnection({
-			acceptConnections: true, // default:true
-			acceptConnectionFrom: ['127.0.0.1'],
-			
+			mosID: 'seff-tv-automation',
+			acceptsConnections: true, // default:true
+			// accepsConnectionsFrom: ['127.0.0.1'],
 			profiles: {
 				'0': true,
-				'1': false,
-				'2': false,
+				'1': true,
+				'2': true,
 				'3': false,
 				'4': false,
 				'5': false,
 				'6': false,
-				'7': false,
+				'7': false
 			}
-		});
+		})
 
-		this.mos.onConnection((mosDevice:IMyMOSDevice) => {
+		this.mos.onConnection((mosDevice: IMyMOSDevice) => {
 			// a new connection has been made
 
-			this.mosDevices[mosDevice.id] = mosDevice;
-			
+			this.mosDevices[mosDevice.id] = mosDevice
 
 			// Setup messages [ MOSDevice >>>> Core ] -----------------------
 			/*mosDevice.onMessage((message:string) => {-
 
 			});
 			*/
-			mosDevice.onConnectionChange((connectionStatus:IMOSConnectionStatus) => {
-				coreHandler.connected = connected;
-			});
-
+			mosDevice.onConnectionChange((connectionStatus: IMOSConnectionStatus) => {
+				coreHandler.connected = connected
+			})
 
 			let coreMosHandler = coreHandler.registerMosDevice(mosDevice)
 
 			// Setup messages [ MOSDevice <<<< Core     ] -----------------------
 			coreMosHandler.onGetMachineInfo(() => {
-				return mosDevice.getMachineInfo();
-			});
+				return mosDevice.getMachineInfo()
+			})
 
-
-		});
+		})
 
 		// Connect to ENPS:
 		return this.mos.connect({
 			ncs: {
-				id: "WINSERVERSOMETHINGENPS",
-				host: "192.168.0.1"
-			},
+				id: 'WINSERVERSOMETHINGENPS',
+				host: '192.168.0.1'
+			}
 			/*ncsBuddy?: {
 				ncsID: string;
 				host: string;

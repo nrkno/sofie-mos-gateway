@@ -1,7 +1,6 @@
 
+import {Connector} from './connector'
 
-import {Connector} from "./connector"
+let c = new Connector()
 
-var c = new Connector();
-
-c.init();
+c.init()

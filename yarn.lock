@@ -60,6 +60,10 @@
   dependencies:
     "@types/node" "*"
 
+"@types/underscore@^1.8.8":
+  version "1.8.8"
+  resolved "https://registry.yarnpkg.com/@types/underscore/-/underscore-1.8.8.tgz#510fe1ca5e7fa87fccd405b9a8b566d420bc3d1b"
+
 JSONStream@^1.0.4:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/JSONStream/-/JSONStream-1.3.1.tgz#707f761e01dae9e16f1bcf93703b78c70966579a"
@@ -1067,6 +1071,16 @@ convert-source-map@^1.1.0, convert-source-map@^1.3.0:
 convert-source-map@^1.4.0, convert-source-map@^1.5.0:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/convert-source-map/-/convert-source-map-1.5.1.tgz#b8278097b9bc229365de5c62cf5fcaed8b5599e5"
+
+"core-integration@git+https://Mfn2bXzQtEFXHKpo12x2y78QJMR7gUZz:x-oauth-basic@bitbucket.org/superflytv/core-integration.git":
+  version "0.0.0"
+  resolved "git+https://Mfn2bXzQtEFXHKpo12x2y78QJMR7gUZz:x-oauth-basic@bitbucket.org/superflytv/core-integration.git#9b38df3209a63b850c0d75ce335081c339ca07f7"
+  dependencies:
+    ddp "^0.12.1"
+    ddp-ejson "~0.8.1-3"
+    ddp-random "~0.8.1-1"
+    tslib "^1.6.0"
+    underscore "^1.8.3"
 
 core-js@^2.4.0:
   version "2.4.1"
@@ -3076,9 +3090,9 @@ mongodb-memory-server@^1.7.0:
     tmp "^0.0.33"
     uuid "^3.2.1"
 
-"mos-connection@git+https://Mfn2bXzQtEFXHKpo12x2y78QJMR7gUZz:x-oauth-basic@bitbucket.org/superflytv/mos-connection.git":
+"mos-connection@git+https://github.com/nrkno/tv-automation-mos-connection":
   version "0.0.0"
-  resolved "git+https://Mfn2bXzQtEFXHKpo12x2y78QJMR7gUZz:x-oauth-basic@bitbucket.org/superflytv/mos-connection.git#8e2986332cef8b9ef46af1d97c253215daf1f640"
+  resolved "git+https://github.com/nrkno/tv-automation-mos-connection#67b7848f66a61a51d62defe34b787599b0bf6c98"
   dependencies:
     tslib "^1.6.0"
 

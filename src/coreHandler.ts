@@ -1,18 +1,24 @@
-import {DDPConnector} from "./connectors/ddpConnector"
 
+import {CoreConnection, DeviceType} from 'core-integration'
+
+import * as _ from 'underscore'
 
 export class CoreHandler {
 
-	private ddp:DDPConnector;
+	private _conn: CoreConnection
 
-	init() {
+	init (): Promise<string> {
 
-		this.ddp = new DDPConnector({
+		let credentials = CoreConnection.getCredentials('mosDevice')
+
+		this._conn = new CoreConnection(_.extend(credentials, {
+			deviceType: DeviceType.MOSDEVICE,
+			deviceName: 'mosDevice'
+		}))
+
+		return this._conn.init({
 			host: '127.0.0.1',
-			port: 3000,
-		});
-
-		this.ddp.createClient();
-
+			port: 3000
+		})
 	}
 }
