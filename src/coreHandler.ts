@@ -213,9 +213,7 @@ export class CoreMosDeviceHandler {
 	mosRoReadyToAir (Action: IMOSROReadyToAir): Promise<any> {
 		return this.core.mosManipulate(P.methods.mosRoReadyToAir, Action)
 	}
-
 	mosRoFullStory (story: IMOSROFullStory ): Promise<any> {
-		return this.core.mosManipulate(P.methods.mosRoReadyToAir, story)
+		return this.core.mosManipulate(P.methods.mosRoFullStory, story)
 	}
-
 }
