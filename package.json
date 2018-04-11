@@ -30,6 +30,7 @@
   "scripts": {
     "info": "npm-scripts-info",
     "build": "trash dist && yarn build:main",
+    "buildstart": "yarn build && yarn start",
     "build:main": "tsc -p tsconfig.json",
     "lint": "tslint --project tsconfig.jest.json --config tslint.json",
     "unit": "jest",

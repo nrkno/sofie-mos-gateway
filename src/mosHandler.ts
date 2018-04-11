@@ -15,37 +15,44 @@ import {
 	IMOSItemAction,
 	IMOSItem,
 	IMOSROReadyToAir,
-	IMOSROFullStory
+	IMOSROFullStory,
+	IConnectionConfig,
+	IMOSDeviceConnectionOptions
 } from 'mos-connection'
 import * as _ from 'underscore'
 import { CoreHandler } from './coreHandler'
 
-export interface IMOSOptions {
-	mosID: string,
-	acceptsConnections: boolean,
-	profiles: {
-		'0': boolean,
-		'1': boolean,
-		'2': boolean,
-		'3': boolean,
-		'4': boolean,
-		'5': boolean,
-		'6': boolean,
-		'7': boolean
-	}
+// export interface MosOptions {
+// 	mosID: string,
+// 	acceptsConnections: boolean,
+// 	profiles: {
+// 		'0': boolean,
+// 		'1': boolean,
+// 		'2': boolean,
+// 		'3': boolean,
+// 		'4': boolean,
+// 		'5': boolean,
+// 		'6': boolean,
+// 		'7': boolean
+// 	}
+// }
+export interface MosConfig {
+	self: IConnectionConfig
+	devices: Array<IMOSDeviceConnectionOptions>
 }
 
 export class MosHandler {
 
 	public mos: MosConnection
 
-	public mosOptions: IMOSOptions
+	public mosOptions: MosConfig
 
-	private mosDevices: {[id: string]: IMOSDevice}
+	private mosDevices: {[id: string]: IMOSDevice} = {}
 
-	init (coreHandler: CoreHandler): Promise<void> {
+	init (config: MosConfig, coreHandler: CoreHandler): Promise<void> {
 
-		this.mosOptions = {
+		this.mosOptions = config
+		/*{
 			mosID: 'seff-tv-automation',
 			acceptsConnections: true, // default:true
 			// accepsConnectionsFrom: ['127.0.0.1'],
@@ -60,22 +67,26 @@ export class MosHandler {
 				'7': false
 			}
 		}
+		*/
 
-		this.mos = new MosConnection(this.mosOptions)
+		this.mos = new MosConnection(this.mosOptions.self)
 
 		this.mos.onConnection((mosDevice: IMOSDevice) => {
 			// a new connection to a device has been made
+			console.log('---------------------------------')
 
+			console.log('onConnection')
 			this.mosDevices[mosDevice.id] = mosDevice
 
 			return coreHandler.registerMosDevice(mosDevice, this)
 			.then((coreMosHandler) => {
-
+				console.log('mosDevice registered -------------')
 				// Setup message flow between the devices:
 				// Profile 0: -------------------------------------------------
 				mosDevice.onConnectionChange((connectionStatus: IMOSConnectionStatus) => { //  MOSDevice >>>> Core
 					coreMosHandler.onMosConnectionChanged(connectionStatus)
 				})
+				coreMosHandler.onMosConnectionChanged(mosDevice.getConnectionStatus()) // initial check
 				mosDevice.onGetMachineInfo(() => { // MOSDevice >>>> Core
 					return coreMosHandler.getMachineInfo()
 				})
@@ -155,26 +166,34 @@ export class MosHandler {
 				// Profile 3: -------------------------------------------------
 				// Profile 4: -------------------------------------------------
 				// onStory: (cb: (story: IMOSROFullStory) => Promise<any>) => void
-				mosDevice.onStory((story: IMOSROFullStory) => { // MOSDevice >>>> Core
+				mosDevice.onROStory((story: IMOSROFullStory) => { // MOSDevice >>>> Core
 					return this._getROAck(story.RunningOrderId, coreMosHandler.mosRoFullStory(story))
 				})
 
+				/*
+				setTimeout(() => {
+					console.log('.......................')
+					console.log('DISPOSE!')
+					mosDevice.di
+				}, 3000)
+				*/
+
+			})
+			.catch((e) => {
+				console.log('Error:',e)
 			})
 
 		})
 
 		// Connect to ENPS:
-		return this.mos.connect({
-			primary: {
-				id: 'WINSERVERSOMETHINGENPS',
-				host: '192.168.0.1'
-			}
-			/*secondary?: {
-				ncsID: string;
-				host: string;
-			},*/
-		}).then(() => {
-			// called when a connection has been made
+		return Promise.all(
+			_.map(this.mosOptions.devices, (device) => {
+				return this.mos.connect(device).then(() => {
+					// called when a connection has been made
+				})
+			})
+		).then(() => {
+			// Called when all connection has been made
 		})
 	}
 	private _getROAck (roId: MosString128, p: Promise<any>) {

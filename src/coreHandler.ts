@@ -1,5 +1,5 @@
 
-import {CoreConnection,
+import { CoreConnection,
 	CoreOptions,
 	DeviceType,
 	PeripheralDeviceAPI as P
@@ -29,20 +29,22 @@ import * as _ from 'underscore'
 import { MosHandler } from './mosHandler'
 // import { STATUS_CODES } from 'http'
 
+export interface CoreConfig {
+	host: string,
+	port: number
+}
 /**
  * Represents a connection between mos-integration and Core
  */
 export class CoreHandler {
 	core: CoreConnection
 
-	init (): Promise<void> {
+	init (config: CoreConfig): Promise<void> {
+		console.log('========')
+		this.core = new CoreConnection(this.getCoreConnectionOptions('MOS: Parent process', 'MosCoreParent'))
 
-		this.core = new CoreConnection(this.getCoreConnectionOptions('parent process'))
-
-		return this.core.init({
-			host: '127.0.0.1',
-			port: 3000
-		}).then((id: string) => {
+		return this.core.init(config).then((id: string) => {
+			id = id // tsignore
 
 			this.core.setStatus({
 				statusCode: P.StatusCode.GOOD
@@ -62,14 +64,15 @@ export class CoreHandler {
 			// nothing
 		})
 	}
-	getCoreConnectionOptions (name: string): CoreOptions {
-		let credentials = CoreConnection.getCredentials('mosDevice')
+	getCoreConnectionOptions (name: string, deviceId: string): CoreOptions {
+		let credentials = CoreConnection.getCredentials(deviceId)
 		return _.extend(credentials, {
 			deviceType: DeviceType.MOSDEVICE,
 			deviceName: name
 		})
 	}
 	registerMosDevice (mosDevice: IMOSDevice, mosHandler: MosHandler): Promise<CoreMosDeviceHandler> {
+		console.log('registerMosDevice -------------')
 		let coreMos = new CoreMosDeviceHandler(this, mosDevice, mosHandler)
 
 		return coreMos.init()
@@ -93,13 +96,15 @@ export class CoreMosDeviceHandler {
 		this._mosDevice = mosDevice
 		this._mosHandler = mosHandler
 
-		this.core = new CoreConnection(parent.getCoreConnectionOptions('MOS device'))
+		console.log('new CoreMosDeviceHandler ' + mosDevice.id)
+		this.core = new CoreConnection(parent.getCoreConnectionOptions('MOS: ' + mosDevice.id, mosDevice.id))
 
 	}
 	init (): Promise<void> {
 		return this.core.init(this._coreParentHandler.core)
 		.then((id: string) => {
 			// nothing
+			id = id // tsignore
 		})
 	}
 	onMosConnectionChanged (connectionStatus: IMOSConnectionStatus) {
@@ -147,14 +152,14 @@ export class CoreMosDeviceHandler {
 			mosRev: new MosString128('0'),
 			supportedProfiles: {
 				deviceType: 'MOS', // MOS, NCS
-				profile0: this._mosHandler.mosOptions.profiles['0'],
-				profile1: this._mosHandler.mosOptions.profiles['1'],
-				profile2: this._mosHandler.mosOptions.profiles['2'],
-				profile3: this._mosHandler.mosOptions.profiles['3'],
-				profile4: this._mosHandler.mosOptions.profiles['4'],
-				profile5: this._mosHandler.mosOptions.profiles['5'],
-				profile6: this._mosHandler.mosOptions.profiles['6'],
-				profile7: this._mosHandler.mosOptions.profiles['7']
+				profile0: this._mosHandler.mosOptions.self.profiles['0'],
+				profile1: this._mosHandler.mosOptions.self.profiles['1'],
+				profile2: this._mosHandler.mosOptions.self.profiles['2'],
+				profile3: this._mosHandler.mosOptions.self.profiles['3'],
+				profile4: this._mosHandler.mosOptions.self.profiles['4'],
+				profile5: this._mosHandler.mosOptions.self.profiles['5'],
+				profile6: this._mosHandler.mosOptions.self.profiles['6'],
+				profile7: this._mosHandler.mosOptions.self.profiles['7']
 			}
 		}
 		return Promise.resolve(info)
