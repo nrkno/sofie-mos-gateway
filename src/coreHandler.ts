@@ -22,7 +22,8 @@ import {
 	IMOSItemAction,
 	IMOSItem,
 	IMOSROReadyToAir,
-	IMOSROFullStory
+	IMOSROFullStory,
+	MosDuration
 } from 'mos-connection'
 
 import * as _ from 'underscore'
@@ -165,60 +166,91 @@ export class CoreMosDeviceHandler {
 		return Promise.resolve(info)
 	}
 	mosRoCreate (ro: IMOSRunningOrder): Promise<any> {
-		return this.core.mosManipulate(P.methods.mosRoCreate, ro)
+		return this._coreMosManipulate(P.methods.mosRoCreate, ro)
 	}
 	mosRoReplace (ro: IMOSRunningOrder): Promise<any> {
-		return this.core.mosManipulate(P.methods.mosRoReplace, ro)
+		return this._coreMosManipulate(P.methods.mosRoReplace, ro)
 	}
 	mosRoDelete (runningOrderId: MosString128): Promise<any> {
-		return this.core.mosManipulate(P.methods.mosRoDelete, runningOrderId)
+		return this._coreMosManipulate(P.methods.mosRoDelete, runningOrderId)
 	}
 	mosRoMetadata (metadata: IMOSRunningOrderBase): Promise<any> {
-		return this.core.mosManipulate(P.methods.mosRoMetadata, metadata)
+		return this._coreMosManipulate(P.methods.mosRoMetadata, metadata)
 	}
 	mosRoStatus (status: IMOSRunningOrderStatus): Promise<any> {
-		return this.core.mosManipulate(P.methods.mosRoStatus, status)
+		return this._coreMosManipulate(P.methods.mosRoStatus, status)
 	}
 	mosRoStoryStatus (status: IMOSStoryStatus): Promise<any> {
-		return this.core.mosManipulate(P.methods.mosRoStoryStatus, status)
+		return this._coreMosManipulate(P.methods.mosRoStoryStatus, status)
 	}
 	mosRoItemStatus (status: IMOSItemStatus): Promise<any> {
-		return this.core.mosManipulate(P.methods.mosRoItemStatus, status)
+		return this._coreMosManipulate(P.methods.mosRoItemStatus, status)
 	}
 	mosRoStoryInsert (Action: IMOSStoryAction, Stories: Array<IMOSROStory>): Promise<any> {
-		return this.core.mosManipulate(P.methods.mosRoStoryInsert, Action, Stories)
+		return this._coreMosManipulate(P.methods.mosRoStoryInsert, Action, Stories)
 	}
 	mosRoStoryReplace (Action: IMOSStoryAction, Stories: Array<IMOSROStory>): Promise<any> {
-		return this.core.mosManipulate(P.methods.mosRoStoryReplace, Action, Stories)
+		return this._coreMosManipulate(P.methods.mosRoStoryReplace, Action, Stories)
 	}
 	mosRoStoryMove (Action: IMOSStoryAction, Stories: Array<MosString128>): Promise<any> {
-		return this.core.mosManipulate(P.methods.mosRoStoryMove, Action, Stories)
+		return this._coreMosManipulate(P.methods.mosRoStoryMove, Action, Stories)
 	}
 	mosRoStoryDelete (Action: IMOSROAction, Stories: Array<MosString128>): Promise<any> {
-		return this.core.mosManipulate(P.methods.mosRoStoryDelete, Action, Stories)
+		return this._coreMosManipulate(P.methods.mosRoStoryDelete, Action, Stories)
 	}
 	mosRoStorySwap (Action: IMOSROAction, StoryID0: MosString128, StoryID1: MosString128): Promise<any> {
-		return this.core.mosManipulate(P.methods.mosRoStorySwap, Action, StoryID0, StoryID1)
+		return this._coreMosManipulate(P.methods.mosRoStorySwap, Action, StoryID0, StoryID1)
 	}
 	mosRoItemInsert (Action: IMOSItemAction, Items: Array<IMOSItem>): Promise<any> {
-		return this.core.mosManipulate(P.methods.mosRoItemInsert, Action, Items)
+		return this._coreMosManipulate(P.methods.mosRoItemInsert, Action, Items)
 	}
 	mosRoItemReplace (Action: IMOSItemAction, Items: Array<IMOSItem>): Promise<any> {
-		return this.core.mosManipulate(P.methods.mosRoItemReplace, Action, Items)
+		return this._coreMosManipulate(P.methods.mosRoItemReplace, Action, Items)
 	}
 	mosRoItemMove (Action: IMOSItemAction, Items: Array<MosString128>): Promise<any> {
-		return this.core.mosManipulate(P.methods.mosRoItemMove, Action, Items)
+		return this._coreMosManipulate(P.methods.mosRoItemMove, Action, Items)
 	}
 	mosRoItemDelete (Action: IMOSStoryAction, Items: Array<MosString128>): Promise<any> {
-		return this.core.mosManipulate(P.methods.mosRoItemDelete, Action, Items)
+		return this._coreMosManipulate(P.methods.mosRoItemDelete, Action, Items)
 	}
 	mosRoItemSwap (Action: IMOSStoryAction, ItemID0: MosString128, ItemID1: MosString128): Promise<any> {
-		return this.core.mosManipulate(P.methods.mosRoItemSwap, Action, ItemID0, ItemID1)
+		return this._coreMosManipulate(P.methods.mosRoItemSwap, Action, ItemID0, ItemID1)
 	}
 	mosRoReadyToAir (Action: IMOSROReadyToAir): Promise<any> {
-		return this.core.mosManipulate(P.methods.mosRoReadyToAir, Action)
+		return this._coreMosManipulate(P.methods.mosRoReadyToAir, Action)
 	}
 	mosRoFullStory (story: IMOSROFullStory ): Promise<any> {
-		return this.core.mosManipulate(P.methods.mosRoFullStory, story)
+		return this._coreMosManipulate(P.methods.mosRoFullStory, story)
+	}
+
+	private fixBeforeSend (o: any): any {
+		if (
+			_.isObject(o) && (
+			o instanceof MosTime ||
+			o instanceof MosDuration ||
+			o instanceof MosString128
+		)) {
+			return o.toString()
+		}
+		if (_.isArray(o)) {
+			return _.map(o, (val) => {
+				return this.fixBeforeSend(val)
+			})
+		} else if (_.isObject(o)) {
+			let o2: any = {}
+			_.each(o, (val, key) => {
+				o2[key] = this.fixBeforeSend(val)
+			})
+			return o2
+		} else {
+			return o
+		}
+	}
+	private _coreMosManipulate (method: string, ...attrs: Array<any>): Promise<any> {
+		attrs = _.map(attrs, (attr) => {
+			return this.fixBeforeSend(attr)
+		})
+		// console.log('mosManipulate', method, attrs)
+		return this.core.mosManipulate(method, ...attrs)
 	}
 }
