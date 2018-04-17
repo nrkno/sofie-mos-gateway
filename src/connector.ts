@@ -28,6 +28,12 @@ export class Connector {
 			console.log('Initialization done')
 			return 0
 		})
+		.catch((e) => {
+			console.log('Error during initialization:')
+			console.log(e)
+			console.log(e.stack)
+			return 0
+		})
 	}
 	initCore () {
 		this.coreHandler = new CoreHandler()

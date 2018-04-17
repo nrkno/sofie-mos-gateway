@@ -17,7 +17,8 @@ import {
 	IMOSROReadyToAir,
 	IMOSROFullStory,
 	IConnectionConfig,
-	IMOSDeviceConnectionOptions
+	IMOSDeviceConnectionOptions,
+	MosDevice
 } from 'mos-connection'
 import * as _ from 'underscore'
 import { CoreHandler } from './coreHandler'
@@ -76,7 +77,7 @@ export class MosHandler {
 			console.log('---------------------------------')
 
 			console.log('onConnection')
-			this.mosDevices[mosDevice.id] = mosDevice
+			this.mosDevices[mosDevice.idPrimary] = mosDevice
 
 			return coreHandler.registerMosDevice(mosDevice, this)
 			.then((coreMosHandler) => {
@@ -188,8 +189,15 @@ export class MosHandler {
 		// Connect to ENPS:
 		return Promise.all(
 			_.map(this.mosOptions.devices, (device) => {
-				return this.mos.connect(device).then(() => {
+				return this.mos.connect(device)
+				.then((mosDevice: MosDevice) => {
 					// called when a connection has been made
+
+					return mosDevice.getMachineInfo()
+					.then((machInfo) => {
+						console.log('Connected to Mos-device')
+						console.log(machInfo)
+					})
 				})
 			})
 		).then(() => {

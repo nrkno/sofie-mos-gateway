@@ -28,7 +28,7 @@ let config: Config = {
 		},
 		devices: [{
 			primary: {
-				id: 'WINSERVERSOMETHINGENPS',
+				id: '2012R2ENPS8VM',
 				host: '10.0.1.248'
 			}
 			/*secondary?: {
