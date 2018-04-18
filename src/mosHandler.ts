@@ -76,12 +76,11 @@ export class MosHandler {
 			// a new connection to a device has been made
 			console.log('---------------------------------')
 
-			console.log('onConnection')
 			this.mosDevices[mosDevice.idPrimary] = mosDevice
 
 			return coreHandler.registerMosDevice(mosDevice, this)
 			.then((coreMosHandler) => {
-				console.log('mosDevice registered -------------')
+				// console.log('mosDevice registered -------------')
 				// Setup message flow between the devices:
 				// Profile 0: -------------------------------------------------
 				mosDevice.onConnectionChange((connectionStatus: IMOSConnectionStatus) => { //  MOSDevice >>>> Core

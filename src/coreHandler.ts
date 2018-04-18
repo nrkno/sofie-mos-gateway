@@ -44,6 +44,16 @@ export class CoreHandler {
 		console.log('========')
 		this.core = new CoreConnection(this.getCoreConnectionOptions('MOS: Parent process', 'MosCoreParent'))
 
+		this.core.onConnected(() => {
+			console.log('Core Connected!')
+		})
+		this.core.onDisconnected(() => {
+			console.log('Core Disconnected!')
+		})
+		this.core.onError((err) => {
+			console.log('Core Error: ' + (err.message || err.toString() || err))
+		})
+
 		return this.core.init(config).then((id: string) => {
 			id = id // tsignore
 
