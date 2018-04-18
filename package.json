@@ -1,7 +1,7 @@
 {
-  "name": "mos-integration",
+  "name": "mos-gateway",
   "version": "0.0.0",
-  "description": "MOS integration for YAAS",
+  "description": "MOS-Gateway for the Sofie project",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "module": "dist/module/index.js",
@@ -9,12 +9,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/superflytv/mos-integration.git"
+    "url": "git+https://github.com/nrkno/tv-automation-mos-gateway.git"
   },
   "bugs": {
-    "url": "https://github.com/superflytv/mos-integration/issues"
+    "url": "https://github.com/nrkno/tv-automation-mos-gateway/issues"
   },
-  "homepage": "https://github.com/superflytv/mos-integration#readme",
+  "homepage": "https://github.com/nrkno/tv-automation-mos-gateway#readme",
   "author": {
     "name": "Johan Nyman",
     "email": "johan@superfly.tv",
@@ -105,7 +105,7 @@
   ],
   "dependencies": {
     "@types/underscore": "^1.8.8",
-    "core-integration": "git+https://Mfn2bXzQtEFXHKpo12x2y78QJMR7gUZz:x-oauth-basic@bitbucket.org/superflytv/core-integration.git",
+    "core-integration": "git+https://github.com/nrkno/tv-automation-server-core-integration.git#develop",
     "ddp": "^0.12.1",
     "ddp-ejson": "~0.8.1-3",
     "ddp-random": "~0.8.1-1",
