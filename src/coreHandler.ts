@@ -107,6 +107,8 @@ export class CoreMosDeviceHandler {
 		this._mosDevice = mosDevice
 		this._mosHandler = mosHandler
 
+		this._mosDevice = this._mosDevice // ts-ignore fix
+
 		console.log('new CoreMosDeviceHandler ' + mosDevice.idPrimary)
 		this.core = new CoreConnection(parent.getCoreConnectionOptions('MOS: ' + mosDevice.idPrimary, mosDevice.idPrimary))
 
