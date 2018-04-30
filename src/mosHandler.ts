@@ -203,7 +203,7 @@ export class MosHandler {
 			// Called when all connection has been made
 		})
 	}
-	private _getROAck (roId: MosString128, p: Promise<any>) {
+	private _getROAck (roId: MosString128, p: Promise<IMOSROAck>) {
 
 		return p.then(() => {
 			let roAck: IMOSROAck = {
@@ -214,6 +214,7 @@ export class MosHandler {
 			return roAck
 		})
 		.catch((err) => {
+			console.log('Error', err)
 			let roAck: IMOSROAck = {
 				ID: roId,
 				Status: new MosString128('Error: ' + err.toString()),

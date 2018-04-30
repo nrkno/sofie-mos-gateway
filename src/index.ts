@@ -13,7 +13,7 @@ let config: Config = {
 	mos: {
 		self: {
 
-			mosID: 'seff.tv.automation',
+			mosID: 'sofie.tv.automation',
 			acceptsConnections: true, // default:true
 			// accepsConnectionsFrom: ['127.0.0.1'],
 			profiles: {
@@ -40,6 +40,7 @@ let config: Config = {
 	}
 }
 console.log('Core:          ' + config.core.host + ':' + config.core.port)
+console.log('Mos id:        ' + config.mos.self.mosID)
 config.mos.devices.forEach((device) => {
 	if (device.primary) console.log('Mos Primary:   ' + device.primary.host)
 	if (device.secondary) console.log('Mos Secondary: ' + device.secondary.host)
