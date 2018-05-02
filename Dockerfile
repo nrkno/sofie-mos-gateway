@@ -1,14 +1,13 @@
-# use latest node lts
-FROM node:8.11.1-alpine
-
+# BUILD IMAGE
+FROM node:8.11.1 AS build
 WORKDIR /opt/mos-gateway
-RUN apk add --no-cache git
-RUN apk add --no-cache tzdata
-RUN apk add --no-cache python
-RUN apk add --no-cache alpine-sdk
-ENV TZ Europe/Oslo
 COPY . .
 RUN rm yarn.lock
-RUN yarn install
+RUN yarn install --check-files
 RUN yarn build
+
+# DEPLOY IMAGE
+FROM node:8.11.1-alpine
+COPY --from=build /opt/mos-gateway /opt/mos-gateway
+WORKDIR /opt/mos-gateway
 CMD ["yarn", "start"]
