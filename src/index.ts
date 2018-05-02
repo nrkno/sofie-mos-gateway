@@ -1,5 +1,6 @@
 
 import { Connector, Config } from './connector'
+import * as winston from 'winston'
 
 // CLI arguments / Environment variables --------------
 let host: string 		= process.env.CORE_HOST 					|| '127.0.0.1'
@@ -19,6 +20,41 @@ process.argv.forEach((val) => {
 	}
 	prevProcessArg = val + ''
 })
+
+// Setup logging --------------------------------------
+let logger = new (winston.Logger)({
+})
+
+if (logPath) {
+	// Log json to file, human-readable to console
+	console.log('Logging to', logPath)
+	logger.add(winston.transports.Console,{
+		handleExceptions: true,
+		json: false
+	})
+	logger.add(winston.transports.File, {
+		handleExceptions: true,
+		json: true,
+		filename: logPath
+	})
+} else {
+	console.log('Logging to Console')
+	// Log json to console
+	logger.add(winston.transports.Console,{
+		handleExceptions: true,
+		json: true
+	 })
+}
+// Hijack console.log:
+// @ts-ignore
+let orgConsoleLog = console.log
+console.log = function (...args: any[]) {
+	// orgConsoleLog('a')
+	if (args.length >= 1) {
+		// @ts-ignore one or more arguments
+		logger.info(...args)
+	}
+}
 
 // App config -----------------------------------------
 let config: Config = {

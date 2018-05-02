@@ -4,7 +4,10 @@ An application for piping data between Core (in the Sofie-project) and MOS-devic
 
 ## Usage
 ```
-npm run start -host 127.0.0.1 -port 3000 -log "log/"
+// Development:
+npm run start -host 127.0.0.1 -port 3000 -log "log.log"
+// Production:
+npm run start
 ```
 **CLI arguments:**
 | Argument        | Description   | Environment variable |
