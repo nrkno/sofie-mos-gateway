@@ -1,13 +1,12 @@
 
 import { Connector, Config } from './connector'
 
-console.log('------------------------------------------------------------------')
-console.log('Starting MOS Gateway')
-let c = new Connector()
+// CLI arguments / Environment variables --------------
+let host: string 		= process.env.CORE_HOST 					|| '127.0.0.1'
+let port: number 		= parseInt(process.env.CORE_PORT + '', 10) 	|| 3000
+let logPath: string 	= process.env.CORE_LOG						|| ''
 
-let host = '127.0.0.1'
-let port = 3000
-let logPath = ''
+logPath = logPath
 
 let prevProcessArg = ''
 process.argv.forEach((val) => {
@@ -21,8 +20,7 @@ process.argv.forEach((val) => {
 	prevProcessArg = val + ''
 })
 
-logPath = logPath
-
+// App config -----------------------------------------
 let config: Config = {
 	core: {
 		host: host,
@@ -57,6 +55,11 @@ let config: Config = {
 		}]
 	}
 }
+
+console.log('------------------------------------------------------------------')
+console.log('Starting MOS Gateway')
+let c = new Connector()
+
 console.log('Core:          ' + config.core.host + ':' + config.core.port)
 console.log('Mos id:        ' + config.mos.self.mosID)
 config.mos.devices.forEach((device) => {

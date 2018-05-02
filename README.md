@@ -7,11 +7,11 @@ An application for piping data between Core (in the Sofie-project) and MOS-devic
 npm run start -host 127.0.0.1 -port 3000 -log "log/"
 ```
 **CLI arguments:**
-| Argument        | Description           | 
-| ------------- |-------------| 
-| -host | Hostname or IP of Core | 
-| -port | Port of Core           |
-| -log  | Path to output log | 
+| Argument        | Description   | Environment variable |
+| ------------- |-----------------|----------------------| 
+| -host | Hostname or IP of Core  | CORE_HOST            |
+| -port | Port of Core            | CORE_PORT            |
+| -log  | Path to output log      | CORE_LOG             |
 
 
 ## Installation for dev
