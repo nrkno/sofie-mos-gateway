@@ -1,14 +1,32 @@
 
-import {Connector, Config} from './connector'
+import { Connector, Config } from './connector'
 
 console.log('------------------------------------------------------------------')
 console.log('Starting MOS Gateway')
 let c = new Connector()
 
+let host = '127.0.0.1'
+let port = 3000
+let logPath = ''
+
+let prevProcessArg = ''
+process.argv.forEach((val) => {
+	if (prevProcessArg.match(/-host/i)) {
+		host = val
+	} else if (prevProcessArg.match(/-port/i)) {
+		port = parseInt(val, 10)
+	} else if (prevProcessArg.match(/-log/i)) {
+		logPath = val
+	}
+	prevProcessArg = val + ''
+})
+
+logPath = logPath
+
 let config: Config = {
 	core: {
-		host: '127.0.0.1',
-		port: 3000
+		host: host,
+		port: port
 	},
 	mos: {
 		self: {
