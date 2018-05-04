@@ -193,21 +193,25 @@ export class MosHandler {
 
 		})
 
-		// Connect to ENPS:
-		return Promise.all(
-			_.map(this.mosOptions.devices, (device) => {
-				return this.mos.connect(device)
-				.then((mosDevice: MosDevice) => {
-					// called when a connection has been made
-
-					return mosDevice.getMachineInfo()
-					.then((machInfo) => {
-						this._logger.info('Connected to Mos-device', machInfo)
+		// Open mos-server for connections:
+		return this.mos.init()
+		.then (() => {
+			// Connect to ENPS:
+			return Promise.all(
+				_.map(this.mosOptions.devices, (device) => {
+					return this.mos.connect(device)
+					.then((mosDevice: MosDevice) => {
+						// called when a connection has been made
+						return mosDevice.getMachineInfo()
+						.then((machInfo) => {
+							this._logger.info('Connected to Mos-device', machInfo)
+						})
 					})
 				})
-			})
-		).then(() => {
-			// Called when all connection has been made
+			)
+		})
+		.then(() => {
+			// All connections have been made at this point
 		})
 	}
 	private _getROAck (roId: MosString128, p: Promise<IMOSROAck>) {
