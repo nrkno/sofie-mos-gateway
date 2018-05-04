@@ -94,15 +94,16 @@ let config: Config = {
 	}
 }
 
-console.log('------------------------------------------------------------------')
-console.log('Starting MOS Gateway')
+logger.info('------------------------------------------------------------------')
+logger.info('Starting MOS Gateway')
 let c = new Connector(logger)
 
-console.log('Core:          ' + config.core.host + ':' + config.core.port)
-console.log('Mos id:        ' + config.mos.self.mosID)
+logger.info('Core:          ' + config.core.host + ':' + config.core.port)
+logger.info('Mos id:        ' + config.mos.self.mosID)
 config.mos.devices.forEach((device) => {
-	if (device.primary) console.log('Mos Primary:   ' + device.primary.host)
-	if (device.secondary) console.log('Mos Secondary: ' + device.secondary.host)
+	if (device.primary) logger.info('Mos Primary:   ' + device.primary.host)
+	if (device.secondary) logger.info('Mos Secondary: ' + device.secondary.host)
 })
-console.log('------------------------------------------------------------------')
+logger.info('------------------------------------------------------------------')
 c.init(config)
+.catch(logger.error)

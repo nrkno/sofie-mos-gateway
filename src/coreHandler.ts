@@ -30,73 +30,6 @@ import * as _ from 'underscore'
 import { MosHandler } from './mosHandler'
 // import { STATUS_CODES } from 'http'
 
-export interface CoreConfig {
-	host: string,
-	port: number
-}
-/**
- * Represents a connection between mos-integration and Core
- */
-export class CoreHandler {
-	core: CoreConnection
-	logger: Winston.LoggerInstance
-
-	constructor (logger: Winston.LoggerInstance) {
-		this.logger = logger
-	}
-
-	init (config: CoreConfig): Promise<void> {
-		this.logger.info('========')
-		this.core = new CoreConnection(this.getCoreConnectionOptions('MOS: Parent process', 'MosCoreParent'))
-
-		this.core.onConnected(() => {
-			this.logger.info('Core Connected!')
-		})
-		this.core.onDisconnected(() => {
-			this.logger.info('Core Disconnected!')
-		})
-		this.core.onError((err) => {
-			this.logger.error('Core Error: ' + (err.message || err.toString() || err))
-		})
-
-		return this.core.init(config).then((id: string) => {
-			id = id // tsignore
-
-			this.core.setStatus({
-				statusCode: P.StatusCode.GOOD
-				// messages: []
-			})
-			// nothing
-		})
-	}
-	destroy (): Promise<void> {
-		return this.core.setStatus({
-			statusCode: P.StatusCode.FATAL,
-			messages: ['Shutting down']
-		}).then(() => {
-			return this.core.destroy()
-		})
-		.then(() => {
-			// nothing
-		})
-	}
-	getCoreConnectionOptions (name: string, deviceId: string): CoreOptions {
-		let credentials = CoreConnection.getCredentials(deviceId)
-		return _.extend(credentials, {
-			deviceType: DeviceType.MOSDEVICE,
-			deviceName: name
-		})
-	}
-	registerMosDevice (mosDevice: IMOSDevice, mosHandler: MosHandler): Promise<CoreMosDeviceHandler> {
-		this.logger.info('registerMosDevice -------------')
-		let coreMos = new CoreMosDeviceHandler(this, mosDevice, mosHandler)
-
-		return coreMos.init()
-		.then(() => {
-			return coreMos
-		})
-	}
-}
 /**
  * Represents a connection between a mos-device and Core
  */
@@ -269,5 +202,72 @@ export class CoreMosDeviceHandler {
 		})
 		// console.log('mosManipulate', method, attrs)
 		return this.core.mosManipulate(method, ...attrs)
+	}
+}
+export interface CoreConfig {
+	host: string,
+	port: number
+}
+/**
+ * Represents a connection between mos-integration and Core
+ */
+export class CoreHandler {
+	core: CoreConnection
+	logger: Winston.LoggerInstance
+
+	constructor (logger: Winston.LoggerInstance) {
+		this.logger = logger
+	}
+
+	init (config: CoreConfig): Promise<void> {
+		this.logger.info('========')
+		this.core = new CoreConnection(this.getCoreConnectionOptions('MOS: Parent process', 'MosCoreParent'))
+
+		this.core.onConnected(() => {
+			this.logger.info('Core Connected!')
+		})
+		this.core.onDisconnected(() => {
+			this.logger.info('Core Disconnected!')
+		})
+		this.core.onError((err) => {
+			this.logger.error('Core Error: ' + (err.message || err.toString() || err))
+		})
+
+		return this.core.init(config).then((id: string) => {
+			id = id // tsignore
+
+			this.core.setStatus({
+				statusCode: P.StatusCode.GOOD
+				// messages: []
+			})
+			// nothing
+		})
+	}
+	dispose (): Promise<void> {
+		return this.core.setStatus({
+			statusCode: P.StatusCode.FATAL,
+			messages: ['Shutting down']
+		}).then(() => {
+			return this.core.destroy()
+		})
+		.then(() => {
+			// nothing
+		})
+	}
+	getCoreConnectionOptions (name: string, deviceId: string): CoreOptions {
+		let credentials = CoreConnection.getCredentials(deviceId)
+		return _.extend(credentials, {
+			deviceType: DeviceType.MOSDEVICE,
+			deviceName: name
+		})
+	}
+	registerMosDevice (mosDevice: IMOSDevice, mosHandler: MosHandler): Promise<CoreMosDeviceHandler> {
+		this.logger.info('registerMosDevice -------------')
+		let coreMos = new CoreMosDeviceHandler(this, mosDevice, mosHandler)
+
+		return coreMos.init()
+		.then(() => {
+			return coreMos
+		})
 	}
 }

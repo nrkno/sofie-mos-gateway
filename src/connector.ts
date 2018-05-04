@@ -51,4 +51,13 @@ export class Connector {
 		return this.mosHandler.init(this._config.mos, this.coreHandler)
 
 	}
+	dispose (): Promise<void> {
+		return this.mosHandler.dispose()
+		.then(() => {
+			return this.coreHandler.dispose()
+		})
+		.then(() => {
+			return
+		})
+	}
 }

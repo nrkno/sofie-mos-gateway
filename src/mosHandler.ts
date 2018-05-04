@@ -214,6 +214,9 @@ export class MosHandler {
 			// All connections have been made at this point
 		})
 	}
+	dispose (): Promise<void> {
+		return this.mos.dispose()
+	}
 	private _getROAck (roId: MosString128, p: Promise<IMOSROAck>) {
 		return p.then(() => {
 			let roAck: IMOSROAck = {
