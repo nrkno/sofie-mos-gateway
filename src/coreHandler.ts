@@ -1,9 +1,9 @@
-
 import { CoreConnection,
 	CoreOptions,
 	DeviceType,
 	PeripheralDeviceAPI as P
 } from 'core-integration'
+import * as Winston from 'winston'
 
 import {
 	IMOSConnectionStatus,
@@ -39,19 +39,24 @@ export interface CoreConfig {
  */
 export class CoreHandler {
 	core: CoreConnection
+	logger: Winston.LoggerInstance
+
+	constructor (logger: Winston.LoggerInstance) {
+		this.logger = logger
+	}
 
 	init (config: CoreConfig): Promise<void> {
-		console.log('========')
+		this.logger.info('========')
 		this.core = new CoreConnection(this.getCoreConnectionOptions('MOS: Parent process', 'MosCoreParent'))
 
 		this.core.onConnected(() => {
-			console.log('Core Connected!')
+			this.logger.info('Core Connected!')
 		})
 		this.core.onDisconnected(() => {
-			console.log('Core Disconnected!')
+			this.logger.info('Core Disconnected!')
 		})
 		this.core.onError((err) => {
-			console.log('Core Error: ' + (err.message || err.toString() || err))
+			this.logger.error('Core Error: ' + (err.message || err.toString() || err))
 		})
 
 		return this.core.init(config).then((id: string) => {
@@ -83,7 +88,7 @@ export class CoreHandler {
 		})
 	}
 	registerMosDevice (mosDevice: IMOSDevice, mosHandler: MosHandler): Promise<CoreMosDeviceHandler> {
-		console.log('registerMosDevice -------------')
+		this.logger.info('registerMosDevice -------------')
 		let coreMos = new CoreMosDeviceHandler(this, mosDevice, mosHandler)
 
 		return coreMos.init()
@@ -109,7 +114,7 @@ export class CoreMosDeviceHandler {
 
 		this._mosDevice = this._mosDevice // ts-ignore fix
 
-		console.log('new CoreMosDeviceHandler ' + mosDevice.idPrimary)
+		this._coreParentHandler.logger.info('new CoreMosDeviceHandler ' + mosDevice.idPrimary)
 		this.core = new CoreConnection(parent.getCoreConnectionOptions('MOS: ' + mosDevice.idPrimary, mosDevice.idPrimary))
 
 	}

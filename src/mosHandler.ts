@@ -21,6 +21,7 @@ import {
 	MosDevice
 } from 'mos-connection'
 import * as _ from 'underscore'
+import * as Winston from 'winston'
 import { CoreHandler } from './coreHandler'
 
 // export interface MosOptions {
@@ -49,7 +50,11 @@ export class MosHandler {
 	public mosOptions: MosConfig
 
 	private mosDevices: {[id: string]: IMOSDevice} = {}
+	private _logger: Winston.LoggerInstance
 
+	constructor (logger: Winston.LoggerInstance) {
+		this._logger = logger
+	}
 	init (config: MosConfig, coreHandler: CoreHandler): Promise<void> {
 
 		this.mosOptions = config
@@ -71,16 +76,19 @@ export class MosHandler {
 		*/
 
 		this.mos = new MosConnection(this.mosOptions.self)
+		this.mos.on('rawMessage', (source, type, message) => {
+			this._logger.debug('rawMessage', source, type, message)
+		})
 
 		this.mos.onConnection((mosDevice: IMOSDevice) => {
 			// a new connection to a device has been made
-			console.log('---------------------------------')
+			this._logger.info('---------------------------------')
 
 			this.mosDevices[mosDevice.idPrimary] = mosDevice
 
 			return coreHandler.registerMosDevice(mosDevice, this)
 			.then((coreMosHandler) => {
-				// console.log('mosDevice registered -------------')
+				// this._logger.info('mosDevice registered -------------')
 				// Setup message flow between the devices:
 				// Profile 0: -------------------------------------------------
 				mosDevice.onConnectionChange((connectionStatus: IMOSConnectionStatus) => { //  MOSDevice >>>> Core
@@ -180,7 +188,7 @@ export class MosHandler {
 
 			})
 			.catch((e) => {
-				console.log('Error:',e)
+				this._logger.error('Error:',e)
 			})
 
 		})
@@ -194,8 +202,7 @@ export class MosHandler {
 
 					return mosDevice.getMachineInfo()
 					.then((machInfo) => {
-						console.log('Connected to Mos-device')
-						console.log(machInfo)
+						this._logger.info('Connected to Mos-device', machInfo)
 					})
 				})
 			})
@@ -204,7 +211,6 @@ export class MosHandler {
 		})
 	}
 	private _getROAck (roId: MosString128, p: Promise<IMOSROAck>) {
-
 		return p.then(() => {
 			let roAck: IMOSROAck = {
 				ID: roId,
@@ -214,7 +220,8 @@ export class MosHandler {
 			return roAck
 		})
 		.catch((err) => {
-			console.log('Error', err)
+			this._logger.error('ROAck error:', err)
+			// console.log('Error', err)
 			let roAck: IMOSROAck = {
 				ID: roId,
 				Status: new MosString128('Error: ' + err.toString()),

@@ -1,6 +1,6 @@
 
 import { Connector, Config } from './connector'
-import * as winston from 'winston'
+import * as Winston from 'winston'
 
 // CLI arguments / Environment variables --------------
 let host: string 		= process.env.CORE_HOST 					|| '127.0.0.1'
@@ -22,17 +22,19 @@ process.argv.forEach((val) => {
 })
 
 // Setup logging --------------------------------------
-let logger = new (winston.Logger)({
+let logger = new (Winston.Logger)({
 })
 
 if (logPath) {
 	// Log json to file, human-readable to console
 	console.log('Logging to', logPath)
-	logger.add(winston.transports.Console,{
+	logger.add(Winston.transports.Console, {
+		level: 'verbose',
 		handleExceptions: true,
 		json: false
 	})
-	logger.add(winston.transports.File, {
+	logger.add(Winston.transports.File, {
+		level: 'debug',
 		handleExceptions: true,
 		json: true,
 		filename: logPath
@@ -40,7 +42,7 @@ if (logPath) {
 } else {
 	console.log('Logging to Console')
 	// Log json to console
-	logger.add(winston.transports.Console,{
+	logger.add(Winston.transports.Console,{
 		handleExceptions: true,
 		json: true
 	 })
@@ -94,7 +96,7 @@ let config: Config = {
 
 console.log('------------------------------------------------------------------')
 console.log('Starting MOS Gateway')
-let c = new Connector()
+let c = new Connector(logger)
 
 console.log('Core:          ' + config.core.host + ':' + config.core.port)
 console.log('Mos id:        ' + config.mos.self.mosID)
