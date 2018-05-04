@@ -29,6 +29,19 @@ import {
 import * as _ from 'underscore'
 import { MosHandler } from './mosHandler'
 // import { STATUS_CODES } from 'http'
+export interface PeripheralDeviceCommand {
+	_id: string
+
+	deviceId: string
+	functionName: string
+	args: Array<any>
+
+	hasReply: boolean
+	reply?: any
+	replyError?: any
+
+	time: number // time
+}
 
 /**
  * Represents a connection between a mos-device and Core
@@ -39,6 +52,7 @@ export class CoreMosDeviceHandler {
 	private _coreParentHandler: CoreHandler
 	private _mosDevice: IMOSDevice
 	private _mosHandler: MosHandler
+	private _executedFunctions: {[id: string]: boolean} = {}
 
 	constructor (parent: CoreHandler, mosDevice: IMOSDevice, mosHandler: MosHandler) {
 		this._coreParentHandler = parent
@@ -53,9 +67,38 @@ export class CoreMosDeviceHandler {
 	}
 	init (): Promise<void> {
 		return this.core.init(this._coreParentHandler.core)
-		.then((id: string) => {
-			// nothing
-			id = id // tsignore
+		.then(() => {
+			this._coreParentHandler.logger.info('Core: Setting up subscriptions..')
+			return Promise.all([
+				this.core.subscribe('peripheralDevices', {
+					_id: this.core.deviceId
+				}),
+				this.core.subscribe('peripheralDeviceCommands', this.core.deviceId)
+			])
+		})
+		.then(() => {
+			this._coreParentHandler.logger.info('Core: Setting up observers..')
+			let observer = this.core.observe('peripheralDeviceCommands')
+			let cmds = this.core.getCollection('peripheralDeviceCommands')
+			if (!cmds) throw Error('"peripheralDeviceCommands" collection not found!')
+			observer.added = (id) => {
+				let cmd = cmds.findOne(id) as PeripheralDeviceCommand
+				console.log('added', cmd)
+				this.executeFunction(cmd)
+			}
+			observer.changed = (id) => {
+				let cmd = cmds.findOne(id) as PeripheralDeviceCommand
+				console.log('changed', cmd)
+				this.executeFunction(cmd)
+			}
+			cmds.find({}).forEach((cmd: PeripheralDeviceCommand) => {
+				console.log('cmd', cmd)
+				this.executeFunction(cmd)
+			})
+
+		})
+		.then(() => {
+			return
 		})
 	}
 	onMosConnectionChanged (connectionStatus: IMOSConnectionStatus) {
@@ -172,7 +215,45 @@ export class CoreMosDeviceHandler {
 	mosRoFullStory (story: IMOSROFullStory ): Promise<any> {
 		return this._coreMosManipulate(P.methods.mosRoFullStory, story)
 	}
+	executeFunction (cmd: PeripheralDeviceCommand) {
+		if (cmd) {
+			console.log('executeFunction', cmd)
+			this._executedFunctions[cmd._id] = true
+			let cb = (err: any, res?: any) => {
+				console.log('cb')
+				this.core.callMethod(P.methods.functionReply, [cmd._id, err, res])
+				.then(() => {
+					console.log('cb done')
+				})
+				.catch((e) => {
+					this._coreParentHandler.logger.error(e)
+				})
+			}
+			// @ts-ignore
+			let fcn: Function = this[cmd.functionName]
+			try {
+				if (!fcn) throw Error('Function "' + cmd.functionName + '" not found!')
 
+				Promise.resolve(fcn.apply(null, cmd.args))
+				.then((result) => {
+					console.log('got result')
+					cb(null, result)
+				})
+				.catch((e) => {
+					cb(e, null)
+				})
+			} catch (e) {
+				cb(e, null)
+			}
+		}
+	}
+	test (a: string) {
+		return new Promise(resolve => {
+			setTimeout(() => {
+				resolve('test' + a)
+			},2000)
+		})
+	}
 	private fixBeforeSend (o: any): any {
 		if (
 			_.isObject(o) && (
