@@ -205,6 +205,16 @@ export class MosHandler {
 						return mosDevice.getMachineInfo()
 						.then((machInfo) => {
 							this._logger.info('Connected to Mos-device', machInfo)
+							let machineId = machInfo.ID.toString()
+							if (!(
+								machineId === device.primary.id ||
+								(
+									device.secondary &&
+									machineId === device.secondary.id
+								)
+							)) {
+								throw new Error('Mos-device has ID "' + machineId + '" but specified ncs-id is "' + (device.primary.id || (device.secondary || {id: ''}).id) + '"')
+							}
 						})
 					})
 				})
