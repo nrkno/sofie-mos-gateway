@@ -246,10 +246,10 @@ export class CoreMosDeviceHandler {
 					cb(null, result)
 				})
 				.catch((e) => {
-					cb(e, null)
+					cb(e.toString(), null)
 				})
 			} catch (e) {
-				cb(e, null)
+				cb(e.toString(), null)
 			}
 		}
 	}
