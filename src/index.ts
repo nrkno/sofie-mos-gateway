@@ -99,7 +99,7 @@ logger.info('Starting MOS Gateway')
 let c = new Connector(logger)
 
 logger.info('Core:          ' + config.core.host + ':' + config.core.port)
-logger.info('Mos id:        ' + config.mos.self.mosID)
+logger.info('My Mos id:     ' + config.mos.self.mosID)
 config.mos.devices.forEach((device) => {
 	if (device.primary) logger.info('Mos Primary:   ' + device.primary.host)
 	if (device.secondary) logger.info('Mos Secondary: ' + device.secondary.host)

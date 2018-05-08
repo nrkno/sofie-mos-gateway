@@ -79,18 +79,23 @@ export class CoreMosDeviceHandler {
 		.then(() => {
 			this._coreParentHandler.logger.info('Core: Setting up observers..')
 			let observer = this.core.observe('peripheralDeviceCommands')
-			let cmds = this.core.getCollection('peripheralDeviceCommands')
-			if (!cmds) throw Error('"peripheralDeviceCommands" collection not found!')
-			observer.added = (id) => {
+
+			let addedChanged = (type: string, id: string) => {
+				let cmds = this.core.getCollection('peripheralDeviceCommands')
+				if (!cmds) throw Error('"peripheralDeviceCommands" collection not found!')
 				let cmd = cmds.findOne(id) as PeripheralDeviceCommand
-				console.log('added', cmd)
+				if (!cmd) throw Error('PeripheralCommand "' + id + '" not found!')
+				console.log(type, id, cmd)
 				this.executeFunction(cmd)
+			}
+			observer.added = (id) => {
+				addedChanged('added', id)
 			}
 			observer.changed = (id) => {
-				let cmd = cmds.findOne(id) as PeripheralDeviceCommand
-				console.log('changed', cmd)
-				this.executeFunction(cmd)
+				addedChanged('changed', id)
 			}
+			let cmds = this.core.getCollection('peripheralDeviceCommands')
+			if (!cmds) throw Error('"peripheralDeviceCommands" collection not found!')
 			cmds.find({}).forEach((cmd: PeripheralDeviceCommand) => {
 				console.log('cmd', cmd)
 				this.executeFunction(cmd)
@@ -215,12 +220,13 @@ export class CoreMosDeviceHandler {
 	mosRoFullStory (story: IMOSROFullStory ): Promise<any> {
 		return this._coreMosManipulate(P.methods.mosRoFullStory, story)
 	}
+
 	executeFunction (cmd: PeripheralDeviceCommand) {
 		if (cmd) {
 			console.log('executeFunction', cmd)
 			this._executedFunctions[cmd._id] = true
 			let cb = (err: any, res?: any) => {
-				console.log('cb')
+				console.log('cb', err, res)
 				this.core.callMethod(P.methods.functionReply, [cmd._id, err, res])
 				.then(() => {
 					console.log('cb done')
@@ -234,7 +240,7 @@ export class CoreMosDeviceHandler {
 			try {
 				if (!fcn) throw Error('Function "' + cmd.functionName + '" not found!')
 
-				Promise.resolve(fcn.apply(null, cmd.args))
+				Promise.resolve(fcn.apply(this, cmd.args))
 				.then((result) => {
 					console.log('got result')
 					cb(null, result)
@@ -246,6 +252,18 @@ export class CoreMosDeviceHandler {
 				cb(e, null)
 			}
 		}
+	}
+	triggerGetAllRunningOrders (): Promise<any> {
+		console.log('triggerGetAllRunningOrders')
+		return this._mosDevice.getAllRunningOrders()
+		.then((results) => {
+			console.log('GOT REPLY', results)
+			return results
+		})
+		.catch((err) => {
+			console.log('GOT ERR', err)
+			throw err
+		})
 	}
 	test (a: string) {
 		return new Promise(resolve => {
