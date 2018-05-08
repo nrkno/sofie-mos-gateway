@@ -177,15 +177,6 @@ export class MosHandler {
 				mosDevice.onROStory((story: IMOSROFullStory) => { // MOSDevice >>>> Core
 					return this._getROAck(story.RunningOrderId, coreMosHandler.mosRoFullStory(story))
 				})
-
-				/*
-				setTimeout(() => {
-					console.log('.......................')
-					console.log('DISPOSE!')
-					mosDevice.di
-				}, 3000)
-				*/
-
 			})
 			.catch((e) => {
 				this._logger.error('Error:',e)
