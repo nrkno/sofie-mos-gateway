@@ -1111,9 +1111,9 @@ copy-descriptor@^0.1.0:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/copy-descriptor/-/copy-descriptor-0.1.1.tgz#676f6eb3c39997c2ee1ac3a924fd6124748f578d"
 
-"core-integration@git+https://github.com/nrkno/tv-automation-server-core-integration.git":
+"core-integration@git+https://github.com/nrkno/tv-automation-server-core-integration.git#dist":
   version "0.0.0"
-  resolved "git+https://github.com/nrkno/tv-automation-server-core-integration.git#f59c6bd9d5c436445b1941ebaacd0ee5d0cc9672"
+  resolved "git+https://github.com/nrkno/tv-automation-server-core-integration.git#4cf946f4b6c291ea7bc959f4affa275135c89b8c"
   dependencies:
     data-store "^1.0.0"
     ddp "^0.12.1"
@@ -3585,9 +3585,9 @@ mongodb-memory-server@^1.7.0:
     tmp "^0.0.33"
     uuid "^3.2.1"
 
-"mos-connection@git+https://github.com/nrkno/tv-automation-mos-connection":
+"mos-connection@git+https://github.com/nrkno/tv-automation-mos-connection.git#dist":
   version "0.0.0"
-  resolved "git+https://github.com/nrkno/tv-automation-mos-connection#6ceeac67b5bc5cd3a9796a6768f89e6865c1e77a"
+  resolved "git+https://github.com/nrkno/tv-automation-mos-connection.git#55a84278180195714ed0e3bbe87ebd0f1fa31ff5"
   dependencies:
     "@types/xml2js" "^0.4.2"
     "@types/xml2json" "^0.10.0"
