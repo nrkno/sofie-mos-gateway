@@ -1,6 +1,5 @@
 import { CoreConnection,
 	CoreOptions,
-	DeviceType,
 	PeripheralDeviceAPI as P
 } from 'core-integration'
 import * as Winston from 'winston'
@@ -64,7 +63,7 @@ export class CoreMosDeviceHandler {
 		this._mosDevice = this._mosDevice // ts-ignore fix
 
 		this._coreParentHandler.logger.info('new CoreMosDeviceHandler ' + mosDevice.idPrimary)
-		this.core = new CoreConnection(parent.getCoreConnectionOptions('MOS: ' + mosDevice.idPrimary, mosDevice.idPrimary))
+		this.core = new CoreConnection(parent.getCoreConnectionOptions('MOS: ' + mosDevice.idPrimary, mosDevice.idPrimary, false))
 
 
 	}
@@ -107,10 +106,10 @@ export class CoreMosDeviceHandler {
 				this._coreParentHandler.logger.info(type, id, cmd)
 				this.executeFunction(cmd)
 			}
-			observer.added = (id) => {
+			observer.added = (id: string) => {
 				addedChanged('added', id)
 			}
-			observer.changed = (id) => {
+			observer.changed = (id: string) => {
 				addedChanged('changed', id)
 			}
 			let cmds = this.core.getCollection('peripheralDeviceCommands')
@@ -344,7 +343,7 @@ export class CoreHandler {
 
 	init (config: CoreConfig): Promise<void> {
 		this.logger.info('========')
-		this.core = new CoreConnection(this.getCoreConnectionOptions('MOS: Parent process', 'MosCoreParent'))
+		this.core = new CoreConnection(this.getCoreConnectionOptions('MOS: Parent process', 'MosCoreParent', true))
 
 		this.core.onConnected(() => {
 			this.logger.info('Core Connected!')
@@ -384,10 +383,10 @@ export class CoreHandler {
 			// nothing
 		})
 	}
-	getCoreConnectionOptions (name: string, deviceId: string): CoreOptions {
+	getCoreConnectionOptions (name: string, deviceId: string, parentProcess: boolean): CoreOptions {
 		let credentials = CoreConnection.getCredentials(deviceId)
 		return _.extend(credentials, {
-			deviceType: DeviceType.MOSDEVICE,
+			deviceType: (parentProcess ? P.DeviceType.MOSDEVICE : P.DeviceType.OTHER),
 			deviceName: name
 		})
 	}
