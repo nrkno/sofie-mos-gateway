@@ -71,6 +71,8 @@
   "devDependencies": {
     "@types/jest": "^22.1.3",
     "@types/node": "^8.0.4",
+    "@types/underscore": "^1.8.8",
+    "@types/winston": "^2.3.9",
     "codecov": "^2.2.0",
     "cpx": "^1.5.0",
     "gh-pages": "^1.0.0",
@@ -104,13 +106,11 @@
     "production"
   ],
   "dependencies": {
-    "@types/underscore": "^1.8.8",
-    "@types/winston": "^2.3.9",
-    "core-integration": "git+https://github.com/nrkno/tv-automation-server-core-integration.git",
+    "core-integration": "git+https://github.com/nrkno/tv-automation-server-core-integration.git#dist",
     "ddp": "^0.12.1",
     "ddp-ejson": "~0.8.1-3",
     "ddp-random": "~0.8.1-1",
-    "mos-connection": "git+https://github.com/nrkno/tv-automation-mos-connection",
+    "mos-connection": "git+https://github.com/nrkno/tv-automation-mos-connection.git#dist",
     "tslib": "^1.6.0",
     "underscore": "^1.8.3",
     "winston": "^2.4.2"

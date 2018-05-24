@@ -1,5 +1,5 @@
 
-# MOS-connection
+# MOS-Gateway
 An application for piping data between Core (in the Sofie-project) and MOS-devices
 
 ## Usage
@@ -23,3 +23,13 @@ npm run start
 yarn
 
 yarn build
+
+### Dev dependencies:
+
+* yarn
+	https://yarnpkg.com
+	This is like npm, but better
+
+* jest
+	yarn global add jest
+	This is our resting framework
