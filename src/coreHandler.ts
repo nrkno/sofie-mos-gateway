@@ -282,6 +282,18 @@ export class CoreMosDeviceHandler {
 			throw err
 		})
 	}
+	triggerGetRunningOrder (roId: string): Promise<any> {
+		console.log('triggerGetRunningOrder')
+		return this._mosDevice.getRunningOrder(new MosString128(roId))
+		.then((results) => {
+			// console.log('GOT REPLY', results)
+			return results
+		})
+		.catch((err) => {
+			console.log('GOT ERR', err, typeof err, err.toString())
+			throw err
+		})
+	}
 	test (a: string) {
 		return new Promise(resolve => {
 			setTimeout(() => {
