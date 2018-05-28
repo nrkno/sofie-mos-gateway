@@ -27,6 +27,7 @@ import {
 
 import * as _ from 'underscore'
 import { MosHandler } from './mosHandler'
+import { DeviceConfig } from './connector';
 // import { STATUS_CODES } from 'http'
 export interface PeripheralDeviceCommand {
 	_id: string
@@ -335,10 +336,12 @@ export interface CoreConfig {
 export class CoreHandler {
 	core: CoreConnection
 	logger: Winston.LoggerInstance
+	private _deviceOptions: DeviceConfig
 	private _coreMosHandlers: Array<CoreMosDeviceHandler> = []
 
-	constructor (logger: Winston.LoggerInstance) {
+	constructor (logger: Winston.LoggerInstance, deviceOptions: DeviceConfig) {
 		this.logger = logger
+		this._deviceOptions = deviceOptions
 	}
 
 	init (config: CoreConfig): Promise<void> {
@@ -383,8 +386,23 @@ export class CoreHandler {
 			// nothing
 		})
 	}
-	getCoreConnectionOptions (name: string, deviceId: string, parentProcess: boolean): CoreOptions {
-		let credentials = CoreConnection.getCredentials(deviceId)
+	getCoreConnectionOptions (name: string, subDeviceId: string, parentProcess: boolean): CoreOptions {
+		let credentials
+
+		if (this._deviceOptions.deviceId && this._deviceOptions.deviceToken) {
+			credentials = {
+				deviceId: this._deviceOptions.deviceId + subDeviceId,
+				deviceToken: this._deviceOptions.deviceToken
+			}
+		} else if (this._deviceOptions.deviceId) {
+			this.logger.warn('Token not set, only id! This might be unsecure!')
+			credentials = {
+				deviceId: this._deviceOptions.deviceId + subDeviceId,
+				deviceToken: 'unsecureToken'
+			}
+		} else {
+			credentials = CoreConnection.getCredentials(subDeviceId)
+		}
 		return _.extend(credentials, {
 			deviceType: (parentProcess ? P.DeviceType.MOSDEVICE : P.DeviceType.OTHER),
 			deviceName: name

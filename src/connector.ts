@@ -4,8 +4,13 @@ import { CoreHandler, CoreConfig } from './coreHandler'
 import * as Winston from 'winston'
 
 export interface Config {
+	device: DeviceConfig
 	core: CoreConfig
 	mos: MosConfig
+}
+export interface DeviceConfig {
+	deviceId: string
+	deviceToken: string
 }
 export class Connector {
 
@@ -42,7 +47,7 @@ export class Connector {
 		})
 	}
 	initCore () {
-		this.coreHandler = new CoreHandler(this._logger)
+		this.coreHandler = new CoreHandler(this._logger, this._config.device)
 		return this.coreHandler.init(this._config.core)
 	}
 	initMos (): Promise<void> {
