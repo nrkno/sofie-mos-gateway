@@ -89,7 +89,8 @@ let config: Config = {
 	mos: {
 		self: {
 
-			mosID: 'sofie.tv.automation',
+			// mosID: 'sofie.tv.automation',
+			mosID: 'N/A', // set by Core
 			acceptsConnections: true, // default:true
 			// accepsConnectionsFrom: ['127.0.0.1'],
 			profiles: {
@@ -102,28 +103,28 @@ let config: Config = {
 				'6': false,
 				'7': false
 			}
-		},
-		devices: [{
-			primary: {
-				id: '2012R2ENPS8VM',
-				host: '10.0.1.244'
-			}
-			/*secondary?: {
-				ncsID: string;
-				host: string;
-			},*/
-		}]
+		}
+		// devices: [{
+		// 	primary: {
+		// 		id: '2012R2ENPS8VM',
+		// 		host: '10.0.1.244'
+		// 	}
+		// 	/*secondary?: {
+		// 		ncsID: string;
+		// 		host: string;
+		// 	},*/
+		// }]
 	}
 }
 
 let c = new Connector(logger)
 
 logger.info('Core:          ' + config.core.host + ':' + config.core.port)
-logger.info('My Mos id:     ' + config.mos.self.mosID)
-config.mos.devices.forEach((device) => {
-	if (device.primary) logger.info('Mos Primary:   ' + device.primary.host)
-	if (device.secondary) logger.info('Mos Secondary: ' + device.secondary.host)
-})
+// logger.info('My Mos id:     ' + config.mos.self.mosID)
+// config.mos.devices.forEach((device) => {
+// 	if (device.primary) logger.info('Mos Primary:   ' + device.primary.host)
+// 	if (device.secondary) logger.info('Mos Secondary: ' + device.secondary.host)
+// })
 logger.info('------------------------------------------------------------------')
 c.init(config)
 .catch(logger.error)

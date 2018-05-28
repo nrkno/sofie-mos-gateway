@@ -51,7 +51,6 @@ export class Connector {
 		return this.coreHandler.init(this._config.core)
 	}
 	initMos (): Promise<void> {
-		// TODO: maybe get some config data from core here?
 		this.mosHandler = new MosHandler(this._logger)
 		return this.mosHandler.init(this._config.mos, this.coreHandler)
 

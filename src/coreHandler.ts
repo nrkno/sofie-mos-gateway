@@ -27,7 +27,7 @@ import {
 
 import * as _ from 'underscore'
 import { MosHandler } from './mosHandler'
-import { DeviceConfig } from './connector';
+import { DeviceConfig } from './connector'
 // import { STATUS_CODES } from 'http'
 export interface PeripheralDeviceCommand {
 	_id: string
@@ -53,7 +53,6 @@ export class CoreMosDeviceHandler {
 	private _mosDevice: IMOSDevice
 	private _mosHandler: MosHandler
 	private _executedFunctions: {[id: string]: boolean} = {}
-	private _subscriptions: Array<any> = []
 	private _observers: Array<any> = []
 
 	constructor (parent: CoreHandler, mosDevice: IMOSDevice, mosHandler: MosHandler) {
@@ -65,20 +64,18 @@ export class CoreMosDeviceHandler {
 
 		this._coreParentHandler.logger.info('new CoreMosDeviceHandler ' + mosDevice.idPrimary)
 		this.core = new CoreConnection(parent.getCoreConnectionOptions('MOS: ' + mosDevice.idPrimary, mosDevice.idPrimary, false))
-
-
 	}
 	init (): Promise<void> {
 		return this.core.init(this._coreParentHandler.core)
 		.then(() => {
-			return this.setupObserversAndSubscriptions()
+			return this.setupObservers()
 		})
 		.then(() => {
 			return
 		})
 	}
-	setupObserversAndSubscriptions () {
-		this._subscriptions = []
+	setupObservers (): void {
+		console.log('setupObservers', this.core.deviceId)
 		if (this._observers.length) {
 			this._coreParentHandler.logger.info('Core: Clearing observers..')
 			this._observers.forEach((obs) => {
@@ -86,42 +83,35 @@ export class CoreMosDeviceHandler {
 			})
 			this._observers = []
 		}
-		this._coreParentHandler.logger.info('Core: Setting up subscriptions..')
-		return Promise.all([
-			this.core.subscribe('peripheralDevices', {
-				_id: this.core.deviceId
-			}),
-			this.core.subscribe('peripheralDeviceCommands', this.core.deviceId)
-		])
-		.then((subs) => {
-			this._subscriptions = this._subscriptions.concat(subs)
 
-			this._coreParentHandler.logger.info('Core: Setting up observers..')
-			let observer = this.core.observe('peripheralDeviceCommands')
-			this._observers.push(observer)
-			let addedChanged = (type: string, id: string) => {
-				let cmds = this.core.getCollection('peripheralDeviceCommands')
-				if (!cmds) throw Error('"peripheralDeviceCommands" collection not found!')
-				let cmd = cmds.findOne(id) as PeripheralDeviceCommand
-				if (!cmd) throw Error('PeripheralCommand "' + id + '" not found!')
+		this._coreParentHandler.logger.info('Core: Setting up observers..')
+
+		let observer = this.core.observe('peripheralDeviceCommands')
+		this._observers.push(observer)
+		let addedChanged = (type: string, id: string) => {
+			let cmds = this.core.getCollection('peripheralDeviceCommands')
+			if (!cmds) throw Error('"peripheralDeviceCommands" collection not found!')
+			let cmd = cmds.findOne(id) as PeripheralDeviceCommand
+			if (!cmd) throw Error('PeripheralCommand "' + id + '" not found!')
+
+			if (cmd.deviceId === this.core.deviceId) {
 				this._coreParentHandler.logger.info(type, id, cmd)
 				this.executeFunction(cmd)
 			}
-			observer.added = (id: string) => {
-				addedChanged('added', id)
-			}
-			observer.changed = (id: string) => {
-				addedChanged('changed', id)
-			}
-			let cmds = this.core.getCollection('peripheralDeviceCommands')
-			if (!cmds) throw Error('"peripheralDeviceCommands" collection not found!')
-			cmds.find({}).forEach((cmd: PeripheralDeviceCommand) => {
+		}
+		observer.added = (id: string) => {
+			addedChanged('added', id)
+		}
+		observer.changed = (id: string) => {
+			addedChanged('changed', id)
+		}
+		let cmds = this.core.getCollection('peripheralDeviceCommands')
+		if (!cmds) throw Error('"peripheralDeviceCommands" collection not found!')
+		cmds.find({}).forEach((cmd: PeripheralDeviceCommand) => {
+			if (cmd.deviceId === this.core.deviceId) {
 				this._coreParentHandler.logger.info('cmd', cmd)
 				this.executeFunction(cmd)
-			})
-		})
-		.then(() => {
-			return
+			}
 		})
 	}
 	onMosConnectionChanged (connectionStatus: IMOSConnectionStatus) {
@@ -338,6 +328,8 @@ export class CoreHandler {
 	logger: Winston.LoggerInstance
 	private _deviceOptions: DeviceConfig
 	private _coreMosHandlers: Array<CoreMosDeviceHandler> = []
+	private _onConnected?: () => any
+	private _subscriptions: Array<any> = []
 
 	constructor (logger: Winston.LoggerInstance, deviceOptions: DeviceConfig) {
 		this.logger = logger
@@ -367,6 +359,9 @@ export class CoreHandler {
 				// messages: []
 			})
 			// nothing
+		})
+		.then(() => {
+			return this.setupSubscriptions()
 		})
 	}
 	dispose (): Promise<void> {
@@ -419,8 +414,34 @@ export class CoreHandler {
 		})
 	}
 	onConnectionRestored () {
+		this.setupSubscriptions()
+		.catch((e) => {
+			this.logger.error(e)
+		})
+		if (this._onConnected) this._onConnected()
 		this._coreMosHandlers.forEach((cmh: CoreMosDeviceHandler) => {
-			cmh.setupObserversAndSubscriptions()
+			cmh.setupObservers()
+		})
+	}
+	onConnected (fcn: () => any) {
+		this._onConnected = fcn
+	}
+	setupSubscriptions (): Promise<void> {
+		console.log('setupObservers', this.core.deviceId)
+		this._subscriptions = []
+
+		this.logger.info('Core: Setting up subscriptions..')
+		return Promise.all([
+			this.core.subscribe('peripheralDevices', {
+				_id: this.core.deviceId
+			}),
+			this.core.subscribe('peripheralDeviceCommands', this.core.deviceId)
+		])
+		.then((subs) => {
+			this._subscriptions = this._subscriptions.concat(subs)
+		})
+		.then(() => {
+			return
 		})
 	}
 }
