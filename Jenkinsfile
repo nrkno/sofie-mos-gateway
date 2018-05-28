@@ -5,6 +5,7 @@ pipeline {
   stages {
     stage('Build') {
       steps {
+          sofieSlackSendBuildStarted()
           dockerBuild('sofie/tv-automation-mos-gateway')
       }
     }
