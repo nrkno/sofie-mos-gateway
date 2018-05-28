@@ -5,14 +5,22 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-          sofieSlackSendBuildStarted()
-          dockerBuild('sofie/tv-automation-mos-gateway')
+        sofieSlackSendBuildStarted()
+        dockerBuild('sofie/tv-automation-mos-gateway')
       }
     }
     stage('Deploy') {
       steps {
-          mosDeploy()
+        mosDeploy()
       }
+    }
+  }
+  post {
+    failure {
+      sofieSlackSendBuildFailure()
+    }
+    success {
+      sofieSlackSendBuildSuccess()
     }
   }
 }
