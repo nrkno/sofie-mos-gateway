@@ -309,6 +309,9 @@ export class CoreMosDeviceHandler {
 		})
 		return Promise.resolve()
 	}
+	killProcess (actually: number) {
+		return this._coreParentHandler.killProcess(actually)
+	}
 	private fixBeforeSend (o: any): any {
 		if (
 			_.isObject(o) && (
@@ -451,7 +454,7 @@ export class CoreHandler {
 		this._onConnected = fcn
 	}
 	setupSubscriptions (): Promise<void> {
-		console.log('setupObservers', this.core.deviceId)
+		// console.log('setupObservers', this.core.deviceId)
 		this._subscriptions = []
 
 		this.logger.info('Core: Setting up subscriptions for ' + this.core.deviceId + '..')
@@ -467,5 +470,15 @@ export class CoreHandler {
 		.then(() => {
 			return
 		})
+	}
+	killProcess (actually: number) {
+		if (actually === 1) {
+			this.logger.info('KillProcess command received, shutting down in 1000ms!')
+			setTimeout(() => {
+				process.exit(0)
+			}, 1000)
+			return true
+		}
+		return 0
 	}
 }
