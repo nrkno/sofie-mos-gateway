@@ -54,6 +54,7 @@ export class CoreMosDeviceHandler {
 	private _mosHandler: MosHandler
 	private _executedFunctions: {[id: string]: boolean} = {}
 	private _observers: Array<any> = []
+	private _subscriptions: Array<any> = []
 
 	constructor (parent: CoreHandler, mosDevice: IMOSDevice, mosHandler: MosHandler) {
 		this._coreParentHandler = parent
@@ -68,14 +69,14 @@ export class CoreMosDeviceHandler {
 	init (): Promise<void> {
 		return this.core.init(this._coreParentHandler.core)
 		.then(() => {
-			return this.setupObservers()
+			return this.setupSubscriptionsAndObservers()
 		})
 		.then(() => {
 			return
 		})
 	}
-	setupObservers (): void {
-		console.log('setupObservers', this.core.deviceId)
+	setupSubscriptionsAndObservers (): void {
+		// console.log('setupObservers', this.core.deviceId)
 		if (this._observers.length) {
 			this._coreParentHandler.logger.info('Core: Clearing observers..')
 			this._observers.forEach((obs) => {
@@ -83,12 +84,23 @@ export class CoreMosDeviceHandler {
 			})
 			this._observers = []
 		}
+		this._coreParentHandler.logger.info('CoreMos: Setting up subscriptions for ' + this.core.deviceId + ' ..')
+		this._subscriptions = []
+		Promise.all([
+			this.core.subscribe('peripheralDeviceCommands', this.core.deviceId)
+		])
+		.then((subs) => {
+			this._subscriptions = this._subscriptions.concat(subs)
+		})
+		.then(() => {
+			return
+		})
 
-		this._coreParentHandler.logger.info('Core: Setting up observers..')
+		this._coreParentHandler.logger.info('CoreMos: Setting up observers..')
 
 		let observer = this.core.observe('peripheralDeviceCommands')
 		this._observers.push(observer)
-		let addedChanged = (type: string, id: string) => {
+		let addedChangedCommand = (type: string, id: string) => {
 			let cmds = this.core.getCollection('peripheralDeviceCommands')
 			if (!cmds) throw Error('"peripheralDeviceCommands" collection not found!')
 			let cmd = cmds.findOne(id) as PeripheralDeviceCommand
@@ -100,10 +112,10 @@ export class CoreMosDeviceHandler {
 			}
 		}
 		observer.added = (id: string) => {
-			addedChanged('added', id)
+			addedChangedCommand('added', id)
 		}
 		observer.changed = (id: string) => {
-			addedChanged('changed', id)
+			addedChangedCommand('changed', id)
 		}
 		let cmds = this.core.getCollection('peripheralDeviceCommands')
 		if (!cmds) throw Error('"peripheralDeviceCommands" collection not found!')
@@ -272,6 +284,18 @@ export class CoreMosDeviceHandler {
 			throw err
 		})
 	}
+	triggerGetRunningOrder (roId: string): Promise<any> {
+		// console.log('triggerGetRunningOrder ' + roId)
+		return this._mosDevice.getRunningOrder(new MosString128(roId))
+		.then((ro) => {
+			// console.log('GOT REPLY', results)
+			return ro
+		})
+		.catch((err) => {
+			// console.log('GOT ERR', err)
+			throw err
+		})
+	}
 	test (a: string) {
 		return new Promise(resolve => {
 			setTimeout(() => {
@@ -420,7 +444,7 @@ export class CoreHandler {
 		})
 		if (this._onConnected) this._onConnected()
 		this._coreMosHandlers.forEach((cmh: CoreMosDeviceHandler) => {
-			cmh.setupObservers()
+			cmh.setupSubscriptionsAndObservers()
 		})
 	}
 	onConnected (fcn: () => any) {
@@ -430,7 +454,7 @@ export class CoreHandler {
 		console.log('setupObservers', this.core.deviceId)
 		this._subscriptions = []
 
-		this.logger.info('Core: Setting up subscriptions..')
+		this.logger.info('Core: Setting up subscriptions for ' + this.core.deviceId + '..')
 		return Promise.all([
 			this.core.subscribe('peripheralDevices', {
 				_id: this.core.deviceId
