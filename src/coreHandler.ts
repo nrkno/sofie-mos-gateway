@@ -22,7 +22,8 @@ import {
 	IMOSItem,
 	IMOSROReadyToAir,
 	IMOSROFullStory,
-	MosDuration
+	MosDuration,
+	IMOSObjectStatus
 } from 'mos-connection'
 
 import * as _ from 'underscore'
@@ -294,6 +295,45 @@ export class CoreMosDeviceHandler {
 		.catch((err) => {
 			// console.log('GOT ERR', err)
 			throw err
+		})
+	}
+	setROStatus (roId: string, status: IMOSObjectStatus): Promise<any> {
+		// console.log('setStoryStatus')
+		return this._mosDevice.setRunningOrderStatus({
+			ID: new MosString128(roId),
+			Status: status,
+			Time: new MosTime()
+		})
+		.then((result) => {
+			// console.log('got result', result)
+			return result
+		})
+	}
+	setStoryStatus (roId: string, storyId: string, status: IMOSObjectStatus): Promise<any> {
+		// console.log('setStoryStatus')
+		return this._mosDevice.setStoryStatus({
+			RunningOrderId: new MosString128(roId),
+			ID: new MosString128(storyId),
+			Status: status,
+			Time: new MosTime()
+		})
+		.then((result) => {
+			// console.log('got result', result)
+			return result
+		})
+	}
+	setItemStatus (roId: string, storyId: string, itemId: string, status: IMOSObjectStatus): Promise<any> {
+		// console.log('setStoryStatus')
+		return this._mosDevice.setItemStatus({
+			RunningOrderId: new MosString128(roId),
+			StoryId: new MosString128(storyId),
+			ID: new MosString128(itemId),
+			Status: status,
+			Time: new MosTime()
+		})
+		.then((result) => {
+			// console.log('got result', result)
+			return result
 		})
 	}
 	test (a: string) {
