@@ -10,6 +10,14 @@ test('Simple test', async () => {
 			new Winston.transports.Console()
 		]
 	})
+	// @ts-ignore
+	logger.info = console.log
+	// @ts-ignore
+	logger.debug = console.log
+	// @ts-ignore
+	logger.error = console.log
+	// @ts-ignore
+	logger.warn = console.log
 
 	c = new Connector(logger)
 
@@ -17,6 +25,10 @@ test('Simple test', async () => {
 		core: {
 			host: '127.0.0.1',
 			port: 3000
+		},
+		device: {
+			deviceId: 'JestTest',
+			deviceToken: '1234'
 		},
 		mos: {
 			self: {
@@ -33,8 +45,8 @@ test('Simple test', async () => {
 					'6': false,
 					'7': false
 				}
-			},
-			devices: []
+			}
+			// devices: []
 		}
 	})
 

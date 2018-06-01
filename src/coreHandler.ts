@@ -22,12 +22,13 @@ import {
 	IMOSItem,
 	IMOSROReadyToAir,
 	IMOSROFullStory,
-	MosDuration
+	MosDuration,
+	IMOSObjectStatus
 } from 'mos-connection'
 
 import * as _ from 'underscore'
 import { MosHandler } from './mosHandler'
-import { DeviceConfig } from './connector';
+import { DeviceConfig } from './connector'
 // import { STATUS_CODES } from 'http'
 export interface PeripheralDeviceCommand {
 	_id: string
@@ -53,8 +54,8 @@ export class CoreMosDeviceHandler {
 	private _mosDevice: IMOSDevice
 	private _mosHandler: MosHandler
 	private _executedFunctions: {[id: string]: boolean} = {}
-	private _subscriptions: Array<any> = []
 	private _observers: Array<any> = []
+	private _subscriptions: Array<any> = []
 
 	constructor (parent: CoreHandler, mosDevice: IMOSDevice, mosHandler: MosHandler) {
 		this._coreParentHandler = parent
@@ -65,20 +66,18 @@ export class CoreMosDeviceHandler {
 
 		this._coreParentHandler.logger.info('new CoreMosDeviceHandler ' + mosDevice.idPrimary)
 		this.core = new CoreConnection(parent.getCoreConnectionOptions('MOS: ' + mosDevice.idPrimary, mosDevice.idPrimary, false))
-
-
 	}
 	init (): Promise<void> {
 		return this.core.init(this._coreParentHandler.core)
 		.then(() => {
-			return this.setupObserversAndSubscriptions()
+			return this.setupSubscriptionsAndObservers()
 		})
 		.then(() => {
 			return
 		})
 	}
-	setupObserversAndSubscriptions () {
-		this._subscriptions = []
+	setupSubscriptionsAndObservers (): void {
+		// console.log('setupObservers', this.core.deviceId)
 		if (this._observers.length) {
 			this._coreParentHandler.logger.info('Core: Clearing observers..')
 			this._observers.forEach((obs) => {
@@ -86,42 +85,46 @@ export class CoreMosDeviceHandler {
 			})
 			this._observers = []
 		}
-		this._coreParentHandler.logger.info('Core: Setting up subscriptions..')
-		return Promise.all([
-			this.core.subscribe('peripheralDevices', {
-				_id: this.core.deviceId
-			}),
+		this._coreParentHandler.logger.info('CoreMos: Setting up subscriptions for ' + this.core.deviceId + ' ..')
+		this._subscriptions = []
+		Promise.all([
 			this.core.subscribe('peripheralDeviceCommands', this.core.deviceId)
 		])
 		.then((subs) => {
 			this._subscriptions = this._subscriptions.concat(subs)
-
-			this._coreParentHandler.logger.info('Core: Setting up observers..')
-			let observer = this.core.observe('peripheralDeviceCommands')
-			this._observers.push(observer)
-			let addedChanged = (type: string, id: string) => {
-				let cmds = this.core.getCollection('peripheralDeviceCommands')
-				if (!cmds) throw Error('"peripheralDeviceCommands" collection not found!')
-				let cmd = cmds.findOne(id) as PeripheralDeviceCommand
-				if (!cmd) throw Error('PeripheralCommand "' + id + '" not found!')
-				this._coreParentHandler.logger.info(type, id, cmd)
-				this.executeFunction(cmd)
-			}
-			observer.added = (id: string) => {
-				addedChanged('added', id)
-			}
-			observer.changed = (id: string) => {
-				addedChanged('changed', id)
-			}
-			let cmds = this.core.getCollection('peripheralDeviceCommands')
-			if (!cmds) throw Error('"peripheralDeviceCommands" collection not found!')
-			cmds.find({}).forEach((cmd: PeripheralDeviceCommand) => {
-				this._coreParentHandler.logger.info('cmd', cmd)
-				this.executeFunction(cmd)
-			})
 		})
 		.then(() => {
 			return
+		})
+
+		this._coreParentHandler.logger.info('CoreMos: Setting up observers..')
+
+		let observer = this.core.observe('peripheralDeviceCommands')
+		this._observers.push(observer)
+		let addedChangedCommand = (type: string, id: string) => {
+			let cmds = this.core.getCollection('peripheralDeviceCommands')
+			if (!cmds) throw Error('"peripheralDeviceCommands" collection not found!')
+			let cmd = cmds.findOne(id) as PeripheralDeviceCommand
+			if (!cmd) throw Error('PeripheralCommand "' + id + '" not found!')
+
+			if (cmd.deviceId === this.core.deviceId) {
+				this._coreParentHandler.logger.info(type, id, cmd)
+				this.executeFunction(cmd)
+			}
+		}
+		observer.added = (id: string) => {
+			addedChangedCommand('added', id)
+		}
+		observer.changed = (id: string) => {
+			addedChangedCommand('changed', id)
+		}
+		let cmds = this.core.getCollection('peripheralDeviceCommands')
+		if (!cmds) throw Error('"peripheralDeviceCommands" collection not found!')
+		cmds.find({}).forEach((cmd: PeripheralDeviceCommand) => {
+			if (cmd.deviceId === this.core.deviceId) {
+				this._coreParentHandler.logger.info('cmd', cmd)
+				this.executeFunction(cmd)
+			}
 		})
 	}
 	onMosConnectionChanged (connectionStatus: IMOSConnectionStatus) {
@@ -283,15 +286,54 @@ export class CoreMosDeviceHandler {
 		})
 	}
 	triggerGetRunningOrder (roId: string): Promise<any> {
-		console.log('triggerGetRunningOrder')
+		// console.log('triggerGetRunningOrder ' + roId)
 		return this._mosDevice.getRunningOrder(new MosString128(roId))
-		.then((results) => {
+		.then((ro) => {
 			// console.log('GOT REPLY', results)
-			return results
+			return ro
 		})
 		.catch((err) => {
-			console.log('GOT ERR', err, typeof err, err.toString())
+			// console.log('GOT ERR', err)
 			throw err
+		})
+	}
+	setROStatus (roId: string, status: IMOSObjectStatus): Promise<any> {
+		// console.log('setStoryStatus')
+		return this._mosDevice.setRunningOrderStatus({
+			ID: new MosString128(roId),
+			Status: status,
+			Time: new MosTime()
+		})
+		.then((result) => {
+			// console.log('got result', result)
+			return result
+		})
+	}
+	setStoryStatus (roId: string, storyId: string, status: IMOSObjectStatus): Promise<any> {
+		// console.log('setStoryStatus')
+		return this._mosDevice.setStoryStatus({
+			RunningOrderId: new MosString128(roId),
+			ID: new MosString128(storyId),
+			Status: status,
+			Time: new MosTime()
+		})
+		.then((result) => {
+			// console.log('got result', result)
+			return result
+		})
+	}
+	setItemStatus (roId: string, storyId: string, itemId: string, status: IMOSObjectStatus): Promise<any> {
+		// console.log('setStoryStatus')
+		return this._mosDevice.setItemStatus({
+			RunningOrderId: new MosString128(roId),
+			StoryId: new MosString128(storyId),
+			ID: new MosString128(itemId),
+			Status: status,
+			Time: new MosTime()
+		})
+		.then((result) => {
+			// console.log('got result', result)
+			return result
 		})
 	}
 	test (a: string) {
@@ -306,6 +348,9 @@ export class CoreMosDeviceHandler {
 			obs.stop()
 		})
 		return Promise.resolve()
+	}
+	killProcess (actually: number) {
+		return this._coreParentHandler.killProcess(actually)
 	}
 	private fixBeforeSend (o: any): any {
 		if (
@@ -350,6 +395,8 @@ export class CoreHandler {
 	logger: Winston.LoggerInstance
 	private _deviceOptions: DeviceConfig
 	private _coreMosHandlers: Array<CoreMosDeviceHandler> = []
+	private _onConnected?: () => any
+	private _subscriptions: Array<any> = []
 
 	constructor (logger: Winston.LoggerInstance, deviceOptions: DeviceConfig) {
 		this.logger = logger
@@ -379,6 +426,9 @@ export class CoreHandler {
 				// messages: []
 			})
 			// nothing
+		})
+		.then(() => {
+			return this.setupSubscriptions()
 		})
 	}
 	dispose (): Promise<void> {
@@ -431,8 +481,44 @@ export class CoreHandler {
 		})
 	}
 	onConnectionRestored () {
-		this._coreMosHandlers.forEach((cmh: CoreMosDeviceHandler) => {
-			cmh.setupObserversAndSubscriptions()
+		this.setupSubscriptions()
+		.catch((e) => {
+			this.logger.error(e)
 		})
+		if (this._onConnected) this._onConnected()
+		this._coreMosHandlers.forEach((cmh: CoreMosDeviceHandler) => {
+			cmh.setupSubscriptionsAndObservers()
+		})
+	}
+	onConnected (fcn: () => any) {
+		this._onConnected = fcn
+	}
+	setupSubscriptions (): Promise<void> {
+		// console.log('setupObservers', this.core.deviceId)
+		this._subscriptions = []
+
+		this.logger.info('Core: Setting up subscriptions for ' + this.core.deviceId + '..')
+		return Promise.all([
+			this.core.subscribe('peripheralDevices', {
+				_id: this.core.deviceId
+			}),
+			this.core.subscribe('peripheralDeviceCommands', this.core.deviceId)
+		])
+		.then((subs) => {
+			this._subscriptions = this._subscriptions.concat(subs)
+		})
+		.then(() => {
+			return
+		})
+	}
+	killProcess (actually: number) {
+		if (actually === 1) {
+			this.logger.info('KillProcess command received, shutting down in 1000ms!')
+			setTimeout(() => {
+				process.exit(0)
+			}, 1000)
+			return true
+		}
+		return 0
 	}
 }

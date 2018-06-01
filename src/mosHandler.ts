@@ -40,7 +40,21 @@ import { CoreHandler } from './coreHandler'
 // }
 export interface MosConfig {
 	self: IConnectionConfig
-	devices: Array<IMOSDeviceConnectionOptions>
+	// devices: Array<IMOSDeviceConnectionOptions>
+}
+export interface MosDeviceSettings {
+	mosId: string,
+	devices: {
+		[deviceId: string]: MosDeviceSettingsDevice
+	}
+}
+export interface MosDeviceSettingsDevice {
+	primary: MosDeviceSettingsDeviceOptions
+	secondary?: MosDeviceSettingsDeviceOptions
+}
+export interface MosDeviceSettingsDeviceOptions {
+	id: string
+	host: string
 }
 
 export class MosHandler {
@@ -49,8 +63,14 @@ export class MosHandler {
 
 	public mosOptions: MosConfig
 
-	private mosDevices: {[id: string]: IMOSDevice} = {}
+	private allMosDevices: {[id: string]: IMOSDevice} = {}
+	private _ownMosDevices: {[deviceId: string]: MosDevice} = {}
 	private _logger: Winston.LoggerInstance
+	private _disposed: boolean = false
+	private _settings?: MosDeviceSettings
+	private _coreHandler: CoreHandler
+	private _observers: Array<any> = []
+	private _triggerupdateDevicesTimeout: any = null
 
 	constructor (logger: Winston.LoggerInstance) {
 		this._logger = logger
@@ -58,6 +78,7 @@ export class MosHandler {
 	init (config: MosConfig, coreHandler: CoreHandler): Promise<void> {
 
 		this.mosOptions = config
+		this._coreHandler = coreHandler
 		/*{
 			mosID: 'seff-tv-automation',
 			acceptsConnections: true, // default:true
@@ -75,7 +96,90 @@ export class MosHandler {
 		}
 		*/
 
-		this.mos = new MosConnection(this.mosOptions.self)
+		this._coreHandler.onConnected(() => {
+			this.setupObservers()
+		})
+		this.setupObservers()
+
+		return coreHandler.core.getPeripheralDevice()
+		.then((peripheralDevice: any) => {
+			this._settings = peripheralDevice.settings || {}
+
+			return this._initMosConnection()
+		})
+		.then(() => {
+			return this._updateDevices()
+		})
+		// .then(() => {
+			// Connect to ENPS:
+			// return Promise.all(
+				// _.map((this._settings || {devices: {}}).devices, (device, deviceId: string) => {
+				// })
+			// )
+		// })
+		.then(() => {
+			// All connections have been made at this point
+		})
+	}
+	dispose (): Promise<void> {
+		this._disposed = true
+		if (this.mos) {
+			return this.mos.dispose()
+		} else {
+			return Promise.resolve()
+		}
+	}
+	setupObservers () {
+		if (this._observers.length) {
+			console.log('Clearing observers..')
+			this._observers.forEach((obs) => {
+				obs.stop()
+			})
+			this._observers = []
+		}
+		console.log('Renewing observers')
+
+		// let timelineObserver = this._coreHandler.core.observe('timeline')
+		// timelineObserver.added = () => { this._triggerupdateTimeline() }
+		// timelineObserver.changed = () => { this._triggerupdateTimeline() }
+		// timelineObserver.removed = () => { this._triggerupdateTimeline() }
+		// this._observers.push(timelineObserver)
+
+		// let mappingsObserver = this._coreHandler.core.observe('studioInstallation')
+		// mappingsObserver.added = () => { this._triggerupdateMapping() }
+		// mappingsObserver.changed = () => { this._triggerupdateMapping() }
+		// mappingsObserver.removed = () => { this._triggerupdateMapping() }
+		// this._observers.push(mappingsObserver)
+
+		let deviceObserver = this._coreHandler.core.observe('peripheralDevices')
+		deviceObserver.added = () => { this._triggerupdateDevices() }
+		deviceObserver.changed = () => { this._triggerupdateDevices() }
+		deviceObserver.removed = () => { this._triggerupdateDevices() }
+		this._observers.push(deviceObserver)
+
+	}
+	private _triggerupdateDevices () {
+		if (this._triggerupdateDevicesTimeout) {
+			clearTimeout(this._triggerupdateDevicesTimeout)
+		}
+		this._triggerupdateDevicesTimeout = setTimeout(() => {
+			this._updateDevices()
+			.catch(e => {
+				this._logger.error(e)
+			})
+		}, 20)
+	}
+	private _initMosConnection (): Promise<void> {
+		if (this._disposed) return Promise.resolve()
+
+		if (!this._settings) throw Error('Mos-Settings are not set')
+
+		let connectionConfig: IConnectionConfig = this.mosOptions.self
+
+		if (!this._settings.mosId) throw Error('mosId missing in settings!')
+		connectionConfig.mosID = this._settings.mosId
+
+		this.mos = new MosConnection(connectionConfig)
 		this.mos.on('rawMessage', (source, type, message) => {
 			this._logger.debug('rawMessage', source, type, message)
 		})
@@ -84,20 +188,25 @@ export class MosHandler {
 			// a new connection to a device has been made
 			this._logger.info('---------------------------------')
 
-			this.mosDevices[mosDevice.idPrimary] = mosDevice
+			this.allMosDevices[mosDevice.idPrimary] = mosDevice
 
-			return coreHandler.registerMosDevice(mosDevice, this)
+			return this._coreHandler.registerMosDevice(mosDevice, this)
 			.then((coreMosHandler) => {
 				// this._logger.info('mosDevice registered -------------')
 				// Setup message flow between the devices:
+
+				// Initial Status check:
+				let connectionStatus = mosDevice.getConnectionStatus()
+				coreMosHandler.onMosConnectionChanged(connectionStatus) // initial check
 				// Profile 0: -------------------------------------------------
 				mosDevice.onConnectionChange((connectionStatus: IMOSConnectionStatus) => { //  MOSDevice >>>> Core
 					coreMosHandler.onMosConnectionChanged(connectionStatus)
 				})
-				coreMosHandler.onMosConnectionChanged(mosDevice.getConnectionStatus()) // initial check
+				coreMosHandler.onMosConnectionChanged(mosDevice.getConnectionStatus())
 				mosDevice.onGetMachineInfo(() => { // MOSDevice >>>> Core
 					return coreMosHandler.getMachineInfo()
 				})
+
 				// Profile 1: -------------------------------------------------
 				/*
 				mosDevice.onRequestMOSObject((objId: string) => {
@@ -186,37 +295,106 @@ export class MosHandler {
 
 		// Open mos-server for connections:
 		return this.mos.init()
-		.then (() => {
-			// Connect to ENPS:
-			return Promise.all(
-				_.map(this.mosOptions.devices, (device) => {
-					return this.mos.connect(device)
-					.then((mosDevice: MosDevice) => {
-						// called when a connection has been made
-						return mosDevice.getMachineInfo()
-						.then((machInfo) => {
-							this._logger.info('Connected to Mos-device', machInfo)
-							let machineId = machInfo.ID.toString()
-							if (!(
-								machineId === device.primary.id ||
-								(
-									device.secondary &&
-									machineId === device.secondary.id
-								)
-							)) {
-								throw new Error('Mos-device has ID "' + machineId + '" but specified ncs-id is "' + (device.primary.id || (device.secondary || {id: ''}).id) + '"')
-							}
-						})
-					})
-				})
-			)
-		})
 		.then(() => {
-			// All connections have been made at this point
+			return
 		})
 	}
-	dispose (): Promise<void> {
-		return this.mos.dispose()
+	private _updateDevices (): Promise<void> {
+		console.log('_updateDevices')
+		let peripheralDevices = this._coreHandler.core.getCollection('peripheralDevices')
+		let peripheralDevice = peripheralDevices.findOne(this._coreHandler.core.deviceId)
+
+		console.log('pdeviceId', this._coreHandler.core.deviceId)
+		console.log('peripheralDevice', peripheralDevice)
+		let ps: Array<Promise<any>> = []
+		if (peripheralDevice) {
+			let settings: MosDeviceSettings = peripheralDevice.settings || {}
+
+			let devices = settings.devices
+
+			console.log('devices', devices)
+
+			_.each(devices, (device, deviceId: string) => {
+
+				let oldDevice: MosDevice = this.mos.getDevice(deviceId)
+
+				if (!oldDevice) {
+					if (device) {
+						console.log('Initializing device: ' + deviceId)
+						ps.push(this._addDevice(deviceId, device))
+					}
+				} else {
+					if (device) {
+						if (
+							(oldDevice.primaryId || '') !== device.primary.id ||
+							(oldDevice.primaryHost || '') !== device.primary.host ||
+							(oldDevice.secondaryId || '') !== ((device.secondary || {id: ''}).id || '') ||
+							(oldDevice.secondaryHost || '') !== ((device.secondary || {host: ''}).host || '')
+						) {
+							console.log('Re-initializing device: ' + deviceId)
+
+							ps.push(this._removeDevice(deviceId))
+							ps.push(this._addDevice(deviceId, device))
+						}
+					}
+				}
+			})
+
+			_.each(this._ownMosDevices, (oldDevice: MosDevice, deviceId: string) => {
+				// let deviceId = oldDevice.idPrimary
+				if (oldDevice && !devices[deviceId]) {
+					console.log('Un-initializing device: ' + deviceId)
+					// this.mos.removeDevice(deviceId)
+					ps.push(this._removeDevice(deviceId))
+				}
+			})
+		}
+		return Promise.all(ps)
+		.then(() => {
+			return
+		})
+	}
+	private _addDevice (deviceId: string, deviceOptions: IMOSDeviceConnectionOptions): Promise<MosDevice> {
+		return this.mos.connect(deviceOptions)
+		.then((mosDevice: MosDevice) => {
+			// called when a connection has been made
+
+			this._ownMosDevices[deviceId] = mosDevice
+
+			return mosDevice.getMachineInfo()
+			.then((machInfo) => {
+				this._logger.info('Connected to Mos-device', machInfo)
+				let machineId = machInfo.ID.toString()
+				if (!(
+					machineId === deviceOptions.primary.id ||
+					(
+						deviceOptions.secondary &&
+						machineId === deviceOptions.secondary.id
+					)
+				)) {
+					throw new Error('Mos-device has ID "' + machineId + '" but specified ncs-id is "' + (deviceOptions.primary.id || (deviceOptions.secondary || {id: ''}).id) + '"')
+				}
+				return mosDevice
+			})
+			.catch((e) => {
+				// something went wrong during init:
+				this.mos.disposeMosDevice(mosDevice)
+				throw e
+			})
+		})
+	}
+	private _removeDevice (deviceId: string ): Promise<void> {
+		// let mosDevice = this.mos.getDevice(deviceId)
+		let mosDevice = this._ownMosDevices[deviceId]
+
+		return this.mos.disposeMosDevice(mosDevice)
+		.then(() => {
+			delete this._ownMosDevices[mosDevice.idPrimary]
+			if (mosDevice.idSecondary) delete this._ownMosDevices[mosDevice.idSecondary]
+		})
+		.catch(() => {
+			// no device found, that's okay
+		})
 	}
 	private _getROAck (roId: MosString128, p: Promise<IMOSROAck>) {
 		return p.then(() => {
