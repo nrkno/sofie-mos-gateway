@@ -300,6 +300,8 @@ export class MosHandler {
 		})
 	}
 	private _updateDevices (): Promise<void> {
+		if (!this.mos) this._initMosConnection()
+
 		console.log('_updateDevices')
 		let peripheralDevices = this._coreHandler.core.getCollection('peripheralDevices')
 		let peripheralDevice = peripheralDevices.findOne(this._coreHandler.core.deviceId)
