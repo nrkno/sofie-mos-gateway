@@ -101,28 +101,29 @@ export class CoreMosDeviceHandler {
 
 		let observer = this.core.observe('peripheralDeviceCommands')
 		this._observers.push(observer)
-		let addedChangedCommand = (type: string, id: string) => {
+		let addedChangedCommand = (id: string) => {
 			let cmds = this.core.getCollection('peripheralDeviceCommands')
 			if (!cmds) throw Error('"peripheralDeviceCommands" collection not found!')
 			let cmd = cmds.findOne(id) as PeripheralDeviceCommand
 			if (!cmd) throw Error('PeripheralCommand "' + id + '" not found!')
 
 			if (cmd.deviceId === this.core.deviceId) {
-				this._coreParentHandler.logger.info(type, id, cmd)
 				this.executeFunction(cmd)
 			}
 		}
 		observer.added = (id: string) => {
-			addedChangedCommand('added', id)
+			addedChangedCommand(id)
 		}
 		observer.changed = (id: string) => {
-			addedChangedCommand('changed', id)
+			addedChangedCommand(id)
+		}
+		observer.removed = (id: string) => {
+			delete this._executedFunctions[id]
 		}
 		let cmds = this.core.getCollection('peripheralDeviceCommands')
 		if (!cmds) throw Error('"peripheralDeviceCommands" collection not found!')
 		cmds.find({}).forEach((cmd: PeripheralDeviceCommand) => {
 			if (cmd.deviceId === this.core.deviceId) {
-				this._coreParentHandler.logger.info('cmd', cmd)
 				this.executeFunction(cmd)
 			}
 		})
@@ -244,8 +245,10 @@ export class CoreMosDeviceHandler {
 
 	executeFunction (cmd: PeripheralDeviceCommand) {
 		if (cmd) {
-			// console.log('executeFunction', cmd)
+			if (this._executedFunctions[cmd._id]) return // prevent it from running multiple times
+			this._coreParentHandler.logger.info(cmd.functionName, cmd.args)
 			this._executedFunctions[cmd._id] = true
+			// console.log('executeFunction', cmd)
 			let cb = (err: any, res?: any) => {
 				// console.log('cb', err, res)
 				this.core.callMethod(P.methods.functionReply, [cmd._id, err, res])
