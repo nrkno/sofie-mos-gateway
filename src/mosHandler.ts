@@ -131,13 +131,12 @@ export class MosHandler {
 	}
 	setupObservers () {
 		if (this._observers.length) {
-			console.log('Clearing observers..')
 			this._observers.forEach((obs) => {
 				obs.stop()
 			})
 			this._observers = []
 		}
-		console.log('Renewing observers')
+		this._logger.info('Renewing observers')
 
 		// let timelineObserver = this._coreHandler.core.observe('timeline')
 		// timelineObserver.added = () => { this._triggerupdateTimeline() }
@@ -171,8 +170,9 @@ export class MosHandler {
 	}
 	private _initMosConnection (): Promise<void> {
 		if (this._disposed) return Promise.resolve()
-
 		if (!this._settings) throw Error('Mos-Settings are not set')
+
+		this._logger.info('Initializing MosConnection...')
 
 		let connectionConfig: IConnectionConfig = this.mosOptions.self
 
@@ -186,7 +186,7 @@ export class MosHandler {
 
 		this.mos.onConnection((mosDevice: IMOSDevice) => {
 			// a new connection to a device has been made
-			this._logger.info('---------------------------------')
+			this._logger.info('new mosConnection established')
 
 			this.allMosDevices[mosDevice.idPrimary] = mosDevice
 
@@ -302,38 +302,32 @@ export class MosHandler {
 	private _updateDevices (): Promise<void> {
 		if (!this.mos) this._initMosConnection()
 
-		console.log('_updateDevices')
 		let peripheralDevices = this._coreHandler.core.getCollection('peripheralDevices')
 		let peripheralDevice = peripheralDevices.findOne(this._coreHandler.core.deviceId)
 
-		console.log('pdeviceId', this._coreHandler.core.deviceId)
-		console.log('peripheralDevice', peripheralDevice)
 		let ps: Array<Promise<any>> = []
 		if (peripheralDevice) {
 			let settings: MosDeviceSettings = peripheralDevice.settings || {}
 
 			let devices = settings.devices
 
-			console.log('devices', devices)
+			this._logger.info('Updating devices', devices)
 
 			_.each(devices, (device, deviceId: string) => {
+				if (device) {
+					let oldDevice: MosDevice | null = this._getDevice(deviceId)
 
-				let oldDevice: MosDevice = this.mos.getDevice(deviceId)
-
-				if (!oldDevice) {
-					if (device) {
-						console.log('Initializing device: ' + deviceId)
+					if (!oldDevice) {
+						this._logger.info('Initializing new device: ' + deviceId)
 						ps.push(this._addDevice(deviceId, device))
-					}
-				} else {
-					if (device) {
+					} else {
 						if (
 							(oldDevice.primaryId || '') !== device.primary.id ||
 							(oldDevice.primaryHost || '') !== device.primary.host ||
 							(oldDevice.secondaryId || '') !== ((device.secondary || {id: ''}).id || '') ||
 							(oldDevice.secondaryHost || '') !== ((device.secondary || {host: ''}).host || '')
 						) {
-							console.log('Re-initializing device: ' + deviceId)
+							this._logger.info('Re-initializing device: ' + deviceId)
 
 							ps.push(this._removeDevice(deviceId))
 							ps.push(this._addDevice(deviceId, device))
@@ -345,7 +339,7 @@ export class MosHandler {
 			_.each(this._ownMosDevices, (oldDevice: MosDevice, deviceId: string) => {
 				// let deviceId = oldDevice.idPrimary
 				if (oldDevice && !devices[deviceId]) {
-					console.log('Un-initializing device: ' + deviceId)
+					this._logger.info('Un-initializing device: ' + deviceId)
 					// this.mos.removeDevice(deviceId)
 					ps.push(this._removeDevice(deviceId))
 				}
@@ -357,6 +351,11 @@ export class MosHandler {
 		})
 	}
 	private _addDevice (deviceId: string, deviceOptions: IMOSDeviceConnectionOptions): Promise<MosDevice> {
+		if (this._getDevice(deviceId)) {
+			// the device is already there
+			throw new Error('Unable to add device "' + deviceId + '", because it already exists!')
+		}
+
 		return this.mos.connect(deviceOptions)
 		.then((mosDevice: MosDevice) => {
 			// called when a connection has been made
@@ -398,6 +397,9 @@ export class MosHandler {
 			// no device found, that's okay
 		})
 	}
+	private _getDevice (deviceId: string ): MosDevice | null {
+		return this._ownMosDevices[deviceId] || null
+	}
 	private _getROAck (roId: MosString128, p: Promise<IMOSROAck>) {
 		return p.then(() => {
 			let roAck: IMOSROAck = {
@@ -409,7 +411,6 @@ export class MosHandler {
 		})
 		.catch((err) => {
 			this._logger.error('ROAck error:', err)
-			// console.log('Error', err)
 			let roAck: IMOSROAck = {
 				ID: roId,
 				Status: new MosString128('Error: ' + err.toString()),

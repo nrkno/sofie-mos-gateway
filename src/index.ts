@@ -88,7 +88,7 @@ let config: Config = {
 	},
 	mos: {
 		self: {
-
+			// debug: true,
 			// mosID: 'sofie.tv.automation',
 			mosID: 'N/A', // set by Core
 			acceptsConnections: true, // default:true
