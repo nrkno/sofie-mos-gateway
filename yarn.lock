@@ -3564,9 +3564,9 @@ mongodb-memory-server@^1.7.0:
     tmp "^0.0.33"
     uuid "^3.2.1"
 
-"mos-connection@git+https://github.com/nrkno/tv-automation-mos-connection.git#dist":
-  version "0.0.0"
-  resolved "git+https://github.com/nrkno/tv-automation-mos-connection.git#7d65c2908344d43b2bb4f0f985b85dc533999682"
+mos-connection@^0.3.14:
+  version "0.3.14"
+  resolved "https://registry.yarnpkg.com/mos-connection/-/mos-connection-0.3.14.tgz#2d4a7bc00aeb683dcfcbae95f4c503640ce4e6f7"
   dependencies:
     "@types/xml2js" "^0.4.2"
     "@types/xml2json" "^0.10.0"
