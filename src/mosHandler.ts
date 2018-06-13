@@ -192,7 +192,7 @@ export class MosHandler {
 
 		this.mos.onConnection((mosDevice: IMOSDevice) => {
 			// a new connection to a device has been made
-			this._logger.info('new mosConnection established')
+			this._logger.info('new mosConnection established: ' + mosDevice.idPrimary + ', ' + mosDevice.idSecondary)
 
 			this.allMosDevices[mosDevice.idPrimary] = mosDevice
 
@@ -392,16 +392,22 @@ export class MosHandler {
 	}
 	private _removeDevice (deviceId: string ): Promise<void> {
 		// let mosDevice = this.mos.getDevice(deviceId)
-		let mosDevice = this._ownMosDevices[deviceId]
+		let mosDevice = this._getDevice(deviceId) as MosDevice
 
-		return this.mos.disposeMosDevice(mosDevice)
-		.then(() => {
-			delete this._ownMosDevices[mosDevice.idPrimary]
-			if (mosDevice.idSecondary) delete this._ownMosDevices[mosDevice.idSecondary]
-		})
-		.catch(() => {
+		if (mosDevice) {
+			return this.mos.disposeMosDevice(mosDevice)
+			.then(() => {
+				delete this._ownMosDevices[mosDevice.idPrimary]
+				if (mosDevice.idSecondary) delete this._ownMosDevices[mosDevice.idSecondary]
+			})
+			.catch((e) => {
+				throw new Error(e)
+			})
+		} else {
 			// no device found, that's okay
-		})
+			return Promise.resolve()
+		}
+
 	}
 	private _getDevice (deviceId: string ): MosDevice | null {
 		return this._ownMosDevices[deviceId] || null
