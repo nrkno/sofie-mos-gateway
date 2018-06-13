@@ -24,7 +24,7 @@ process.argv.forEach((val) => {
 		deviceId = val
 	} else if (prevProcessArg.match(/-token/i)) {
 		deviceToken = val
-	} else if (prevProcessArg.match(/-debug/i)) {
+	} else if ((val + '').match(/-debug/i)) {
 		debug = true
 	}
 	prevProcessArg = val + ''
