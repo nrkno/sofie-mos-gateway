@@ -85,7 +85,7 @@ export class CoreMosDeviceHandler {
 			})
 			this._observers = []
 		}
-		this._coreParentHandler.logger.info('CoreMos: Setting up subscriptions for ' + this.core.deviceId + ' ..')
+		this._coreParentHandler.logger.info('CoreMos: Setting up subscriptions for ' + this.core.deviceId + ' for mosDevice ' + this._mosDevice.idPrimary + ' ..')
 		this._subscriptions = []
 		Promise.all([
 			this.core.subscribe('peripheralDeviceCommands', this.core.deviceId)
@@ -400,6 +400,7 @@ export class CoreHandler {
 	private _coreMosHandlers: Array<CoreMosDeviceHandler> = []
 	private _onConnected?: () => any
 	private _subscriptions: Array<any> = []
+	private _isInitialized: boolean = false
 
 	constructor (logger: Winston.LoggerInstance, deviceOptions: DeviceConfig) {
 		this.logger = logger
@@ -412,7 +413,7 @@ export class CoreHandler {
 
 		this.core.onConnected(() => {
 			this.logger.info('Core Connected!')
-			this.onConnectionRestored()
+			if (this._isInitialized) this.onConnectionRestored()
 		})
 		this.core.onDisconnected(() => {
 			this.logger.info('Core Disconnected!')
@@ -432,6 +433,9 @@ export class CoreHandler {
 		})
 		.then(() => {
 			return this.setupSubscriptions()
+		})
+		.then(() => {
+			this._isInitialized = true
 		})
 	}
 	dispose (): Promise<void> {
