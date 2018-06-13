@@ -8,6 +8,7 @@ let port: number 		= parseInt(process.env.CORE_PORT + '', 10) 	|| 3000
 let logPath: string 	= process.env.CORE_LOG						|| ''
 let deviceId: string 	= process.env.DEVICE_ID						|| ''
 let deviceToken: string = process.env.DEVICE_TOKEN 				|| ''
+let debug: boolean 		= false
 
 logPath = logPath
 
@@ -23,6 +24,8 @@ process.argv.forEach((val) => {
 		deviceId = val
 	} else if (prevProcessArg.match(/-token/i)) {
 		deviceToken = val
+	} else if (prevProcessArg.match(/-debug/i)) {
+		debug = true
 	}
 	prevProcessArg = val + ''
 })
@@ -98,7 +101,7 @@ let config: Config = {
 	},
 	mos: {
 		self: {
-			// debug: true,
+			debug: debug,
 			// mosID: 'sofie.tv.automation',
 			mosID: 'N/A', // set by Core
 			acceptsConnections: true, // default:true
