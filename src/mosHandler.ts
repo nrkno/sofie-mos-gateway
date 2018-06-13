@@ -315,7 +315,6 @@ export class MosHandler {
 			let peripheralDevices = this._coreHandler.core.getCollection('peripheralDevices')
 			let peripheralDevice = peripheralDevices.findOne(this._coreHandler.core.deviceId)
 
-			let ps: Array<Promise<any>> = []
 			if (peripheralDevice) {
 				let settings: MosDeviceSettings = peripheralDevice.settings || {}
 
@@ -323,13 +322,16 @@ export class MosHandler {
 
 				this._logger.info('Updating devices', devices)
 
+				let devicesToAdd: {[id: string]: MosDeviceSettingsDevice} = {}
+				let devicesToRemove: {[id: string]: true} = {}
+
 				_.each(devices, (device, deviceId: string) => {
 					if (device) {
 						let oldDevice: MosDevice | null = this._getDevice(deviceId)
 
 						if (!oldDevice) {
 							this._logger.info('Initializing new device: ' + deviceId)
-							ps.push(this._addDevice(deviceId, device))
+							devicesToAdd[deviceId] = device
 						} else {
 							if (
 								(oldDevice.primaryId || '') !== device.primary.id ||
@@ -338,24 +340,34 @@ export class MosHandler {
 								(oldDevice.secondaryHost || '') !== ((device.secondary || {host: ''}).host || '')
 							) {
 								this._logger.info('Re-initializing device: ' + deviceId)
-
-								ps.push(this._removeDevice(deviceId))
-								ps.push(this._addDevice(deviceId, device))
+								devicesToRemove[deviceId] = true
+								devicesToAdd[deviceId] = device
 							}
 						}
 					}
 				})
 
 				_.each(this._ownMosDevices, (oldDevice: MosDevice, deviceId: string) => {
-					// let deviceId = oldDevice.idPrimary
 					if (oldDevice && !devices[deviceId]) {
 						this._logger.info('Un-initializing device: ' + deviceId)
-						// this.mos.removeDevice(deviceId)
-						ps.push(this._removeDevice(deviceId))
+						devicesToRemove[deviceId] = true
 					}
 				})
+
+				return Promise.all(_.map(devicesToRemove, (val, deviceId) => {
+					val = val
+					return this._removeDevice(deviceId)
+				}))
+				.then(() => {
+					return Promise.all(_.map(devicesToAdd, (device, deviceId) => {
+						return this._addDevice(deviceId, device)
+					}))
+				})
+				.then(() => {
+					return
+				})
 			}
-			return Promise.all(ps)
+			return Promise.resolve()
 		})
 		.then(() => {
 			return
@@ -399,6 +411,7 @@ export class MosHandler {
 		// let mosDevice = this.mos.getDevice(deviceId)
 		let mosDevice = this._getDevice(deviceId) as MosDevice
 
+		delete this._ownMosDevices[deviceId]
 		if (mosDevice) {
 			return this.mos.disposeMosDevice(mosDevice)
 			.then(() => {
