@@ -8,6 +8,7 @@ let port: number 		= parseInt(process.env.CORE_PORT + '', 10) 	|| 3000
 let logPath: string 	= process.env.CORE_LOG						|| ''
 let deviceId: string 	= process.env.DEVICE_ID						|| ''
 let deviceToken: string = process.env.DEVICE_TOKEN 				|| ''
+let debug: boolean 		= false
 
 logPath = logPath
 
@@ -23,6 +24,8 @@ process.argv.forEach((val) => {
 		deviceId = val
 	} else if (prevProcessArg.match(/-token/i)) {
 		deviceToken = val
+	} else if ((val + '').match(/-debug/i)) {
+		debug = true
 	}
 	prevProcessArg = val + ''
 })
@@ -61,7 +64,8 @@ if (logPath) {
 	// Log json to console
 	logger.add(Winston.transports.Console,{
 		handleExceptions: true,
-		json: true
+		json: true,
+		stringify: (obj) => JSON.stringify(obj) // make single line
 	})
 	// Hijack console.log:
 	// @ts-ignore
@@ -74,6 +78,15 @@ if (logPath) {
 		}
 	}
 }
+
+// Because the default NodeJS-handler sucks and wont display error properly
+process.on('unhandledRejection', (e: any) => {
+	logger.error('Unhandled Promise rejection:', e, e.reason || e.message, e.stack)
+})
+process.on('warning', (e: any) => {
+	logger.warn('Unhandled warning:', e, e.reason || e.message, e.stack)
+})
+
 logger.info('------------------------------------------------------------------')
 logger.info('Starting MOS Gateway')
 // App config -----------------------------------------
@@ -88,7 +101,7 @@ let config: Config = {
 	},
 	mos: {
 		self: {
-			// debug: true,
+			debug: debug,
 			// mosID: 'sofie.tv.automation',
 			mosID: 'N/A', // set by Core
 			acceptsConnections: true, // default:true

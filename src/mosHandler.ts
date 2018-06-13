@@ -192,7 +192,7 @@ export class MosHandler {
 
 		this.mos.onConnection((mosDevice: IMOSDevice) => {
 			// a new connection to a device has been made
-			this._logger.info('new mosConnection established')
+			this._logger.info('new mosConnection established: ' + mosDevice.idPrimary + ', ' + mosDevice.idSecondary)
 
 			this.allMosDevices[mosDevice.idPrimary] = mosDevice
 
@@ -306,52 +306,57 @@ export class MosHandler {
 		})
 	}
 	private _updateDevices (): Promise<void> {
-		if (!this.mos) this._initMosConnection()
+		return (
+			!this.mos ?
+			this._initMosConnection() :
+			Promise.resolve()
+		)
+		.then(() => {
+			let peripheralDevices = this._coreHandler.core.getCollection('peripheralDevices')
+			let peripheralDevice = peripheralDevices.findOne(this._coreHandler.core.deviceId)
 
-		let peripheralDevices = this._coreHandler.core.getCollection('peripheralDevices')
-		let peripheralDevice = peripheralDevices.findOne(this._coreHandler.core.deviceId)
+			let ps: Array<Promise<any>> = []
+			if (peripheralDevice) {
+				let settings: MosDeviceSettings = peripheralDevice.settings || {}
 
-		let ps: Array<Promise<any>> = []
-		if (peripheralDevice) {
-			let settings: MosDeviceSettings = peripheralDevice.settings || {}
+				let devices = settings.devices
 
-			let devices = settings.devices
+				this._logger.info('Updating devices', devices)
 
-			this._logger.info('Updating devices', devices)
+				_.each(devices, (device, deviceId: string) => {
+					if (device) {
+						let oldDevice: MosDevice | null = this._getDevice(deviceId)
 
-			_.each(devices, (device, deviceId: string) => {
-				if (device) {
-					let oldDevice: MosDevice | null = this._getDevice(deviceId)
-
-					if (!oldDevice) {
-						this._logger.info('Initializing new device: ' + deviceId)
-						ps.push(this._addDevice(deviceId, device))
-					} else {
-						if (
-							(oldDevice.primaryId || '') !== device.primary.id ||
-							(oldDevice.primaryHost || '') !== device.primary.host ||
-							(oldDevice.secondaryId || '') !== ((device.secondary || {id: ''}).id || '') ||
-							(oldDevice.secondaryHost || '') !== ((device.secondary || {host: ''}).host || '')
-						) {
-							this._logger.info('Re-initializing device: ' + deviceId)
-
-							ps.push(this._removeDevice(deviceId))
+						if (!oldDevice) {
+							this._logger.info('Initializing new device: ' + deviceId)
 							ps.push(this._addDevice(deviceId, device))
+						} else {
+							if (
+								(oldDevice.primaryId || '') !== device.primary.id ||
+								(oldDevice.primaryHost || '') !== device.primary.host ||
+								(oldDevice.secondaryId || '') !== ((device.secondary || {id: ''}).id || '') ||
+								(oldDevice.secondaryHost || '') !== ((device.secondary || {host: ''}).host || '')
+							) {
+								this._logger.info('Re-initializing device: ' + deviceId)
+
+								ps.push(this._removeDevice(deviceId))
+								ps.push(this._addDevice(deviceId, device))
+							}
 						}
 					}
-				}
-			})
+				})
 
-			_.each(this._ownMosDevices, (oldDevice: MosDevice, deviceId: string) => {
-				// let deviceId = oldDevice.idPrimary
-				if (oldDevice && !devices[deviceId]) {
-					this._logger.info('Un-initializing device: ' + deviceId)
-					// this.mos.removeDevice(deviceId)
-					ps.push(this._removeDevice(deviceId))
-				}
-			})
-		}
-		return Promise.all(ps)
+				_.each(this._ownMosDevices, (oldDevice: MosDevice, deviceId: string) => {
+					// let deviceId = oldDevice.idPrimary
+					if (oldDevice && !devices[deviceId]) {
+						this._logger.info('Un-initializing device: ' + deviceId)
+						// this.mos.removeDevice(deviceId)
+						ps.push(this._removeDevice(deviceId))
+					}
+				})
+			}
+			return Promise.all(ps)
+		})
 		.then(() => {
 			return
 		})
@@ -392,16 +397,22 @@ export class MosHandler {
 	}
 	private _removeDevice (deviceId: string ): Promise<void> {
 		// let mosDevice = this.mos.getDevice(deviceId)
-		let mosDevice = this._ownMosDevices[deviceId]
+		let mosDevice = this._getDevice(deviceId) as MosDevice
 
-		return this.mos.disposeMosDevice(mosDevice)
-		.then(() => {
-			delete this._ownMosDevices[mosDevice.idPrimary]
-			if (mosDevice.idSecondary) delete this._ownMosDevices[mosDevice.idSecondary]
-		})
-		.catch(() => {
+		if (mosDevice) {
+			return this.mos.disposeMosDevice(mosDevice)
+			.then(() => {
+				delete this._ownMosDevices[mosDevice.idPrimary]
+				if (mosDevice.idSecondary) delete this._ownMosDevices[mosDevice.idSecondary]
+			})
+			.catch((e) => {
+				throw new Error(e)
+			})
+		} else {
 			// no device found, that's okay
-		})
+			return Promise.resolve()
+		}
+
 	}
 	private _getDevice (deviceId: string ): MosDevice | null {
 		return this._ownMosDevices[deviceId] || null
