@@ -56,9 +56,17 @@ export class Connector {
 
 	}
 	dispose (): Promise<void> {
-		return this.mosHandler.dispose()
+		return (
+			this.mosHandler ?
+			this.mosHandler.dispose()
+			: Promise.resolve()
+		)
 		.then(() => {
-			return this.coreHandler.dispose()
+			return (
+				this.coreHandler ?
+				this.coreHandler.dispose()
+				: Promise.resolve()
+			)
 		})
 		.then(() => {
 			return

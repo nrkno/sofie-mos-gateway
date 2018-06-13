@@ -306,52 +306,57 @@ export class MosHandler {
 		})
 	}
 	private _updateDevices (): Promise<void> {
-		if (!this.mos) this._initMosConnection()
+		return (
+			!this.mos ?
+			this._initMosConnection() :
+			Promise.resolve()
+		)
+		.then(() => {
+			let peripheralDevices = this._coreHandler.core.getCollection('peripheralDevices')
+			let peripheralDevice = peripheralDevices.findOne(this._coreHandler.core.deviceId)
 
-		let peripheralDevices = this._coreHandler.core.getCollection('peripheralDevices')
-		let peripheralDevice = peripheralDevices.findOne(this._coreHandler.core.deviceId)
+			let ps: Array<Promise<any>> = []
+			if (peripheralDevice) {
+				let settings: MosDeviceSettings = peripheralDevice.settings || {}
 
-		let ps: Array<Promise<any>> = []
-		if (peripheralDevice) {
-			let settings: MosDeviceSettings = peripheralDevice.settings || {}
+				let devices = settings.devices
 
-			let devices = settings.devices
+				this._logger.info('Updating devices', devices)
 
-			this._logger.info('Updating devices', devices)
+				_.each(devices, (device, deviceId: string) => {
+					if (device) {
+						let oldDevice: MosDevice | null = this._getDevice(deviceId)
 
-			_.each(devices, (device, deviceId: string) => {
-				if (device) {
-					let oldDevice: MosDevice | null = this._getDevice(deviceId)
-
-					if (!oldDevice) {
-						this._logger.info('Initializing new device: ' + deviceId)
-						ps.push(this._addDevice(deviceId, device))
-					} else {
-						if (
-							(oldDevice.primaryId || '') !== device.primary.id ||
-							(oldDevice.primaryHost || '') !== device.primary.host ||
-							(oldDevice.secondaryId || '') !== ((device.secondary || {id: ''}).id || '') ||
-							(oldDevice.secondaryHost || '') !== ((device.secondary || {host: ''}).host || '')
-						) {
-							this._logger.info('Re-initializing device: ' + deviceId)
-
-							ps.push(this._removeDevice(deviceId))
+						if (!oldDevice) {
+							this._logger.info('Initializing new device: ' + deviceId)
 							ps.push(this._addDevice(deviceId, device))
+						} else {
+							if (
+								(oldDevice.primaryId || '') !== device.primary.id ||
+								(oldDevice.primaryHost || '') !== device.primary.host ||
+								(oldDevice.secondaryId || '') !== ((device.secondary || {id: ''}).id || '') ||
+								(oldDevice.secondaryHost || '') !== ((device.secondary || {host: ''}).host || '')
+							) {
+								this._logger.info('Re-initializing device: ' + deviceId)
+
+								ps.push(this._removeDevice(deviceId))
+								ps.push(this._addDevice(deviceId, device))
+							}
 						}
 					}
-				}
-			})
+				})
 
-			_.each(this._ownMosDevices, (oldDevice: MosDevice, deviceId: string) => {
-				// let deviceId = oldDevice.idPrimary
-				if (oldDevice && !devices[deviceId]) {
-					this._logger.info('Un-initializing device: ' + deviceId)
-					// this.mos.removeDevice(deviceId)
-					ps.push(this._removeDevice(deviceId))
-				}
-			})
-		}
-		return Promise.all(ps)
+				_.each(this._ownMosDevices, (oldDevice: MosDevice, deviceId: string) => {
+					// let deviceId = oldDevice.idPrimary
+					if (oldDevice && !devices[deviceId]) {
+						this._logger.info('Un-initializing device: ' + deviceId)
+						// this.mos.removeDevice(deviceId)
+						ps.push(this._removeDevice(deviceId))
+					}
+				})
+			}
+			return Promise.all(ps)
+		})
 		.then(() => {
 			return
 		})
