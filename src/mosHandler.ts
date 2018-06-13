@@ -183,6 +183,12 @@ export class MosHandler {
 		this.mos.on('rawMessage', (source, type, message) => {
 			this._logger.debug('rawMessage', source, type, message)
 		})
+		this.mos.on('info', (message) => {
+			this._logger.info(message)
+		})
+		this.mos.on('error', (error) => {
+			this._logger.error(error)
+		})
 
 		this.mos.onConnection((mosDevice: IMOSDevice) => {
 			// a new connection to a device has been made
