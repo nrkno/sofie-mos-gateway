@@ -75,6 +75,15 @@ if (logPath) {
 		}
 	}
 }
+
+// Because the default NodeJS-handler sucks and wont display error properly
+process.on('unhandledRejection', (e: any) => {
+	logger.error('Unhandled Promise rejection:', e, e.reason || e.message, e.stack)
+})
+process.on('warning', (e: any) => {
+	logger.warn('Unhandled warning:', e, e.reason || e.message, e.stack)
+})
+
 logger.info('------------------------------------------------------------------')
 logger.info('Starting MOS Gateway')
 // App config -----------------------------------------
