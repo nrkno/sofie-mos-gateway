@@ -51,8 +51,8 @@ export class CoreMosDeviceHandler {
 
 	core: CoreConnection
 	public _observers: Array<any> = []
+	public _mosDevice: IMOSDevice
 	private _coreParentHandler: CoreHandler
-	private _mosDevice: IMOSDevice
 	private _mosHandler: MosHandler
 	private _subscriptions: Array<any> = []
 
@@ -289,11 +289,18 @@ export class CoreMosDeviceHandler {
 			},2000)
 		})
 	}
-	dispose () {
+	dispose (): Promise<void> {
 		this._observers.forEach((obs) => {
 			obs.stop()
 		})
-		return Promise.resolve()
+
+		return this.core.setStatus({
+			statusCode: P.StatusCode.BAD,
+			messages: ['Uninitialized']
+		})
+		.then(() => {
+			return
+		})
 	}
 	killProcess (actually: number) {
 		return this._coreParentHandler.killProcess(actually)
@@ -431,6 +438,27 @@ export class CoreHandler {
 		.then(() => {
 			return coreMos
 		})
+	}
+	unRegisterMosDevice (mosDevice: IMOSDevice): Promise<void> {
+		let foundI = -1
+		for (let i = 0; i < this._coreMosHandlers.length; i++) {
+			let cmh = this._coreMosHandlers[i]
+			if (cmh._mosDevice.idPrimary === mosDevice.idSecondary) {
+				foundI = i
+				break
+			}
+		}
+		let coreMosHandler = this._coreMosHandlers[foundI]
+		if (coreMosHandler) {
+
+			return coreMosHandler.dispose()
+			.then(() => {
+				this._coreMosHandlers.splice(foundI, 1)
+				return
+			})
+
+		}
+		return Promise.resolve()
 	}
 	onConnectionRestored () {
 		this.setupSubscriptionsAndObservers()

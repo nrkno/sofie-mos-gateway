@@ -413,18 +413,30 @@ export class MosHandler {
 
 		delete this._ownMosDevices[deviceId]
 		if (mosDevice) {
-			return this.mos.disposeMosDevice(mosDevice)
-			.then(() => {
-				delete this._ownMosDevices[mosDevice.idPrimary]
-				if (mosDevice.idSecondary) delete this._ownMosDevices[mosDevice.idSecondary]
-			})
-			.catch((e) => {
-				throw new Error(e)
-			})
+			let mosDevice0 = (
+				this.mos.getDevice(mosDevice.idPrimary) ||
+				(mosDevice.idSecondary && this.mos.getDevice(mosDevice.idSecondary))
+			)
+
+			if (mosDevice0) {
+				return this.mos.disposeMosDevice(mosDevice)
+				.then(() => {
+					return this._coreHandler.unRegisterMosDevice(mosDevice)
+				})
+				.then(() => {
+					delete this._ownMosDevices[mosDevice.idPrimary]
+					if (mosDevice.idSecondary) delete this._ownMosDevices[mosDevice.idSecondary]
+				})
+				.catch((e) => {
+					throw new Error(e)
+				})
+			} else {
+				// device not found in mosConnection
+			}
 		} else {
-			// no device found, that's okay
-			return Promise.resolve()
+			// no device found
 		}
+		return Promise.resolve()
 
 	}
 	private _getDevice (deviceId: string ): MosDevice | null {
