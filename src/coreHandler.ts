@@ -426,7 +426,8 @@ export class CoreHandler {
 		}
 		return _.extend(credentials, {
 			deviceType: (parentProcess ? P.DeviceType.MOSDEVICE : P.DeviceType.OTHER),
-			deviceName: name
+			deviceName: name,
+			watchDog: true
 		})
 	}
 	registerMosDevice (mosDevice: IMOSDevice, mosHandler: MosHandler): Promise<CoreMosDeviceHandler> {
@@ -582,5 +583,9 @@ export class CoreHandler {
 			return true
 		}
 		return 0
+	}
+	pingResponse (message: string) {
+		this.core.setPingResponse(message)
+		return true
 	}
 }

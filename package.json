@@ -108,7 +108,7 @@
     "production"
   ],
   "dependencies": {
-    "tv-automation-server-core-integration": "0.1.2",
+    "tv-automation-server-core-integration": "0.2.0",
     "ddp": "^0.12.1",
     "ddp-ejson": "~0.8.1-3",
     "ddp-random": "~0.8.1-1",
