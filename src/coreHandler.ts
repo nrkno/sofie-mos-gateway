@@ -437,6 +437,7 @@ export class CoreHandler {
 		this._coreMosHandlers.push(coreMos)
 		return coreMos.init()
 		.then(() => {
+			this.logger.info('registerMosDevice done!')
 			return coreMos
 		})
 	}
