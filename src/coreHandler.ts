@@ -87,7 +87,7 @@ export class CoreMosDeviceHandler {
 		this._coreParentHandler.logger.info('CoreMos: Setting up subscriptions for ' + this.core.deviceId + ' for mosDevice ' + this._mosDevice.idPrimary + ' ..')
 		this._subscriptions = []
 		Promise.all([
-			this.core.subscribe('peripheralDeviceCommands', this.core.deviceId)
+			this.core.autoSubscribe('peripheralDeviceCommands', this.core.deviceId)
 		])
 		.then((subs) => {
 			this._subscriptions = this._subscriptions.concat(subs)
@@ -487,10 +487,10 @@ export class CoreHandler {
 
 		this.logger.info('Core: Setting up subscriptions for ' + this.core.deviceId + '..')
 		return Promise.all([
-			this.core.subscribe('peripheralDevices', {
+			this.core.autoSubscribe('peripheralDevices', {
 				_id: this.core.deviceId
 			}),
-			this.core.subscribe('peripheralDeviceCommands', this.core.deviceId)
+			this.core.autoSubscribe('peripheralDeviceCommands', this.core.deviceId)
 		])
 		.then((subs) => {
 			this._subscriptions = this._subscriptions.concat(subs)
