@@ -338,7 +338,8 @@ export class CoreMosDeviceHandler {
 }
 export interface CoreConfig {
 	host: string,
-	port: number
+	port: number,
+	watchdog: boolean
 }
 /**
  * Represents a connection between mos-integration and Core
@@ -353,6 +354,7 @@ export class CoreHandler {
 	private _subscriptions: Array<any> = []
 	private _isInitialized: boolean = false
 	private _executedFunctions: {[id: string]: boolean} = {}
+	private _coreConfig?: CoreConfig
 
 	constructor (logger: Winston.LoggerInstance, deviceOptions: DeviceConfig) {
 		this.logger = logger
@@ -360,7 +362,8 @@ export class CoreHandler {
 	}
 
 	init (config: CoreConfig): Promise<void> {
-		this.logger.info('========')
+		// this.logger.info('========')
+		this._coreConfig = config
 		this.core = new CoreConnection(this.getCoreConnectionOptions('MOS: Parent process', 'MosCoreParent', true))
 
 		this.core.onConnected(() => {
@@ -427,7 +430,7 @@ export class CoreHandler {
 		return _.extend(credentials, {
 			deviceType: (parentProcess ? P.DeviceType.MOSDEVICE : P.DeviceType.OTHER),
 			deviceName: name,
-			watchDog: true
+			watchDog: (this._coreConfig ? this._coreConfig.watchdog : true)
 		})
 	}
 	registerMosDevice (mosDevice: IMOSDevice, mosHandler: MosHandler): Promise<CoreMosDeviceHandler> {
@@ -506,7 +509,7 @@ export class CoreHandler {
 	executeFunction (cmd: PeripheralDeviceCommand, fcnObject: any) {
 		if (cmd) {
 			if (this._executedFunctions[cmd._id]) return // prevent it from running multiple times
-			this.logger.info(cmd.functionName, cmd.args)
+			this.logger.debug(cmd.functionName, cmd.args)
 			this._executedFunctions[cmd._id] = true
 			// console.log('executeFunction', cmd)
 			let cb = (err: any, res?: any) => {
