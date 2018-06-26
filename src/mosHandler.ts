@@ -23,6 +23,7 @@ import {
 import * as _ from 'underscore'
 import * as Winston from 'winston'
 import { CoreHandler } from './coreHandler'
+import { CollectionObj } from 'tv-automation-server-core-integration'
 
 // export interface MosOptions {
 // 	mosID: string,
@@ -46,7 +47,8 @@ export interface MosDeviceSettings {
 	mosId: string,
 	devices: {
 		[deviceId: string]: MosDeviceSettingsDevice
-	}
+	},
+	debugLogging: boolean
 }
 export interface MosDeviceSettingsDevice {
 	primary: MosDeviceSettingsDeviceOptions
@@ -62,6 +64,7 @@ export class MosHandler {
 	public mos: MosConnection
 
 	public mosOptions: MosConfig
+	public debugLogging: boolean = false
 
 	private allMosDevices: {[id: string]: IMOSDevice} = {}
 	private _ownMosDevices: {[deviceId: string]: MosDevice} = {}
@@ -151,13 +154,26 @@ export class MosHandler {
 		// this._observers.push(mappingsObserver)
 
 		let deviceObserver = this._coreHandler.core.observe('peripheralDevices')
-		deviceObserver.added = () => { this._triggerupdateDevices() }
-		deviceObserver.changed = () => { this._triggerupdateDevices() }
-		deviceObserver.removed = () => { this._triggerupdateDevices() }
+		deviceObserver.added = () => { this._deviceOptionsChanged() }
+		deviceObserver.changed = () => { this._deviceOptionsChanged() }
+		deviceObserver.removed = () => { this._deviceOptionsChanged() }
 		this._observers.push(deviceObserver)
 
 	}
-	private _triggerupdateDevices () {
+	debugLog (msg: any, ...args: any[]) {
+		if (this.debugLogging) {
+			this._logger.debug(msg, ...args)
+		}
+	}
+	private _deviceOptionsChanged () {
+		let peripheralDevice = this.getThisPeripheralDevice()
+		if (peripheralDevice) {
+			let settings: MosDeviceSettings = peripheralDevice.settings || {}
+			if (this.debugLogging !== settings.debugLogging) {
+				this._logger.debug('Changing debugLogging to ' + settings.debugLogging)
+				this.debugLogging = settings.debugLogging
+			}
+		}
 		if (this._triggerupdateDevicesTimeout) {
 			clearTimeout(this._triggerupdateDevicesTimeout)
 		}
@@ -181,7 +197,8 @@ export class MosHandler {
 
 		this.mos = new MosConnection(connectionConfig)
 		this.mos.on('rawMessage', (source, type, message) => {
-			this._logger.debug('rawMessage', source, type, message)
+			this.debugLog('rawMessage', source, type, message)
+			// this._logger.debug('rawMessage', source, type, message)
 		})
 		this.mos.on('info', (message) => {
 			this._logger.info(message)
@@ -305,6 +322,10 @@ export class MosHandler {
 			return
 		})
 	}
+	private getThisPeripheralDevice (): CollectionObj | undefined {
+		let peripheralDevices = this._coreHandler.core.getCollection('peripheralDevices')
+		return peripheralDevices.findOne(this._coreHandler.core.deviceId)
+	}
 	private _updateDevices (): Promise<void> {
 		return (
 			!this.mos ?
@@ -312,8 +333,7 @@ export class MosHandler {
 			Promise.resolve()
 		)
 		.then(() => {
-			let peripheralDevices = this._coreHandler.core.getCollection('peripheralDevices')
-			let peripheralDevice = peripheralDevices.findOne(this._coreHandler.core.deviceId)
+			let peripheralDevice = this.getThisPeripheralDevice()
 
 			if (peripheralDevice) {
 				let settings: MosDeviceSettings = peripheralDevice.settings || {}

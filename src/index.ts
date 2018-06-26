@@ -8,6 +8,7 @@ let port: number 		= parseInt(process.env.CORE_PORT + '', 10) 	|| 3000
 let logPath: string 	= process.env.CORE_LOG						|| ''
 let deviceId: string 	= process.env.DEVICE_ID						|| ''
 let deviceToken: string = process.env.DEVICE_TOKEN 				|| ''
+let disableWatchdog: boolean = (process.env.DISABLE_WATCHDOG === '1') 		|| false
 let debug: boolean 		= false
 
 logPath = logPath
@@ -24,6 +25,8 @@ process.argv.forEach((val) => {
 		deviceId = val
 	} else if (prevProcessArg.match(/-token/i)) {
 		deviceToken = val
+	} else if (val.match(/-disableWatchdog/i)) {
+		disableWatchdog = true
 	} else if ((val + '').match(/-debug/i)) {
 		debug = true
 	}
@@ -63,9 +66,10 @@ if (logPath) {
 	console.log('Logging to Console')
 	// Log json to console
 	logger.add(Winston.transports.Console,{
+		level: 'verbose',
 		handleExceptions: true,
 		json: true,
-		stringify: (obj) => JSON.stringify(obj) // make single line
+		stringify: (obj: any) => JSON.stringify(obj) // make single line
 	})
 	// Hijack console.log:
 	// @ts-ignore
@@ -89,6 +93,7 @@ process.on('warning', (e: any) => {
 
 logger.info('------------------------------------------------------------------')
 logger.info('Starting MOS Gateway')
+if (disableWatchdog) logger.info('Watchdog is disabled!')
 // App config -----------------------------------------
 let config: Config = {
 	device: {
@@ -97,7 +102,8 @@ let config: Config = {
 	},
 	core: {
 		host: host,
-		port: port
+		port: port,
+		watchdog: !disableWatchdog
 	},
 	mos: {
 		self: {
