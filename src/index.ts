@@ -147,3 +147,5 @@ logger.info('Core:          ' + config.core.host + ':' + config.core.port)
 logger.info('------------------------------------------------------------------')
 c.init(config)
 .catch(logger.error)
+
+// @todo: remove this line of comment
