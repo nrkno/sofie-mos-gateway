@@ -10,7 +10,7 @@ let deviceId: string 	= process.env.DEVICE_ID						|| ''
 let deviceToken: string = process.env.DEVICE_TOKEN 				|| ''
 let disableWatchdog: boolean = (process.env.DISABLE_WATCHDOG === '1') 		|| false
 let debug: boolean 		= false
-
+let printHelp: boolean 	= false
 logPath = logPath
 
 let prevProcessArg = ''
@@ -29,9 +29,29 @@ process.argv.forEach((val) => {
 		disableWatchdog = true
 	} else if ((val + '').match(/-debug/i)) {
 		debug = true
+	} else if ((val + ' ').match(/-h(elp)? /i)) {
+		console.log(val)
+		printHelp = true
 	}
 	prevProcessArg = val + ''
 })
+
+if (printHelp) {
+	console.log(`
+The MOS-gateway acts as a gateway between mos-devices and Core
+Options:
+CLI                ENV
+-host              CORE_HOST         Host of Core  Default: '127.0.0.1'
+-port              CORE_PORT         Port of Core  Default: '3000'
+-id                CORE_LOG          Custom id of this device
+-token             DEVICE_ID         Custom token of this device
+-log               DEVICE_TOKEN      File path to output log to (if not set, logs are sent to console)
+-disableWatchdog   DISABLE_WATCHDOG  Disable the watchdog (Killing the process if no commands are received after some time)
+-debug                               Debug mode
+-h, -help                            Displays this help message
+`)
+	process.exit(0)
+}
 
 // Setup logging --------------------------------------
 let logger = new (Winston.Logger)({
