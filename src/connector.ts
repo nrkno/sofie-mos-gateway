@@ -23,7 +23,7 @@ export class Connector {
 		this._logger = logger
 	}
 
-	init (config: Config): Promise<number> {
+	init (config: Config): Promise<void> {
 		this._config = config
 
 		return Promise.resolve()
@@ -37,13 +37,26 @@ export class Connector {
 		})
 		.then(() => {
 			this._logger.info('Initialization done')
-			return 0
+			return
 		})
 		.catch((e) => {
 			this._logger.error('Error during initialization:', e, e.stack)
 			// this._logger.error(e)
 			// this._logger.error(e.stack)
-			return 0
+
+			try {
+				this.dispose()
+				.catch(e => this._logger.error(e))
+			} catch (e) {
+				this._logger.error(e)
+			}
+
+			this._logger.info('Shutting down in 10 seconds!')
+			setTimeout(() => {
+				process.exit(0)
+			}, 10 * 1000)
+
+			return
 		})
 	}
 	initCore () {
