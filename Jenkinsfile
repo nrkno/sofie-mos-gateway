@@ -10,10 +10,7 @@ pipeline {
       }
     }
     stage('Deploy') {
-      when {
-        branch 'develop'
-      }
-      steps {
+     steps {
         mosDeploy()
       }
     }
