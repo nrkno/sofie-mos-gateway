@@ -10,7 +10,7 @@ pipeline {
       }
     }
     stage('Deploy') {
-     steps {
+      steps {
         mosDeploy()
       }
     }
