@@ -53,6 +53,34 @@ CLI                ENV
 	process.exit(0)
 }
 
+/**
+ * Used when JSON.stringifying values that might be circular
+ * Usage: JSON.stringify(value, JSONStringifyCircular()))
+ */
+let JSONStringifyCircular = () => {
+	let cacheValues: any[] = []
+	let cacheKeys: any[] = []
+	let stringifyFixer = (key: string, value: any) => {
+		if (typeof value === 'object' && value !== null) {
+			let i = cacheValues.indexOf(value)
+			if (i !== -1) {
+				// Duplicate reference found
+				try {
+					// If this value does not reference a parent it can be deduped
+					return JSON.parse(JSON.stringify(value))
+				} catch (error) {
+					// discard key if value cannot be deduped
+					return '[circular of ' + (cacheKeys[i] || '*root*') + ']'
+				}
+			}
+			// Store value in our collection
+			cacheValues.push(value)
+			cacheKeys.push(key)
+		}
+		return value
+	}
+	return stringifyFixer
+}
 // Setup logging --------------------------------------
 let logger = new (Winston.Logger)({
 })
@@ -69,6 +97,9 @@ if (logPath) {
 		level: 'debug',
 		handleExceptions: true,
 		json: true,
+		stringify: (obj: any) => {
+			return JSON.stringify(obj, JSONStringifyCircular())
+		},
 		filename: logPath
 	})
 	// Hijack console.log:
@@ -77,8 +108,16 @@ if (logPath) {
 	console.log = function (...args: any[]) {
 		// orgConsoleLog('a')
 		if (args.length >= 1) {
-			// @ts-ignore one or more arguments
-			logger.debug(...args)
+			try {
+
+				// @ts-ignore one or more arguments
+				logger.debug(...args)
+				// logger.debug(...args.map(JSONStringifyCircular()))
+			} catch (e) {
+				orgConsoleLog('CATCH')
+				orgConsoleLog(...args)
+				throw e
+			}
 			orgConsoleLog(...args)
 		}
 	}
@@ -89,7 +128,9 @@ if (logPath) {
 		level: 'verbose',
 		handleExceptions: true,
 		json: true,
-		stringify: (obj: any) => JSON.stringify(obj) // make single line
+		stringify: (obj: any) => {
+			return JSON.stringify(obj, JSONStringifyCircular()) // make single line
+		}
 	})
 	// Hijack console.log:
 	// @ts-ignore
