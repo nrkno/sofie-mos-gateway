@@ -3,6 +3,7 @@ import { CoreConnection,
 	PeripheralDeviceAPI as P
 } from 'tv-automation-server-core-integration'
 import * as Winston from 'winston'
+import * as fs from 'fs'
 
 import {
 	IMOSConnectionStatus,
@@ -427,11 +428,13 @@ export class CoreHandler {
 		} else {
 			credentials = CoreConnection.getCredentials(subDeviceId)
 		}
-		return _.extend(credentials, {
+		let options: CoreOptions = _.extend(credentials, {
 			deviceType: (parentProcess ? P.DeviceType.MOSDEVICE : P.DeviceType.OTHER),
 			deviceName: name,
 			watchDog: (this._coreConfig ? this._coreConfig.watchdog : true)
 		})
+		if (parentProcess) options.versions = this._getVersions()
+		return options
 	}
 	registerMosDevice (mosDevice: IMOSDevice, mosHandler: MosHandler): Promise<CoreMosDeviceHandler> {
 		this.logger.info('registerMosDevice -------------')
@@ -591,5 +594,35 @@ export class CoreHandler {
 	pingResponse (message: string) {
 		this.core.setPingResponse(message)
 		return true
+	}
+	private _getVersions () {
+		let versions: {[packageName: string]: string} = {}
+
+		if (process.env.npm_package_version) {
+			versions['_process'] = process.env.npm_package_version
+		}
+
+		let dirNames = [
+			'tv-automation-server-core-integration',
+			'mos-connection'
+		]
+		try {
+			let nodeModulesDirectories = fs.readdirSync('node_modules')
+			_.each(nodeModulesDirectories, (dir) => {
+				try {
+					if (dirNames.indexOf(dir) !== -1) {
+						let file = 'node_modules/' + dir + '/package.json'
+						file = fs.readFileSync(file, 'utf8')
+						let json = JSON.parse(file)
+						versions[dir] = json.version || 'N/A'
+					}
+				} catch (e) {
+					this.logger.error(e)
+				}
+			})
+		} catch (e) {
+			this.logger.error(e)
+		}
+		return versions
 	}
 }
