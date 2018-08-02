@@ -50,7 +50,8 @@
     "release": "yarn reset && yarn test && yarn docs:publish && yarn changelog",
     "reset": "git clean -dfx && git reset --hard && yarn",
     "ci": "yarn test",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "unlinkall": "yarn unlink tv-automation-server-core-integration mos-connection && yarn --check-files"
   },
   "scripts-info": {
     "info": "Display information about the scripts",
