@@ -159,6 +159,8 @@ export class MosHandler {
 		deviceObserver.removed = () => { this._deviceOptionsChanged() }
 		this._observers.push(deviceObserver)
 
+		this._deviceOptionsChanged()
+
 	}
 	debugLog (msg: any, ...args: any[]) {
 		if (this.debugLogging) {
