@@ -66,6 +66,9 @@ export class CoreMosDeviceHandler {
 
 		this._coreParentHandler.logger.info('new CoreMosDeviceHandler ' + mosDevice.idPrimary)
 		this.core = new CoreConnection(parent.getCoreConnectionOptions('MOS: ' + mosDevice.idPrimary, mosDevice.idPrimary, false))
+		this.core.onError((err) => {
+			this._coreParentHandler.logger.error('Core Error: ' + (err.message || err.toString() || err))
+		})
 	}
 	init (): Promise<void> {
 		return this.core.init(this._coreParentHandler.core)
