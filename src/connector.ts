@@ -44,6 +44,8 @@ export class Connector {
 			// this._logger.error(e)
 			// this._logger.error(e.stack)
 
+			this._logger.info('Shutting down in 10 seconds!')
+
 			try {
 				this.dispose()
 				.catch(e => this._logger.error(e))
@@ -51,7 +53,6 @@ export class Connector {
 				this._logger.error(e)
 			}
 
-			this._logger.info('Shutting down in 10 seconds!')
 			setTimeout(() => {
 				process.exit(0)
 			}, 10 * 1000)

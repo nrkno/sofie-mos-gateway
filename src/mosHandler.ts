@@ -329,6 +329,7 @@ export class MosHandler {
 		return peripheralDevices.findOne(this._coreHandler.core.deviceId)
 	}
 	private _updateDevices (): Promise<void> {
+		if (this._disposed) return Promise.resolve()
 		return (
 			!this.mos ?
 			this._initMosConnection() :
