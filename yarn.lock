@@ -3343,9 +3343,9 @@ mongodb-memory-server@^1.7.0:
     tmp "^0.0.33"
     uuid "^3.2.1"
 
-mos-connection@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/mos-connection/-/mos-connection-0.4.0.tgz#655919835f22952c56c88e4793cb1809683e1d64"
+mos-connection@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/mos-connection/-/mos-connection-0.5.1.tgz#71b34fc293735e73525616d672cab3b16d20bb01"
   dependencies:
     "@types/xmlbuilder" "^0.0.32"
     moment "^2.20.1"
