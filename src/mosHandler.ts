@@ -202,11 +202,14 @@ export class MosHandler {
 			this.debugLog('rawMessage', source, type, message)
 			// this._logger.debug('rawMessage', source, type, message)
 		})
-		this.mos.on('info', (message) => {
+		this.mos.on('info', (message: any) => {
 			this._logger.info(message)
 		})
-		this.mos.on('error', (error) => {
+		this.mos.on('error', (error: any) => {
 			this._logger.error(error)
+		})
+		this.mos.on('warning', (warning: any) => {
+			this._logger.error(warning)
 		})
 
 		this.mos.onConnection((mosDevice: IMOSDevice) => {
