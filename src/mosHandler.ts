@@ -408,7 +408,19 @@ export class MosHandler {
 
 			this._ownMosDevices[deviceId] = mosDevice
 
-			return mosDevice.getMachineInfo()
+			const getMachineInfoUntilConnected = () => mosDevice.getMachineInfo().catch((e) => {
+				if (e === 'No connection available for failover') {
+					return new Promise((resolve) => {
+						setTimeout(() => {
+							resolve(getMachineInfoUntilConnected())
+						}, 2000)
+					})
+				} else {
+					return e
+				}
+			})
+
+			return getMachineInfoUntilConnected()
 			.then((machInfo) => {
 				this._logger.info('Connected to Mos-device', machInfo)
 				let machineId = machInfo.ID.toString()
