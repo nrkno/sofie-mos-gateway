@@ -69,6 +69,7 @@ export class CoreMosDeviceHandler {
 		this.core.onError((err) => {
 			this._coreParentHandler.logger.error('Core Error: ' + (err.message || err.toString() || err))
 		})
+
 	}
 	init (): Promise<void> {
 		return this.core.init(this._coreParentHandler.core)
@@ -138,6 +139,7 @@ export class CoreMosDeviceHandler {
 			statusCode: statusCode,
 			messages: messages
 		})
+		.catch(e => this._coreParentHandler.logger.warn('Error when setting status:' + e))
 	}
 	getMachineInfo (): Promise<IMOSListMachInfo> {
 
@@ -388,6 +390,7 @@ export class CoreHandler {
 				statusCode: P.StatusCode.GOOD
 				// messages: []
 			})
+			.catch(e => this.logger.warn('Error when setting status:' + e))
 			// nothing
 		})
 		.then(() => {
