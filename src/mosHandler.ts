@@ -99,11 +99,6 @@ export class MosHandler {
 		}
 		*/
 
-		this._coreHandler.onConnected(() => {
-			this.setupObservers()
-		})
-		this.setupObservers()
-
 		return coreHandler.core.getPeripheralDevice()
 		.then((peripheralDevice: any) => {
 			this._settings = peripheralDevice.settings || {}
@@ -111,6 +106,11 @@ export class MosHandler {
 			return this._initMosConnection()
 		})
 		.then(() => {
+			this._coreHandler.onConnected(() => {
+				this.setupObservers()
+			})
+			this.setupObservers()
+
 			return this._updateDevices()
 		})
 		// .then(() => {
