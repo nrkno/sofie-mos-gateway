@@ -601,6 +601,10 @@ export class CoreHandler {
 		this.core.setPingResponse(message)
 		return true
 	}
+	getSnapshot (): any {
+		this.logger.info('getSnapshot')
+		return {} // TODO: send some snapshot data?
+	}
 	private _getVersions () {
 		let versions: {[packageName: string]: string} = {}
 
