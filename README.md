@@ -1,5 +1,5 @@
 
-# MOS-Gateway
+# Sofie: The Modern TV News Studio Automation System (MOS-Gateway)
 An application for piping data between Core (in the Sofie-project) and MOS-devices
 
 ## Usage
@@ -28,7 +28,6 @@ yarn build
 
 * yarn
 	https://yarnpkg.com
-	This is like npm, but better
 
 * jest
 	yarn global add jest
