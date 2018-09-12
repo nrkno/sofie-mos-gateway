@@ -1,6 +1,6 @@
 
 # Sofie: The Modern TV News Studio Automation System (MOS-Gateway)
-An application for piping data between Core (in the Sofie-project) and MOS-devices
+An application for piping data between [Server Core](https://github.com/nrkno/tv-automation-server-core) and MOS devices.
 
 ## Usage
 ```
