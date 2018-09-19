@@ -1,6 +1,6 @@
 
 # Sofie: The Modern TV News Studio Automation System (MOS-Gateway)
-An application for piping data between [Server Core](https://github.com/nrkno/tv-automation-server-core) and MOS devices.
+An application for piping data between [**Sofie Server Core**](https://github.com/nrkno/tv-automation-server-core) and MOS devices using the [MOS Protocol](http://mosprotocol.com/) v2.8.4.
 
 ## Usage
 ```
@@ -31,4 +31,3 @@ yarn build
 
 * jest
 	yarn global add jest
-	This is our resting framework
