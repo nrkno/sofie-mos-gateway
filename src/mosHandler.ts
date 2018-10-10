@@ -172,8 +172,17 @@ export class MosHandler {
 		if (peripheralDevice) {
 			let settings: MosDeviceSettings = peripheralDevice.settings || {}
 			if (this.debugLogging !== settings.debugLogging) {
-				this._logger.debug('Changing debugLogging to ' + settings.debugLogging)
+				this._logger.info('Changing debugLogging to ' + settings.debugLogging)
+
 				this.debugLogging = settings.debugLogging
+
+				this.mos.setDebug(settings.debugLogging)
+
+				if (settings['debugLogging']) {
+					this._logger.level = 'debug'
+				} else {
+					this._logger.level = 'info'
+				}
 			}
 		}
 		if (this._triggerupdateDevicesTimeout) {
