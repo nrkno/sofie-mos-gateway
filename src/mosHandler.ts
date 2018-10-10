@@ -178,7 +178,7 @@ export class MosHandler {
 
 				this.mos.setDebug(settings.debugLogging)
 
-				if (settings['debugLogging']) {
+				if (settings.debugLogging) {
 					this._logger.level = 'debug'
 				} else {
 					this._logger.level = 'info'

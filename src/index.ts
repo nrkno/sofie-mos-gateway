@@ -125,7 +125,7 @@ if (logPath) {
 	console.log('Logging to Console')
 	// Log json to console
 	logger.add(Winston.transports.Console,{
-		level: 'verbose',
+		// level: 'verbose',
 		handleExceptions: true,
 		json: true,
 		stringify: (obj: any) => {
