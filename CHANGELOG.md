@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.4.0"></a>
+# [0.4.0](https://github.com/nrkno/tv-automation-mos-gateway/compare/v0.3.4...v0.4.0) (2018-10-11)
+
+
+### Bug Fixes
+
+* getting debugLogging to work ([d5ab983](https://github.com/nrkno/tv-automation-mos-gateway/commit/d5ab983))
+* mos-conn dep (handover bugfix) ([b0da158](https://github.com/nrkno/tv-automation-mos-gateway/commit/b0da158))
+* upd mos-conn dep (debug logging) ([6fc5fe9](https://github.com/nrkno/tv-automation-mos-gateway/commit/6fc5fe9))
+
+
+### Features
+
+* set logLevel & mosConnection.setDebug ([b2fc66c](https://github.com/nrkno/tv-automation-mos-gateway/commit/b2fc66c))
+* updated mos-connection dependency, for dynamic setDebug ([096b449](https://github.com/nrkno/tv-automation-mos-gateway/commit/096b449))
+
+
+
 <a name="0.3.4"></a>
 ## [0.3.4](https://github.com/nrkno/tv-automation-mos-gateway/compare/v0.3.3...v0.3.4) (2018-09-27)
 
