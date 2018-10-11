@@ -183,6 +183,10 @@ export class MosHandler {
 				} else {
 					this._logger.level = 'info'
 				}
+				this._logger.info('log level ' + this._logger.level)
+				this._logger.info('test log info')
+				console.log('test console.log')
+				this._logger.debug('test log debug')
 			}
 		}
 		if (this._triggerupdateDevicesTimeout) {
