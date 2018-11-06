@@ -230,9 +230,9 @@ export class CoreMosDeviceHandler {
 		return this._mosDevice.getAllRunningOrders()
 		.then((results) => {
 			// console.log('GOT REPLY', results)
-			return results
+			return this.fixMosData(results)
 		})
-		.catch((err) => {
+		.catch((err: Error) => {
 			// console.log('GOT ERR', err)
 			throw err
 		})
@@ -242,7 +242,7 @@ export class CoreMosDeviceHandler {
 		return this._mosDevice.getRunningOrder(new MosString128(roId))
 		.then((ro) => {
 			// console.log('GOT REPLY', results)
-			return ro
+			return this.fixMosData(ro)
 		})
 		.catch((err) => {
 			// console.log('GOT ERR', err)
@@ -258,7 +258,7 @@ export class CoreMosDeviceHandler {
 		})
 		.then((result) => {
 			// console.log('got result', result)
-			return result
+			return this.fixMosData(result)
 		})
 	}
 	setStoryStatus (roId: string, storyId: string, status: IMOSObjectStatus): Promise<any> {
@@ -271,7 +271,7 @@ export class CoreMosDeviceHandler {
 		})
 		.then((result) => {
 			// console.log('got result', result)
-			return result
+			return this.fixMosData(result)
 		})
 	}
 	setItemStatus (roId: string, storyId: string, itemId: string, status: IMOSObjectStatus): Promise<any> {
@@ -285,7 +285,7 @@ export class CoreMosDeviceHandler {
 		})
 		.then((result) => {
 			// console.log('got result', result)
-			return result
+			return this.fixMosData(result)
 		})
 	}
 	test (a: string) {
@@ -311,7 +311,11 @@ export class CoreMosDeviceHandler {
 	killProcess (actually: number) {
 		return this._coreParentHandler.killProcess(actually)
 	}
-	private fixBeforeSend (o: any): any {
+	/**
+	 * Convert mos-objects to look better over the wire
+	 * @param o the object to convert
+	 */
+	private fixMosData (o: any): any {
 		if (
 			_.isObject(o) && (
 			o instanceof MosTime ||
@@ -322,12 +326,12 @@ export class CoreMosDeviceHandler {
 		}
 		if (_.isArray(o)) {
 			return _.map(o, (val) => {
-				return this.fixBeforeSend(val)
+				return this.fixMosData(val)
 			})
 		} else if (_.isObject(o)) {
 			let o2: any = {}
 			_.each(o, (val, key) => {
-				o2[key] = this.fixBeforeSend(val)
+				o2[key] = this.fixMosData(val)
 			})
 			return o2
 		} else {
@@ -336,7 +340,7 @@ export class CoreMosDeviceHandler {
 	}
 	private _coreMosManipulate (method: string, ...attrs: Array<any>): Promise<any> {
 		attrs = _.map(attrs, (attr) => {
-			return this.fixBeforeSend(attr)
+			return this.fixMosData(attr)
 		})
 		// console.log('mosManipulate', method, attrs)
 		return this.core.mosManipulate(method, ...attrs)
