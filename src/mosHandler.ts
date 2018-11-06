@@ -18,7 +18,8 @@ import {
 	IMOSROFullStory,
 	IConnectionConfig,
 	IMOSDeviceConnectionOptions,
-	MosDevice
+	MosDevice,
+	IMOSListMachInfo
 } from 'mos-connection'
 import * as _ from 'underscore'
 import * as Winston from 'winston'
@@ -424,22 +425,23 @@ export class MosHandler {
 
 			this._ownMosDevices[deviceId] = mosDevice
 
-			const getMachineInfoUntilConnected = () => mosDevice.getMachineInfo().catch((e) => {
-				if (e === 'No connection available for failover') {
+			const getMachineInfoUntilConnected = () => mosDevice.getMachineInfo().catch((e: any) => {
+				if (e && (e + '').match(/no connection available for failover/i)) {
+					// TODO: workaround (mos.connect resolves too soon, before the connection is actually initialted)
 					return new Promise((resolve) => {
 						setTimeout(() => {
 							resolve(getMachineInfoUntilConnected())
 						}, 2000)
 					})
 				} else {
-					return e
+					throw e
 				}
 			})
 
 			return getMachineInfoUntilConnected()
-			.then((machInfo) => {
+			.then((machInfo: IMOSListMachInfo) => {
 				this._logger.info('Connected to Mos-device', machInfo)
-				let machineId = machInfo.ID.toString()
+				let machineId: string | undefined = machInfo.ID && machInfo.ID.toString()
 				if (!(
 					machineId === deviceOptions.primary.id ||
 					(
