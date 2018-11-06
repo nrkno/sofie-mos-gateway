@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.4.1"></a>
+## [0.4.1](https://github.com/nrkno/tv-automation-mos-gateway/compare/v0.4.0...v0.4.1) (2018-11-06)
+
+
+### Bug Fixes
+
+* update core-integration dep (clean up old sockets) ([4afd928](https://github.com/nrkno/tv-automation-mos-gateway/commit/4afd928))
+* update mos.connection dep ([3462c80](https://github.com/nrkno/tv-automation-mos-gateway/commit/3462c80))
+
+
+
 <a name="0.4.0"></a>
 # [0.4.0](https://github.com/nrkno/tv-automation-mos-gateway/compare/v0.3.4...v0.4.0) (2018-10-11)
 
