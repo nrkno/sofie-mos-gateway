@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:experimental
 # BUILD IMAGE
 FROM node:8.11.4
 WORKDIR /opt/mos-gateway
