@@ -1,6 +1,6 @@
 {
   "name": "mos-gateway",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "MOS-Gateway for the Sofie project",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
