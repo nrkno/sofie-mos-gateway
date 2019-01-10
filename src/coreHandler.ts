@@ -65,7 +65,7 @@ export class CoreMosDeviceHandler {
 		this._mosDevice = this._mosDevice // ts-ignore fix
 
 		this._coreParentHandler.logger.info('new CoreMosDeviceHandler ' + mosDevice.idPrimary)
-		this.core = new CoreConnection(parent.getCoreConnectionOptions('MOS: ' + mosDevice.idPrimary, mosDevice.idPrimary, false))
+		this.core = new CoreConnection(parent.getCoreConnectionOptions(mosDevice.idPrimary, mosDevice.idPrimary, false))
 		this.core.onError((err) => {
 			this._coreParentHandler.logger.error('Core Error: ' + (err.message || err.toString() || err))
 		})
@@ -374,7 +374,7 @@ export class CoreHandler {
 	init (config: CoreConfig): Promise<void> {
 		// this.logger.info('========')
 		this._coreConfig = config
-		this.core = new CoreConnection(this.getCoreConnectionOptions('MOS: Parent process', 'MosCoreParent', true))
+		this.core = new CoreConnection(this.getCoreConnectionOptions('MOS gateway', 'MosCoreParent', true))
 
 		this.core.onConnected(() => {
 			this.logger.info('Core Connected!')
