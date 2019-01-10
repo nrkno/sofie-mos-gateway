@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.4.7"></a>
+## [0.4.7](https://github.com/nrkno/tv-automation-mos-gateway/compare/v0.4.6...v0.4.7) (2019-01-10)
+
+
+### Bug Fixes
+
+* **peripheralDevices:** creates more user-friendly names of devices and sub devices. ([f503577](https://github.com/nrkno/tv-automation-mos-gateway/commit/f503577))
+
+
+
 <a name="0.4.6"></a>
 ## [0.4.6](https://github.com/nrkno/tv-automation-mos-gateway/compare/v0.4.5...v0.4.6) (2018-12-19)
 
