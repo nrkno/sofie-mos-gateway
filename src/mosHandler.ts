@@ -374,8 +374,8 @@ export class MosHandler {
 							if (
 								(oldDevice.primaryId || '') !== device.primary.id ||
 								(oldDevice.primaryHost || '') !== device.primary.host ||
-								(oldDevice.secondaryId || '') !== ((device.secondary || {id: ''}).id || '') ||
-								(oldDevice.secondaryHost || '') !== ((device.secondary || {host: ''}).host || '')
+								(oldDevice.secondaryId || '') !== ((device.secondary || { id: '' }).id || '') ||
+								(oldDevice.secondaryHost || '') !== ((device.secondary || { host: '' }).host || '')
 							) {
 								this._logger.info('Re-initializing device: ' + deviceId)
 								devicesToRemove[deviceId] = true
@@ -447,18 +447,21 @@ export class MosHandler {
 						machineId === deviceOptions.secondary.id
 					)
 				)) {
-					throw new Error('Mos-device has ID "' + machineId + '" but specified ncs-id is "' + (deviceOptions.primary.id || (deviceOptions.secondary || {id: ''}).id) + '"')
+					throw new Error('Mos-device has ID "' + machineId + '" but specified ncs-id is "' + (deviceOptions.primary.id || (deviceOptions.secondary || { id: '' }).id) + '"')
 				}
 				return mosDevice
 			})
 			.catch((e) => {
 				// something went wrong during init:
 				this.mos.disposeMosDevice(mosDevice)
+				.catch(() => {
+					this._logger.error(e)
+				})
 				throw e
 			})
 		})
 	}
-	private _removeDevice (deviceId: string ): Promise<void> {
+	private _removeDevice (deviceId: string): Promise<void> {
 		// let mosDevice = this.mos.getDevice(deviceId)
 		let mosDevice = this._getDevice(deviceId) as MosDevice
 
@@ -490,7 +493,7 @@ export class MosHandler {
 		return Promise.resolve()
 
 	}
-	private _getDevice (deviceId: string ): MosDevice | null {
+	private _getDevice (deviceId: string): MosDevice | null {
 		return this._ownMosDevices[deviceId] || null
 	}
 	private _getROAck (roId: MosString128, p: Promise<IMOSROAck>) {
