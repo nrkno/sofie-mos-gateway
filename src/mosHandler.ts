@@ -360,8 +360,6 @@ export class MosHandler {
 
 				let devices = settings.devices
 
-				this._logger.info('Updating devices', devices)
-
 				let devicesToAdd: {[id: string]: MosDeviceSettingsDevice} = {}
 				let devicesToRemove: {[id: string]: true} = {}
 
