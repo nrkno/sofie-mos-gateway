@@ -57,7 +57,7 @@
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.2.0.tgz#02d01dbc330b6cbf36b76ac93c50752c69027065"
   integrity sha512-M74+GvK4hn1eejD9lZ7967qAwvqTZayQa3g10ag4s9uewgR7TKjeaT0YMyoq+gVfKYABiWZ4MQD701/t5e1Jhg==
 
-"@babel/runtime@^7.1.2":
+"@babel/runtime@^7.2.0":
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.2.0.tgz#b03e42eeddf5898e00646e4c840fa07ba8dcad7f"
   integrity sha512-oouEibCbHMVdZSDlJBO6bZmID/zA/G/Qx3H1d3rSNPTD+L8UNKvCat7aKWSJ74zYbm5zWGh0GQN0hKj8zYFTCg==
@@ -1563,6 +1563,11 @@ decompress@^4.2.0:
     make-dir "^1.0.0"
     pify "^2.3.0"
     strip-dirs "^2.0.0"
+
+dedent@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/dedent/-/dedent-0.7.0.tgz#2495ddbaf6eb874abb0e1be9df22d2e5a544326c"
+  integrity sha1-JJXduvbrh0q7Dhvp3yLS5aVEMmw=
 
 deep-extend@^0.6.0:
   version "0.6.0"
@@ -4028,14 +4033,15 @@ moment@^2.22.2:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.22.2.tgz#3c257f9839fc0e93ff53149632239eb90783ff66"
   integrity sha1-PCV/mDn8DpP/UxSWMiOeuQeD/2Y=
 
-mongodb-memory-server@^2.8.0:
-  version "2.8.0"
-  resolved "https://registry.yarnpkg.com/mongodb-memory-server/-/mongodb-memory-server-2.8.0.tgz#02b2e666d99655da2f68be9db6e7cc949e5764c9"
-  integrity sha512-PKa56QdqyyO2srfba7hzUSmSJMrARXnBAbTWtJFkg8McPA07ufKtqb+iW2DOuOJYKo0k55ni7V+eCdN/sUu7+Q==
+mongodb-memory-server@^2.9.3:
+  version "2.9.3"
+  resolved "https://registry.yarnpkg.com/mongodb-memory-server/-/mongodb-memory-server-2.9.3.tgz#96ee5a10743b3209ff5d6cf836889017d306c935"
+  integrity sha512-CzIMq5w3sHSjTG0XQyaGzIC7JFflMb/i/e2Vauev5W6NGiCeSYc552dy6L1JfFh4h5z4NFhEh7BvB8WMJIXvtw==
   dependencies:
-    "@babel/runtime" "^7.1.2"
+    "@babel/runtime" "^7.2.0"
     debug "^4.1.0"
     decompress "^4.2.0"
+    dedent "^0.7.0"
     find-cache-dir "^2.0.0"
     get-port "^4.0.0"
     getos "^3.1.1"
