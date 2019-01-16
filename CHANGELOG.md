@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.4.8"></a>
+## [0.4.8](https://github.com/nrkno/tv-automation-mos-gateway/compare/v0.4.7...v0.4.8) (2019-01-16)
+
+
+### Bug Fixes
+
+* update mongodb-memory server to fix build issue ([f2cd240](https://github.com/nrkno/tv-automation-mos-gateway/commit/f2cd240))
+
+
+
 <a name="0.4.7"></a>
 ## [0.4.7](https://github.com/nrkno/tv-automation-mos-gateway/compare/v0.4.6...v0.4.7) (2019-01-10)
 
