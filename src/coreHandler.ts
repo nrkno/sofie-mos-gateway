@@ -4,6 +4,8 @@ import { CoreConnection,
 } from 'tv-automation-server-core-integration'
 import * as Winston from 'winston'
 import * as fs from 'fs'
+import { Process } from './process'
+import { DDPConnectorOptions } from 'tv-automation-server-core-integration/dist/lib/ddpConnector'
 
 import {
 	IMOSConnectionStatus,
@@ -365,15 +367,17 @@ export class CoreHandler {
 	private _isInitialized: boolean = false
 	private _executedFunctions: {[id: string]: boolean} = {}
 	private _coreConfig?: CoreConfig
+	private _process?: Process
 
 	constructor (logger: Winston.LoggerInstance, deviceOptions: DeviceConfig) {
 		this.logger = logger
 		this._deviceOptions = deviceOptions
 	}
 
-	init (config: CoreConfig): Promise<void> {
+	init (config: CoreConfig, process: Process): Promise<void> {
 		// this.logger.info('========')
 		this._coreConfig = config
+		this._process = process
 		this.core = new CoreConnection(this.getCoreConnectionOptions('MOS gateway', 'MosCoreParent', true))
 
 		this.core.onConnected(() => {
@@ -387,7 +391,16 @@ export class CoreHandler {
 			this.logger.error('Core Error: ' + (err.message || err.toString() || err))
 		})
 
-		return this.core.init(config).then((id: string) => {
+		let ddpConfig: DDPConnectorOptions = {
+			host: config.host,
+			port: config.port
+		}
+		if (this._process && this._process.certificates.length) {
+			ddpConfig.tlsOpts = {
+				ca: this._process.certificates
+			}
+		}
+		return this.core.init(ddpConfig).then((id: string) => {
 			id = id // tsignore
 
 			this.core.setStatus({

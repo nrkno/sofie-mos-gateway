@@ -9,12 +9,17 @@ let logPath: string 	= process.env.CORE_LOG						|| ''
 let deviceId: string 	= process.env.DEVICE_ID						|| ''
 let deviceToken: string = process.env.DEVICE_TOKEN 				|| ''
 let disableWatchdog: boolean = (process.env.DISABLE_WATCHDOG === '1') 		|| false
+let unsafeSSL: boolean		= process.env.UNSAFE_SSL === '1' || false
+let certs: string[] 		= (process.env.CERTIFICATES || '').split(';') || []
 let debug: boolean 		= false
 let printHelp: boolean 	= false
 logPath = logPath
 
 let prevProcessArg = ''
 process.argv.forEach((val) => {
+	val = val + ''
+
+	let nextPrevProcessArg = val
 	if (prevProcessArg.match(/-host/i)) {
 		host = val
 	} else if (prevProcessArg.match(/-port/i)) {
@@ -25,15 +30,22 @@ process.argv.forEach((val) => {
 		deviceId = val
 	} else if (prevProcessArg.match(/-token/i)) {
 		deviceToken = val
-	} else if (val.match(/-disableWatchdog/i)) {
-		disableWatchdog = true
 	} else if ((val + '').match(/-debug/i)) {
 		debug = true
 	} else if ((val + ' ').match(/-h(elp)? /i)) {
-		console.log(val)
 		printHelp = true
+	} else if (prevProcessArg.match(/-certificates/i)) {
+		certs.push(val)
+		nextPrevProcessArg = prevProcessArg // so that we can get multiple certificates
+
+// arguments with no options:
+	} else if (val.match(/-disableWatchdog/i)) {
+		disableWatchdog = true
+	} else if (val.match(/-unsafeSSL/i)) {
+		// Will cause the Node applocation to blindly accept all certificates. Not recommenced unless in local, controlled networks.
+		unsafeSSL = true
 	}
-	prevProcessArg = val + ''
+	prevProcessArg = nextPrevProcessArg + ''
 })
 
 if (printHelp) {
@@ -47,6 +59,8 @@ CLI                ENV
 -token             DEVICE_ID         Custom token of this device
 -log               DEVICE_TOKEN      File path to output log to (if not set, logs are sent to console)
 -disableWatchdog   DISABLE_WATCHDOG  Disable the watchdog (Killing the process if no commands are received after some time)
+-certificates      CERTIFICATES      Provide paths to SSL certificates, (for self-signed certificates). '-certificates path1 path2 path3'
+-unsafeSSL         UNSAFE_SSL        Will cause the Node applocation to blindly accept all certificates. Not recommenced unless in local, controlled networks.
 -debug                               Debug mode
 -h, -help                            Displays this help message
 `)
@@ -157,6 +171,10 @@ logger.info('Starting MOS Gateway')
 if (disableWatchdog) logger.info('Watchdog is disabled!')
 // App config -----------------------------------------
 let config: Config = {
+	process: {
+		unsafeSSL: unsafeSSL,
+		certificates: certs
+	},
 	device: {
 		deviceId: deviceId,
 		deviceToken: deviceToken
