@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.5.0"></a>
+# [0.5.0](https://github.com/nrkno/tv-automation-mos-gateway/compare/v0.4.8...v0.5.0) (2019-02-08)
+
+
+### Features
+
+* CLI arguments "-certificates" & "-unsafeSSL" ([6f957d0](https://github.com/nrkno/tv-automation-mos-gateway/commit/6f957d0))
+
+
+
 <a name="0.4.8"></a>
 ## [0.4.8](https://github.com/nrkno/tv-automation-mos-gateway/compare/v0.4.7...v0.4.8) (2019-01-16)
 
