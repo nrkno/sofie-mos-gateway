@@ -1,6 +1,7 @@
 
 import { Connector, Config } from './connector'
 import * as Winston from 'winston'
+import _ = require('underscore')
 
 // CLI arguments / Environment variables --------------
 let host: string 		= process.env.CORE_HOST 					|| '127.0.0.1'
@@ -173,7 +174,7 @@ if (disableWatchdog) logger.info('Watchdog is disabled!')
 let config: Config = {
 	process: {
 		unsafeSSL: unsafeSSL,
-		certificates: certs
+		certificates: _.compact(certs)
 	},
 	device: {
 		deviceId: deviceId,
