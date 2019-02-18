@@ -3808,10 +3808,10 @@ moment@^2.22.2:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.22.2.tgz#3c257f9839fc0e93ff53149632239eb90783ff66"
   integrity sha1-PCV/mDn8DpP/UxSWMiOeuQeD/2Y=
 
-mos-connection@^0.6.5:
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/mos-connection/-/mos-connection-0.6.5.tgz#0b293d6fef8bb02242d349b54ba7ae872b34be07"
-  integrity sha512-iPRulLKd7Q6Jau+mZLspn4ThBc/3ArnUSEK28hu51QLjeItgokWgMYVuWZWSA502pTi6vwSzwqNj5n+3DDiM6Q==
+mos-connection@^0.6.8:
+  version "0.6.8"
+  resolved "https://registry.yarnpkg.com/mos-connection/-/mos-connection-0.6.8.tgz#8d70eab7acf067b803ce02d1ce715bcfbfc5b0b9"
+  integrity sha512-1y6x8T3kZ73qdyiJV5+fb7JkPyxV4JEqbaQQf+6Wc6SLPLVchVTd3WUHQg3v5d9ayier+kg6pEVdUS8VB4fABA==
   dependencies:
     "@types/xmlbuilder" "^0.0.34"
     iconv-lite "^0.4.24"
