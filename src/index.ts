@@ -168,8 +168,21 @@ process.on('warning', (e: any) => {
 })
 
 logger.info('------------------------------------------------------------------')
-logger.info('Starting MOS Gateway')
-if (disableWatchdog) logger.info('Watchdog is disabled!')
+logger.info('-----------------------------------')
+logger.info('Statup options:')
+
+logger.info(`host: "${host}"`)
+logger.info(`port: ${port}`)
+logger.info(`log: "${logPath}"`)
+logger.info(`id: "${deviceId}"`)
+logger.info(`token: "${deviceToken}"`)
+logger.info(`debug: ${debug}`)
+logger.info(`certificates: [${certs.join(',')}]`)
+logger.info(`disableWatchdog: ${disableWatchdog}`)
+logger.info(`unsafeSSL: ${unsafeSSL}`)
+
+logger.info('-----------------------------------')
+
 // App config -----------------------------------------
 let config: Config = {
 	process: {
