@@ -110,7 +110,7 @@
     "production"
   ],
   "dependencies": {
-    "mos-connection": "^0.6.8",
+    "mos-connection": "git+https://git@github.com/nrkno/tv-automation-mos-connection.git#feature\/profile3-dist",
     "tslib": "^1.9.3",
     "tv-automation-server-core-integration": "0.8.0",
     "underscore": "^1.9.1",

@@ -3506,10 +3506,9 @@ moment@^2.22.2:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
 
-mos-connection@^0.6.8:
-  version "0.6.8"
-  resolved "https://registry.yarnpkg.com/mos-connection/-/mos-connection-0.6.8.tgz#8d70eab7acf067b803ce02d1ce715bcfbfc5b0b9"
-  integrity sha512-1y6x8T3kZ73qdyiJV5+fb7JkPyxV4JEqbaQQf+6Wc6SLPLVchVTd3WUHQg3v5d9ayier+kg6pEVdUS8VB4fABA==
+"mos-connection@git+https://git@github.com/nrkno/tv-automation-mos-connection.git#feature/profile3-dist":
+  version "0.6.3"
+  resolved "git+https://git@github.com/nrkno/tv-automation-mos-connection.git#c34ac5ee2ea3e75d86d5d56d5cdb0e34059da960"
   dependencies:
     "@types/xmlbuilder" "^0.0.34"
     iconv-lite "^0.4.24"
