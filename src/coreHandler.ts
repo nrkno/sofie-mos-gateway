@@ -573,7 +573,7 @@ export class CoreHandler {
 	}
 	setupObserverForPeripheralDeviceCommands (functionObject: CoreMosDeviceHandler | CoreHandler) {
 		let observer = functionObject.core.observe('peripheralDeviceCommands')
-		functionObject.killProcess(0)
+		functionObject.killProcess(0) // just make sure it exists
 		functionObject._observers.push(observer)
 		let addedChangedCommand = (id: string) => {
 			let cmds = functionObject.core.getCollection('peripheralDeviceCommands')
