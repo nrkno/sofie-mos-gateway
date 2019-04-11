@@ -290,6 +290,15 @@ export class CoreMosDeviceHandler {
 			return this.fixMosData(result)
 		})
 	}
+	replaceStoryItem (roID: string, storyID: string, item: IMOSItem): Promise<any> {
+		console.log(roID, storyID, item)
+		return this._mosDevice.mosItemReplace({
+			roID,
+			storyID,
+			item
+		})
+		.then(result => this.fixMosData(result))
+	}
 	test (a: string) {
 		return new Promise(resolve => {
 			setTimeout(() => {
