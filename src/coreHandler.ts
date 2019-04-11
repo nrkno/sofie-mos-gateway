@@ -344,8 +344,10 @@ export class CoreMosDeviceHandler {
 		attrs = _.map(attrs, (attr) => {
 			return this.fixMosData(attr)
 		})
-		// console.log('mosManipulate', method, attrs)
-		return this.core.mosManipulate(method, ...attrs)
+		// Make the commands be sent sequantially:
+		return this.core.putOnQueue('mos', () => {
+			return this.core.mosManipulate(method, ...attrs)
+		})
 	}
 }
 export interface CoreConfig {
