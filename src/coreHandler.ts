@@ -346,7 +346,27 @@ export class CoreMosDeviceHandler {
 		})
 		// Make the commands be sent sequantially:
 		return this.core.putOnQueue('mos', () => {
-			return this.core.mosManipulate(method, ...attrs)
+
+			// Log info about the sent command:
+			let msg = 'Command: ' + method
+			if (attrs[0] && attrs[0].ID) msg = `${method}: ${attrs[0].ID}`
+			else if (attrs[0] && attrs[0] instanceof MosString128) msg = `${method}: ${attrs[0].toString()}`
+			else if (attrs[0] && attrs[0].ObjectId) msg = `${method}: ${attrs[0].ObjectId}`
+			else if (attrs[0] && attrs[0].StoryId) msg = `${method}: ${attrs[0].StoryId}`
+			else if (attrs[0] && attrs[0].StoryID) msg = `${method}: ${attrs[0].StoryID}`
+			else if (attrs[0] && attrs[0].ItemID) msg = `${method}: ${attrs[0].ItemID}`
+			else if (attrs[0] && attrs[0].RunningOrderID) msg = `${method}: ${attrs[0].RunningOrderID}`
+			else if (attrs[0] && attrs[0].toString) msg = `${method}: ${attrs[0].toString()}`
+
+			this._coreParentHandler.logger.info('Recieved MOS command: ' + msg)
+
+			return (
+				this.core.mosManipulate(method, ...attrs)
+				.catch(e => {
+					this._coreParentHandler.logger.info('MOS command rejected: ' + ((e && e.toString()) || e))
+					throw e
+				})
+			)
 		})
 	}
 }
