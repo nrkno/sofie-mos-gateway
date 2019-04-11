@@ -291,10 +291,10 @@ export class CoreMosDeviceHandler {
 		})
 	}
 	replaceStoryItem (roID: string, storyID: string, item: IMOSItem): Promise<any> {
-		console.log(roID, storyID, item)
+		// console.log(roID, storyID, item)
 		return this._mosDevice.mosItemReplace({
-			roID,
-			storyID,
+			roID: new MosString128(roID),
+			storyID: new MosString128(storyID),
 			item
 		})
 		.then(result => this.fixMosData(result))
