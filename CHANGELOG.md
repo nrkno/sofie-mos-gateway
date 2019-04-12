@@ -2,6 +2,52 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.5.3"></a>
+## [0.5.3](https://github.com/nrkno/tv-automation-mos-gateway/compare/v0.5.2...v0.5.3) (2019-03-27)
+
+
+
+<a name="0.5.2"></a>
+## [0.5.2](https://github.com/nrkno/tv-automation-mos-gateway/compare/v0.5.1...v0.5.2) (2019-02-28)
+
+
+### Bug Fixes
+
+* log options on startup ([56ec040](https://github.com/nrkno/tv-automation-mos-gateway/commit/56ec040))
+* mos-connection dep ([bd537b2](https://github.com/nrkno/tv-automation-mos-gateway/commit/bd537b2))
+
+
+
+<a name="0.5.1"></a>
+## [0.5.1](https://github.com/nrkno/tv-automation-mos-gateway/compare/v0.5.0...v0.5.1) (2019-02-08)
+
+
+### Bug Fixes
+
+* drop empty certificates ([a43c3ac](https://github.com/nrkno/tv-automation-mos-gateway/commit/a43c3ac))
+
+
+
+<a name="0.5.0"></a>
+# [0.5.0](https://github.com/nrkno/tv-automation-mos-gateway/compare/v0.4.8...v0.5.0) (2019-02-08)
+
+
+### Features
+
+* CLI arguments "-certificates" & "-unsafeSSL" ([6f957d0](https://github.com/nrkno/tv-automation-mos-gateway/commit/6f957d0))
+
+
+
+<a name="0.4.8"></a>
+## [0.4.8](https://github.com/nrkno/tv-automation-mos-gateway/compare/v0.4.7...v0.4.8) (2019-01-16)
+
+
+### Bug Fixes
+
+* update mongodb-memory server to fix build issue ([f2cd240](https://github.com/nrkno/tv-automation-mos-gateway/commit/f2cd240))
+
+
+
 <a name="0.4.7"></a>
 ## [0.4.7](https://github.com/nrkno/tv-automation-mos-gateway/compare/v0.4.6...v0.4.7) (2019-01-10)
 
