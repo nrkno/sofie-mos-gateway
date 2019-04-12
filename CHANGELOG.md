@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.6.0-0"></a>
+# [0.6.0-0](https://github.com/nrkno/tv-automation-mos-gateway/compare/v0.5.3...v0.6.0-0) (2019-04-12)
+
+
+### Bug Fixes
+
+* typings ([0a755fd](https://github.com/nrkno/tv-automation-mos-gateway/commit/0a755fd))
+* update mos-conn dep ([e9d1972](https://github.com/nrkno/tv-automation-mos-gateway/commit/e9d1972))
+* update mos-conn dep ([28b3ef4](https://github.com/nrkno/tv-automation-mos-gateway/commit/28b3ef4))
+* vulnerabilities ([1b41084](https://github.com/nrkno/tv-automation-mos-gateway/commit/1b41084))
+
+
+### Features
+
+* log MOS-commands ([df7526c](https://github.com/nrkno/tv-automation-mos-gateway/commit/df7526c))
+* replaceStoryItem ([5ef9a18](https://github.com/nrkno/tv-automation-mos-gateway/commit/5ef9a18))
+* send mos-commands sequentially to Core ([f35c81e](https://github.com/nrkno/tv-automation-mos-gateway/commit/f35c81e))
+
+
+
 <a name="0.5.3"></a>
 ## [0.5.3](https://github.com/nrkno/tv-automation-mos-gateway/compare/v0.5.2...v0.5.3) (2019-03-27)
 
