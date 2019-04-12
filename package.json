@@ -52,7 +52,8 @@
     "ci": "yarn test",
     "validate:dependencies": "yarn audit",
     "start": "node dist/index.js",
-    "unlinkall": "yarn unlink tv-automation-server-core-integration mos-connection && yarn --check-files"
+    "unlinkall": "yarn unlink tv-automation-server-core-integration mos-connection && yarn --check-files",
+    "prerelease": "standard-version --prerelease"
   },
   "scripts-info": {
     "info": "Display information about the scripts",
