@@ -113,7 +113,7 @@
   "dependencies": {
     "mos-connection": "^0.8.1",
     "tslib": "^1.9.3",
-    "tv-automation-server-core-integration": "1.0.0",
+    "tv-automation-server-core-integration": "1.1.0",
     "underscore": "^1.9.1",
     "winston": "^2.4.2"
   }

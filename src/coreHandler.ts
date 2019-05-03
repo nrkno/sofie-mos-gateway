@@ -466,7 +466,10 @@ export class CoreHandler {
 		})
 	}
 	getCoreConnectionOptions (name: string, subDeviceId: string, parentProcess: boolean): CoreOptions {
-		let credentials
+		let credentials: {
+			deviceId: string
+			deviceToken: string
+		}
 
 		if (this._deviceOptions.deviceId && this._deviceOptions.deviceToken) {
 			credentials = {
@@ -482,11 +485,16 @@ export class CoreHandler {
 		} else {
 			credentials = CoreConnection.getCredentials(subDeviceId)
 		}
-		let options: CoreOptions = _.extend(credentials, {
-			deviceType: (parentProcess ? P.DeviceType.MOSDEVICE : P.DeviceType.OTHER),
+		let options: CoreOptions = {
+			...credentials,
+
+			deviceCategory: P.DeviceCategory.INGEST,
+			deviceType: P.DeviceType.MOS,
+			deviceSubType: (parentProcess ? 'mos_connection' : P.SUBTYPE_PROCESS),
+
 			deviceName: name,
 			watchDog: (this._coreConfig ? this._coreConfig.watchdog : true)
-		})
+		}
 		if (parentProcess) options.versions = this._getVersions()
 		return options
 	}
