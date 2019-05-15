@@ -290,6 +290,15 @@ export class CoreMosDeviceHandler {
 			return this.fixMosData(result)
 		})
 	}
+	replaceStoryItem (roID: string, storyID: string, item: IMOSItem): Promise<any> {
+		// console.log(roID, storyID, item)
+		return this._mosDevice.mosItemReplace({
+			roID: new MosString128(roID),
+			storyID: new MosString128(storyID),
+			item
+		})
+		.then(result => this.fixMosData(result))
+	}
 	test (a: string) {
 		return new Promise(resolve => {
 			setTimeout(() => {
@@ -344,8 +353,30 @@ export class CoreMosDeviceHandler {
 		attrs = _.map(attrs, (attr) => {
 			return this.fixMosData(attr)
 		})
-		// console.log('mosManipulate', method, attrs)
-		return this.core.mosManipulate(method, ...attrs)
+		// Make the commands be sent sequantially:
+		return this.core.putOnQueue('mos', () => {
+
+			// Log info about the sent command:
+			let msg = 'Command: ' + method
+			if (attrs[0] && attrs[0].ID) msg = `${method}: ${attrs[0].ID}`
+			else if (attrs[0] && attrs[0] instanceof MosString128) msg = `${method}: ${attrs[0].toString()}`
+			else if (attrs[0] && attrs[0].ObjectId) msg = `${method}: ${attrs[0].ObjectId}`
+			else if (attrs[0] && attrs[0].StoryId) msg = `${method}: ${attrs[0].StoryId}`
+			else if (attrs[0] && attrs[0].StoryID) msg = `${method}: ${attrs[0].StoryID}`
+			else if (attrs[0] && attrs[0].ItemID) msg = `${method}: ${attrs[0].ItemID}`
+			else if (attrs[0] && attrs[0].RunningOrderID) msg = `${method}: ${attrs[0].RunningOrderID}`
+			else if (attrs[0] && attrs[0].toString) msg = `${method}: ${attrs[0].toString()}`
+
+			this._coreParentHandler.logger.info('Recieved MOS command: ' + msg)
+
+			return (
+				this.core.mosManipulate(method, ...attrs)
+				.catch(e => {
+					this._coreParentHandler.logger.info('MOS command rejected: ' + ((e && e.toString()) || e))
+					throw e
+				})
+			)
+		})
 	}
 }
 export interface CoreConfig {
@@ -573,7 +604,7 @@ export class CoreHandler {
 	}
 	setupObserverForPeripheralDeviceCommands (functionObject: CoreMosDeviceHandler | CoreHandler) {
 		let observer = functionObject.core.observe('peripheralDeviceCommands')
-		functionObject.killProcess(0)
+		functionObject.killProcess(0) // just make sure it exists
 		functionObject._observers.push(observer)
 		let addedChangedCommand = (id: string) => {
 			let cmds = functionObject.core.getCollection('peripheralDeviceCommands')
