@@ -490,7 +490,7 @@ export class CoreHandler {
 
 			deviceCategory: P.DeviceCategory.INGEST,
 			deviceType: P.DeviceType.MOS,
-			deviceSubType: (parentProcess ? 'mos_connection' : P.SUBTYPE_PROCESS),
+			deviceSubType: (parentProcess ? P.SUBTYPE_PROCESS : 'mos_connection'),
 
 			deviceName: name,
 			watchDog: (this._coreConfig ? this._coreConfig.watchdog : true)
