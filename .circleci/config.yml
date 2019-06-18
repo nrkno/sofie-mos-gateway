@@ -24,8 +24,7 @@ jobs:
       - save_cache:
           key: v3-node-cache-{{ .Branch }}
           paths: 
-            - meteor/node_modules
-            - ~/.meteor
+            - node_modules
       - persist_to_workspace:
           root: .
           paths:
