@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.8.0-0"></a>
+# [0.8.0-0](https://github.com/nrkno/tv-automation-mos-gateway/compare/v0.7.0...v0.8.0-0) (2019-05-22)
+
+
+### Features
+
+* log message on startup ([512a34e](https://github.com/nrkno/tv-automation-mos-gateway/commit/512a34e))
+* new device type interface ([ef6fc5f](https://github.com/nrkno/tv-automation-mos-gateway/commit/ef6fc5f))
+* update core-integration dep ([e099f99](https://github.com/nrkno/tv-automation-mos-gateway/commit/e099f99))
+
+
+
 <a name="0.7.0"></a>
 # [0.7.0](https://github.com/nrkno/tv-automation-mos-gateway/compare/v0.7.0-0...v0.7.0) (2019-05-15)
 

@@ -3,6 +3,8 @@ import { Connector, Config } from './connector'
 import * as Winston from 'winston'
 import _ = require('underscore')
 
+console.log('process started') // This is a message all Sofie processes log upon startup
+
 // CLI arguments / Environment variables --------------
 let host: string 		= process.env.CORE_HOST 					|| '127.0.0.1'
 let port: number 		= parseInt(process.env.CORE_PORT + '', 10) 	|| 3000
