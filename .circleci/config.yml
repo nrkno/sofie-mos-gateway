@@ -22,9 +22,13 @@ jobs:
           paths: 
             - node_modules
       - save_cache:
-          key: v3-node-cache-{{ .Branch }}
+          key: v1-node-cache-{{ .Branch }}
           paths: 
             - node_modules
+      - run:
+          name: yarn install (production)
+          command: yarn install --check-files --frozen-lockfile --production --force
+          no_output_timeout: 60m
       - persist_to_workspace:
           root: .
           paths:
