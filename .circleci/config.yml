@@ -7,7 +7,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-node-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - v1-node-cache-{{ .Branch }}-{{ checksum "package.json" }}
             - v1-node-cache-{{ .Branch }}
       - run:
           name: yarn install
@@ -18,17 +18,13 @@ jobs:
           command: yarn build
           no_output_timeout: 60m
       - save_cache:
-          key: v1-node-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+          key: v1-node-cache-{{ .Branch }}-{{ checksum "package.json" }}
           paths: 
             - node_modules
       - save_cache:
-          key: v1-node-cache-{{ .Branch }}
+          key: v3-node-cache-{{ .Branch }}
           paths: 
             - node_modules
-      - run:
-          name: yarn install (production)
-          command: yarn install --check-files --frozen-lockfile --production --force
-          no_output_timeout: 60m
       - persist_to_workspace:
           root: .
           paths:
