@@ -403,6 +403,11 @@
   dependencies:
     winston "*"
 
+"@types/xmlbuilder@^0.0.34":
+  version "0.0.34"
+  resolved "https://registry.yarnpkg.com/@types/xmlbuilder/-/xmlbuilder-0.0.34.tgz#80ae8abc630886dc04f72ad54129a4613cd15dda"
+  integrity sha512-yVsHfYqJblSEg3DvUhGndpCZBZz2GiGVmqMa04fbGro2xzxRj85Q7MQ4os+MaXmKcpCDD42MXuxUWfoUKTuVdQ==
+
 "@types/yargs-parser@*":
   version "13.0.0"
   resolved "https://registry.yarnpkg.com/@types/yargs-parser/-/yargs-parser-13.0.0.tgz#453743c5bbf9f1bed61d959baab5b06be029b2d0"
@@ -3707,7 +3712,7 @@ moment@^2.24.0:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
 
-mos-connection@^0.8.3:
+mos-connection@^0.8.1:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/mos-connection/-/mos-connection-0.8.3.tgz#bae90d6ff6dccfa8c1a812156cf17d959c52b3af"
   integrity sha512-j/pzmKu2iTBVGcsJSMtZSj2PvswpZPkzI1cGD7VaDCEqUhgA3JzyZWoNSK1XONRMSI3PKkDuZA2UV51VuIE7QQ==
