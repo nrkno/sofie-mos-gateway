@@ -1,6 +1,6 @@
 {
   "name": "mos-gateway",
-  "version": "1.0.0",
+  "version": "0.0.0-develop",
   "description": "MOS-Gateway for the Sofie project",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -53,7 +53,7 @@
     "validate:dependencies": "yarn audit",
     "start": "node dist/index.js",
     "unlinkall": "yarn unlink tv-automation-server-core-integration mos-connection && yarn --check-files",
-    "prerelease": "standard-version --prerelease"
+    "prepareChangelog": "standard-version --prerelease"
   },
   "scripts-info": {
     "info": "Display information about the scripts",
@@ -81,7 +81,7 @@
     "@types/underscore": "^1.9.2",
     "@types/winston": "^2.3.9",
     "@types/xmlbuilder": "^0.0.34",
-    "codecov": "^3.5.0",
+    "codecov": "^3.6.1",
     "gh-pages": "^2.1.1",
     "jest": "^24.9.0",
     "mkdirp": "^0.5.1",
@@ -112,7 +112,7 @@
     "production"
   ],
   "dependencies": {
-    "mos-connection": "^0.8.4",
+    "mos-connection": "^0.8.5",
     "tslib": "^1.10.0",
     "tv-automation-server-core-integration": "1.2.0",
     "underscore": "^1.9.1",
