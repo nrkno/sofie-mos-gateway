@@ -41,13 +41,9 @@
     "cov": "jest; open-cli coverage/lcov-report/index.html",
     "cov-open": "open-cli coverage/lcov-report/index.html",
     "send-coverage": "jest && codecov",
-    "docs": "yarn docs:html && open-cli docs/index.html",
-    "docs:html": "typedoc src/index.ts --excludePrivate --mode file --theme minimal --out docs",
-    "docs:json": "typedoc --mode file --json docs/typedoc.json src/index.ts",
-    "docs:publish": "yarn docs:html && gh-pages -d docs",
     "changelog": "standard-version",
     "inspect": "node --inspect dist/index.js",
-    "release": "yarn reset && yarn test && yarn docs:publish && yarn changelog",
+    "release": "yarn reset && yarn test && yarn changelog",
     "reset": "git clean -dfx && git reset --hard && yarn",
     "ci": "yarn test",
     "validate:dependencies": "yarn audit",
@@ -63,12 +59,9 @@
     "test": "Lint, build, and test the library",
     "watch": "Watch source files, rebuild library on changes, rerun relevant tests",
     "cov": "Run tests, generate the HTML coverage report, and open it in a browser",
-    "docs": "Generate HTML API documentation and open it in a browser",
-    "docs:publish": "Generate HTML API documentation and push it to GitHub Pages",
-    "docs:json": "Generate API documentation in typedoc JSON format",
     "changelog": "Bump package.json version, update CHANGELOG.md, tag a release",
     "reset": "Delete all untracked files and reset the repo to the last commit",
-    "release": "Clean, build, test, publish docs, and prepare release (a one-step publish process)",
+    "release": "Clean, build, test, and prepare release (a one-step publish process)",
     "ci": "Test script for running by the CI (CircleCI)",
     "validate:dependencies": "Scan dependencies for vulnerabilities and check licenses"
   },
@@ -77,12 +70,10 @@
   },
   "devDependencies": {
     "@types/jest": "^24.0.17",
-    "@types/node": "^8.0.4",
+    "@types/node": "^12.12.6",
     "@types/underscore": "^1.9.2",
     "@types/winston": "^2.3.9",
-    "@types/xmlbuilder": "^0.0.34",
     "codecov": "^3.6.1",
-    "gh-pages": "^2.1.1",
     "jest": "^24.9.0",
     "mkdirp": "^0.5.1",
     "npm-scripts-info": "^0.3.9",
@@ -93,9 +84,8 @@
     "trash-cli": "^3.0.0",
     "ts-jest": "^24.0.2",
     "tslint": "^5.18.0",
-    "tslint-config-standard": "^8.0.1",
-    "typedoc": "^0.15.0",
-    "typescript": "^3.3.3333"
+    "tslint-config-standard": "^9.0.0",
+    "typescript": "~3.6.4"
   },
   "keywords": [
     "mos",
@@ -114,7 +104,7 @@
   "dependencies": {
     "mos-connection": "^0.8.5",
     "tslib": "^1.10.0",
-    "tv-automation-server-core-integration": "1.2.0",
+    "tv-automation-server-core-integration": "1.2.1",
     "underscore": "^1.9.1",
     "winston": "^2.4.2"
   }
