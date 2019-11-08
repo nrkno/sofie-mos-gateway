@@ -2,11 +2,8 @@
   "name": "mos-gateway",
   "version": "0.0.0-develop",
   "description": "MOS-Gateway for the Sofie project",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "module": "dist/module/index.js",
-  "browser": "dist/browser/index.js",
   "license": "MIT",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nrkno/tv-automation-mos-gateway.git"
@@ -32,8 +29,8 @@
     "build": "trash dist && yarn build:main",
     "buildstart": "yarn build && yarn start",
     "buildinspect": "yarn build && yarn inspect",
-    "build:main": "tsc -p tsconfig.json",
-    "lint": "tslint --project tsconfig.jest.json --config tslint.json",
+    "build:main": "tsc -p tsconfig.build.json",
+    "lint": "tslint --project tsconfig.json --config tslint.json",
     "unit": "jest",
     "test": "yarn lint && yarn unit",
     "test:integration": "yarn lint && jest --config=jest-integration.config.js",
@@ -66,7 +63,7 @@
     "validate:dependencies": "Scan dependencies for vulnerabilities and check licenses"
   },
   "engines": {
-    "node": ">=4.5"
+    "node": ">=8"
   },
   "devDependencies": {
     "@types/jest": "^24.0.17",
