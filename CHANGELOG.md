@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.1](https://github.com/nrkno/tv-automation-mos-gateway/compare/v0.0.0...v1.0.1) (2019-10-25)
+
+### [1.0.1-0](https://github.com/nrkno/tv-automation-mos-gateway/compare/v1.0.0...v1.0.1-0) (2019-10-25)
+
+
+### Bug Fixes
+
+* update mos-connection dep ([6c7714d](https://github.com/nrkno/tv-automation-mos-gateway/commit/6c7714dd74b80eea37f209f90eacdcabaf8b43ea))
+
 ## [1.0.0](https://github.com/nrkno/tv-automation-mos-gateway/compare/v1.0.0-1...v1.0.0) (2019-09-11)
 
 <a name="1.0.0-1"></a>
