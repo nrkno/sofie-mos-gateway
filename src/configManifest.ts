@@ -3,7 +3,7 @@
  * UI.
  */
 import { DeviceConfigManifest,ConfigManifestEntryType } from 'tv-automation-server-core-integration'
- 
+
 export const MOS_DEVICE_CONFIG_MANIFEST: DeviceConfigManifest = {
 	deviceConfig: [
 		{

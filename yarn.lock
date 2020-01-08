@@ -2277,10 +2277,10 @@ growly@^1.3.0:
   resolved "https://registry.yarnpkg.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
   integrity sha1-8QdIy+dq+WS3yWyTxrzCivEgwIE=
 
-handlebars@^4.1.2, handlebars@^4.4.0:
-  version "4.4.5"
-  resolved "https://registry.yarnpkg.com/handlebars/-/handlebars-4.4.5.tgz#1b1f94f9bfe7379adda86a8b73fb570265a0dddd"
-  integrity sha512-0Ce31oWVB7YidkaTq33ZxEbN+UDxMMgThvCe8ptgQViymL5DPis9uLdTA13MiRPhgvqyxIegugrP97iK3JeBHg==
+handlebars@^4.1.2, handlebars@^4.4.0, handlebars@^4.5.3:
+  version "4.5.3"
+  resolved "https://registry.yarnpkg.com/handlebars/-/handlebars-4.5.3.tgz#5cf75bd8714f7605713511a56be7c349becb0482"
+  integrity sha512-3yPecJoJHK/4c6aZhSvxOyG4vJKDshV36VHp0iVCDVh7o9w2vwi3NSnL2MMPj3YdduqaBcu7cGbggJQM0br9xA==
   dependencies:
     neo-async "^2.6.0"
     optimist "^0.6.1"
@@ -3721,12 +3721,11 @@ moment@^2.24.0:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
 
-mos-connection@^0.8.5:
-  version "0.8.5"
-  resolved "https://registry.yarnpkg.com/mos-connection/-/mos-connection-0.8.5.tgz#7d86f5adad570bb420ce4a7920df6dc6b4660d96"
-  integrity sha512-P5Iy4HFJM6qvU0RSz1kpI50KNQJ1wDvVoeYWJ0bnbRTg/oq5M9dIWFo7hcCdD1Gehe2BssRISQbwoc52vOIOUA==
+mos-connection@^0.8.6:
+  version "0.8.6"
+  resolved "https://registry.yarnpkg.com/mos-connection/-/mos-connection-0.8.6.tgz#6e0eb94b62994a436b8ac91d499dd638598588f2"
+  integrity sha512-W6E8wdfxYx61+rwwzdxySRbPFHYFoGcNXu8PhZRpG6ve1sAgpakQD1OD4Jp7DW2tMpbyzXYmOBFFlWPEMaaPyA==
   dependencies:
-    "@types/xmlbuilder" "^0.0.34"
     iconv-lite "^0.5.0"
     moment "^2.24.0"
     tslib "^1.9.3"
@@ -4643,7 +4642,7 @@ request@2.87.0:
     tunnel-agent "^0.6.0"
     uuid "^3.1.0"
 
-request@^2.87.0, request@^2.88.0:
+request@^2.87.0:
   version "2.88.0"
   resolved "https://registry.yarnpkg.com/request/-/request-2.88.0.tgz#9c2fca4f7d35b592efe57c7f0a55e81052124fef"
   integrity sha512-NAqBSrijGLZdM0WZNsInLJpkJokL72XYjUpnB0iwsRgxh7dB6COrHnTBNwN0E+lHDAJzu7kLAkDeY08z2/A0hg==
@@ -5514,16 +5513,15 @@ tunnel-agent@^0.6.0:
   dependencies:
     safe-buffer "^5.0.1"
 
-tv-automation-server-core-integration@1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/tv-automation-server-core-integration/-/tv-automation-server-core-integration-1.2.0.tgz#05a5ecfb82d61a86f9a2b76f0d4433ffb24f8e63"
-  integrity sha512-p4k4xFjhbf4JwjvDVB/hyFgSwCT+ldHGvZlbuajLI9IJDnEX/BOS/ZzFYLRgcRPmmyPAyk7sE8ifEaAf2jq0Iw==
+tv-automation-server-core-integration@1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/tv-automation-server-core-integration/-/tv-automation-server-core-integration-1.3.0.tgz#6f5f212070abac1cf6cbb5190eadbcac2ff0e98e"
+  integrity sha512-mgHfTA3UZrsYu1/sTPonhqZ7E1X2j2O78/8lIoF5DHjvgn85v27Gfk3BZnDeMBP1GZEV37jOCXmT1v4Ron08jA==
   dependencies:
     data-store "3.1.0"
     ddp "git+http://github.com/nytamin/node-ddp-client.git#v0.12.2-next2"
     ddp-ejson "~0.8.1-3"
     ddp-random "~0.8.1-1"
-    request "^2.88.0"
     tslib "^1.9.3"
     underscore "^1.9.1"
 
