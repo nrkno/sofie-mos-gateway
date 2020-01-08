@@ -32,6 +32,7 @@ import {
 import * as _ from 'underscore'
 import { MosHandler } from './mosHandler'
 import { DeviceConfig } from './connector'
+import { MOS_DEVICE_CONFIG_MANIFEST } from './configManifest'
 // import { STATUS_CODES } from 'http'
 export interface PeripheralDeviceCommand {
 	_id: string
@@ -489,11 +490,13 @@ export class CoreHandler {
 			...credentials,
 
 			deviceCategory: P.DeviceCategory.INGEST,
-			deviceType: P.DeviceType.MOS,
+			deviceType: P.DeviceType.MOS, // @todo: should not have this...
 			deviceSubType: (parentProcess ? P.SUBTYPE_PROCESS : 'mos_connection'),
 
 			deviceName: name,
-			watchDog: (this._coreConfig ? this._coreConfig.watchdog : true)
+			watchDog: (this._coreConfig ? this._coreConfig.watchdog : true),
+
+			configManifest: MOS_DEVICE_CONFIG_MANIFEST
 		}
 		if (parentProcess) options.versions = this._getVersions()
 		return options
