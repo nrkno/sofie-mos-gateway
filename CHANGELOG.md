@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0-0](https://github.com/nrkno/tv-automation-mos-gateway/compare/v1.0.1...v1.1.0-0) (2020-01-08)
+
+
+### Features
+
+* add device config manifest ([#24](https://github.com/nrkno/tv-automation-mos-gateway/issues/24)) ([84a1e97](https://github.com/nrkno/tv-automation-mos-gateway/commit/84a1e976195d1291b36afeffc44c9109784fb778))
+
 ### [1.0.1](https://github.com/nrkno/tv-automation-mos-gateway/compare/v0.0.0...v1.0.1) (2019-10-25)
 
 ### [1.0.1-0](https://github.com/nrkno/tv-automation-mos-gateway/compare/v1.0.0...v1.0.1-0) (2019-10-25)
