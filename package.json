@@ -112,7 +112,7 @@
     "production"
   ],
   "dependencies": {
-    "mos-connection": "^0.8.8",
+    "mos-connection": "^0.8.9",
     "tslib": "^1.10.0",
     "tv-automation-server-core-integration": "1.3.0",
     "underscore": "^1.9.1",
