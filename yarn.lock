@@ -3721,16 +3721,16 @@ moment@^2.24.0:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
 
-mos-connection@^0.8.6:
-  version "0.8.6"
-  resolved "https://registry.yarnpkg.com/mos-connection/-/mos-connection-0.8.6.tgz#6e0eb94b62994a436b8ac91d499dd638598588f2"
-  integrity sha512-W6E8wdfxYx61+rwwzdxySRbPFHYFoGcNXu8PhZRpG6ve1sAgpakQD1OD4Jp7DW2tMpbyzXYmOBFFlWPEMaaPyA==
+mos-connection@0.0.1-nightly-develop-20200302-140636-1acec89.0:
+  version "0.0.1-nightly-develop-20200302-140636-1acec89.0"
+  resolved "https://registry.yarnpkg.com/mos-connection/-/mos-connection-0.0.1-nightly-develop-20200302-140636-1acec89.0.tgz#16cfd04abc66c8f9b3af3d23508cc7d0f2c95cf8"
+  integrity sha512-OyHYL8LKif2yHEz5FIRP8XIaGQ5tHENx6GqALlXJk9NNs46SaxowV8YDFkdgUFJzvk/dNldx2MemttF8bNIasg==
   dependencies:
     iconv-lite "^0.5.0"
     moment "^2.24.0"
     tslib "^1.9.3"
     xml-js "^1.6.11"
-    xmlbuilder "^10.1.1"
+    xmlbuilder "^13.0.2"
 
 mount-point@^3.0.0:
   version "3.0.0"
@@ -5929,10 +5929,10 @@ xml-name-validator@^3.0.0:
   resolved "https://registry.yarnpkg.com/xml-name-validator/-/xml-name-validator-3.0.0.tgz#6ae73e06de4d8c6e47f9fb181f78d648ad457c6a"
   integrity sha512-A5CUptxDsvxKJEU3yO6DuWBSJz/qizqzJKOMIfUJHETbBw/sFaDxgd6fxm1ewUaM0jZ444Fc5vC5ROYurg/4Pw==
 
-xmlbuilder@^10.1.1:
-  version "10.1.1"
-  resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-10.1.1.tgz#8cae6688cc9b38d850b7c8d3c0a4161dcaf475b0"
-  integrity sha512-OyzrcFLL/nb6fMGHbiRDuPup9ljBycsdCypwuyg5AAHvyWzGfChJpCXMG88AGTIMFhGZ9RccFN1e6lhg3hkwKg==
+xmlbuilder@^13.0.2:
+  version "13.0.2"
+  resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-13.0.2.tgz#02ae33614b6a047d1c32b5389c1fdacb2bce47a7"
+  integrity sha512-Eux0i2QdDYKbdbA6AM6xE4m6ZTZr4G4xF9kahI2ukSEMCzwce2eX9WlTI5J3s+NU7hpasFsr8hWIONae7LluAQ==
 
 xtend@~4.0.1:
   version "4.0.2"
