@@ -38,6 +38,12 @@ export const MOS_DEVICE_CONFIG_MANIFEST: DeviceConfigManifest = {
 						type: ConfigManifestEntryType.STRING
 					},
 					{
+						id: 'primary.dontUseQueryPort',
+						name: `Don't use the Query port`,
+						columnName: 'No query',
+						type: ConfigManifestEntryType.BOOLEAN
+					},
+					{
 						id: 'secondary.id',
 						name: 'Secondary ID (Newsroom System MOS ID)',
 						columnName: 'Secondary ID',
@@ -48,6 +54,12 @@ export const MOS_DEVICE_CONFIG_MANIFEST: DeviceConfigManifest = {
 						name: 'Secondary Host (IP or Hostname)',
 						columnName: 'Secondary Host',
 						type: ConfigManifestEntryType.STRING
+					},
+					{
+						id: 'secondary.dontUseQueryPort',
+						name: `Don't use the Query port`,
+						columnName: 'No query',
+						type: ConfigManifestEntryType.BOOLEAN
 					}
 				]
 			}
