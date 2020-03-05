@@ -3721,10 +3721,10 @@ moment@^2.24.0:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
 
-mos-connection@0.0.1-nightly-develop-20200302-140636-1acec89.0:
-  version "0.0.1-nightly-develop-20200302-140636-1acec89.0"
-  resolved "https://registry.yarnpkg.com/mos-connection/-/mos-connection-0.0.1-nightly-develop-20200302-140636-1acec89.0.tgz#16cfd04abc66c8f9b3af3d23508cc7d0f2c95cf8"
-  integrity sha512-OyHYL8LKif2yHEz5FIRP8XIaGQ5tHENx6GqALlXJk9NNs46SaxowV8YDFkdgUFJzvk/dNldx2MemttF8bNIasg==
+mos-connection@0.8.9:
+  version "0.8.9"
+  resolved "https://registry.yarnpkg.com/mos-connection/-/mos-connection-0.8.9.tgz#871fd143a0de9a5290170e068b05f1e2d22f05d3"
+  integrity sha512-pwM/yLreJ+tmu9D4Cc7yNClrnAKAMg6gbTE6cJMk4X/Ko+MLhMJc8ctdJJRhantsGsGd0jmeZhbJjZXyTXQl+w==
   dependencies:
     iconv-lite "^0.5.0"
     moment "^2.24.0"
@@ -5513,10 +5513,10 @@ tunnel-agent@^0.6.0:
   dependencies:
     safe-buffer "^5.0.1"
 
-tv-automation-server-core-integration@1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/tv-automation-server-core-integration/-/tv-automation-server-core-integration-1.3.0.tgz#6f5f212070abac1cf6cbb5190eadbcac2ff0e98e"
-  integrity sha512-mgHfTA3UZrsYu1/sTPonhqZ7E1X2j2O78/8lIoF5DHjvgn85v27Gfk3BZnDeMBP1GZEV37jOCXmT1v4Ron08jA==
+tv-automation-server-core-integration@1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/tv-automation-server-core-integration/-/tv-automation-server-core-integration-1.4.0.tgz#3878b664c909ed7965bdaff80c2e4da7ba481501"
+  integrity sha512-sctONAHX9jxLkAACQ4fveR8SXrsAEfh7R9R3+XXCng650nvrDM1k7glCcrR7PXzGhaYit24nv2lNNUCiDoTHzA==
   dependencies:
     data-store "3.1.0"
     ddp "git+http://github.com/nytamin/node-ddp-client.git#v0.12.2-next2"
