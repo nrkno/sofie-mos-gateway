@@ -3,7 +3,6 @@
   "version": "0.0.0-develop",
   "description": "MOS-Gateway for the Sofie project",
   "license": "MIT",
-  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nrkno/tv-automation-mos-gateway.git"
@@ -63,7 +62,7 @@
     "validate:dependencies": "Scan dependencies for vulnerabilities and check licenses"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=12"
   },
   "devDependencies": {
     "@types/jest": "^24.0.17",
