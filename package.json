@@ -96,16 +96,13 @@
     "production"
   ],
   "resolutions": {
-    "**/trash": "~6.0.0"
+    "**/**/handlebars": "^4.5.3"
   },
   "dependencies": {
-    "mos-connection": "0.8.9",
+    "mos-connection": "0.0.1-nightly-develop-20200302-140636-1acec89.0",
     "tslib": "^1.10.0",
     "tv-automation-server-core-integration": "1.4.0",
     "underscore": "^1.9.1",
     "winston": "^2.4.2"
-  },
-  "resolutions": {
-    "**/**/handlebars": "^4.5.3"
   }
 }
