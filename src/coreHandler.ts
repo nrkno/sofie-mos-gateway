@@ -95,7 +95,7 @@ export class CoreMosDeviceHandler {
 	private _subscriptions: Array<any> = []
 
 	private _pendingStoryItemChanges: Array<IStoryItemChange> = []
-	private _pendingChangeTimeout: number = 10 * 1000
+	private _pendingChangeTimeout: number = 60 * 1000
 
 	constructor (parent: CoreHandler, mosDevice: IMOSDevice, mosHandler: MosHandler) {
 		this._coreParentHandler = parent
