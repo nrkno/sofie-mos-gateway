@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0-0](https://github.com/nrkno/tv-automation-mos-gateway/compare/v1.2.0...v1.2.0-0) (2020-03-24)
+
+
+### Features
+
+* update to node 12 ([15ea24e](https://github.com/nrkno/tv-automation-mos-gateway/commit/15ea24eff253d2be855bb6bb5c4d1a6f7e5a1472))
+
+
+### Bug Fixes
+
+* add dontUseQueryPort to configManifest ([4475963](https://github.com/nrkno/tv-automation-mos-gateway/commit/447596376929754b6ebee3d005e29a3b2d0d1c15))
+
 ## 1.1.0 (2020-01-24)
 
 
