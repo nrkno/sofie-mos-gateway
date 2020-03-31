@@ -355,6 +355,7 @@ export class CoreMosDeviceHandler {
 	}
 	replaceStoryItem (roID: string, storyID: string, item: IMOSItem, itemDiff?: DeepPartial<IMOSItem>): Promise<any> {
 		// console.log(roID, storyID, item)
+		this._coreParentHandler.logger.debug(`received replaceStoryItem: ${JSON.stringify(item)}, ${JSON.stringify(itemDiff)}`)
 		return this._mosDevice.mosItemReplace({
 			roID: new MosString128(roID),
 			storyID: new MosString128(storyID),
@@ -365,6 +366,7 @@ export class CoreMosDeviceHandler {
 			if (!itemDiff) {
 				return result
 			} else {
+				this._coreParentHandler.logger.debug(`response is: ${JSON.stringify(result)}`)
 				if (result.Status.toString() !== 'ACK') {
 					return Promise.reject(result)
 				} else {
@@ -379,13 +381,16 @@ export class CoreMosDeviceHandler {
 
 						itemDiff
 					}
+					this._coreParentHandler.logger.debug(`creating pending change: ${JSON.stringify(pendingChange)}`)
 					const promise = new Promise<IMOSROAck>((promiseResolve, promiseReject) => {
 						pendingChange.resolve = (value) => {
 							this.removePendingChange(pendingChange)
+							this._coreParentHandler.logger.debug(`pending change resolved: ${JSON.stringify(value || result)}`)
 							promiseResolve(value || result)
 						}
 						pendingChange.reject = (reason) => {
 							this.removePendingChange(pendingChange)
+							this._coreParentHandler.logger.debug(`pending change rejected: ${JSON.stringify(reason)}`)
 							promiseReject(reason)
 						}
 					})
@@ -478,9 +483,11 @@ export class CoreMosDeviceHandler {
 		})
 	}
 	private addPendingChange (change: IStoryItemChange) {
+		this._coreParentHandler.logger.debug(`adding pending change: ${JSON.stringify(change)}`)
 		this._pendingStoryItemChanges.push(change)
 	}
 	private removePendingChange (change: IStoryItemChange) {
+		this._coreParentHandler.logger.debug(`removing pending change: ${JSON.stringify(change)}`)
 		const idx = this._pendingStoryItemChanges.indexOf(change)
 		if (idx >= 0) {
 			this._pendingStoryItemChanges.splice(idx, 1)
