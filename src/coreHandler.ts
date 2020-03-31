@@ -362,12 +362,16 @@ export class CoreMosDeviceHandler {
 			item
 		})
 		.then(result => this.fixMosData(result))
-		.then((result: IMOSROAck) => {
+		.then((result: any) => {
 			if (!itemDiff) {
 				return result
 			} else {
 				this._coreParentHandler.logger.debug(`response is: ${JSON.stringify(result)}`)
-				if (result.Status.toString() !== 'ACK') {
+				if (!result ||
+					!result.mos ||
+					!result.mos.roAck ||
+					!result.mos.roAck.roStatus ||
+					result.mos.roAck.roStatus.toString() !== 'OK') {
 					return Promise.reject(result)
 				} else {
 					const pendingChange: IStoryItemChange = {
