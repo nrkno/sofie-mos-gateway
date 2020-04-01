@@ -47,7 +47,7 @@ function deepMatch (object: any, attrs: any, deep: boolean): boolean {
 		const key = keys[i]
 		if (deep && typeof attrs[key] === 'object') {
 			if (!deepMatch(obj[key], attrs[key], true)) return false
-		} else if (attrs[key] !== obj[key] || !(key in obj)) return false
+		} else if (attrs[key] !== obj[key]) return false
 	}
 	return true
 }
