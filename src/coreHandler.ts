@@ -235,15 +235,15 @@ export class CoreMosDeviceHandler {
 	mosRoStoryReplace (Action: IMOSStoryAction, Stories: Array<IMOSROStory>): Promise<any> {
 		const result = this._coreMosManipulate(P.methods.mosRoStoryReplace, Action, Stories)
 
-		this._coreParentHandler.logger.debug(`Pending story item changes: ${this._pendingStoryItemChanges.length}`)
+		// this._coreParentHandler.logger.debug(`Pending story item changes: ${this._pendingStoryItemChanges.length}`)
 
 		if (this._pendingStoryItemChanges.length > 0) {
 			Stories.forEach((story) => {
 				const pendingChange = this._pendingStoryItemChanges.find(change => change.storyID === story.ID.toString())
 				if (pendingChange) {
-					if (pendingChange) this._coreParentHandler.logger.debug(`Found pending change for storyID: ${pendingChange.storyID}`)
+					// if (pendingChange) this._coreParentHandler.logger.debug(`Found pending change for storyID: ${pendingChange.storyID}`)
 					const pendingChangeItem = story.Items.find(item => pendingChange.itemID === item.ID.toString())
-					this._coreParentHandler.logger.debug(`comparing: ${JSON.stringify(pendingChangeItem)}, ${JSON.stringify(pendingChange)}`, pendingChangeItem, pendingChange)
+					// this._coreParentHandler.logger.debug(`comparing: ${JSON.stringify(pendingChangeItem)}, ${JSON.stringify(pendingChange)}`, pendingChangeItem, pendingChange)
 					if (pendingChangeItem && deepMatch(pendingChangeItem, pendingChange.itemDiff, true)) {
 						pendingChange.resolve()
 					}
@@ -267,15 +267,15 @@ export class CoreMosDeviceHandler {
 	mosRoItemReplace (Action: IMOSItemAction, Items: Array<IMOSItem>): Promise<any> {
 		const result = this._coreMosManipulate(P.methods.mosRoItemReplace, Action, Items)
 
-		this._coreParentHandler.logger.debug(`Pending story item changes: ${this._pendingStoryItemChanges.length}`)
+		// this._coreParentHandler.logger.debug(`Pending story item changes: ${this._pendingStoryItemChanges.length}`)
 
 		if (this._pendingStoryItemChanges.length > 0) {
 			Items.forEach((item) => {
 				const pendingChange = this._pendingStoryItemChanges.find(change =>
 					Action.StoryID.toString() === change.storyID && change.itemID === item.ID.toString()
 				)
-				if (pendingChange) this._coreParentHandler.logger.debug(`Found pending change: ${pendingChange.itemID}`)
-				this._coreParentHandler.logger.debug(`comparing: ${JSON.stringify(item)}, ${JSON.stringify(pendingChange)}`)
+				// if (pendingChange) this._coreParentHandler.logger.debug(`Found pending change: ${pendingChange.itemID}`)
+				// this._coreParentHandler.logger.debug(`comparing: ${JSON.stringify(item)}, ${JSON.stringify(pendingChange)}`)
 				if (pendingChange && deepMatch(item, pendingChange.itemDiff, true)) {
 					pendingChange.resolve()
 				}
@@ -299,14 +299,14 @@ export class CoreMosDeviceHandler {
 	mosRoFullStory (story: IMOSROFullStory): Promise<any> {
 		const result = this._coreMosManipulate(P.methods.mosRoFullStory, story)
 
-		this._coreParentHandler.logger.debug(`Pending story item changes: ${this._pendingStoryItemChanges.length}`)
+		// this._coreParentHandler.logger.debug(`Pending story item changes: ${this._pendingStoryItemChanges.length}`)
 
 		if (this._pendingStoryItemChanges.length > 0) {
 			const pendingChange = this._pendingStoryItemChanges.find(change => change.storyID === story.ID.toString())
 			if (pendingChange) {
-				this._coreParentHandler.logger.debug(`Found pending change for storyID: ${pendingChange.storyID}`)
+				// this._coreParentHandler.logger.debug(`Found pending change for storyID: ${pendingChange.storyID}`)
 				const pendingChangeItem = story.Body.find(item => item.Type === 'storyItem' && pendingChange.itemID === item.Content.ID.toString())
-				this._coreParentHandler.logger.debug(`comparing: ${JSON.stringify(pendingChangeItem)}, ${JSON.stringify(pendingChange)}`)
+				// this._coreParentHandler.logger.debug(`comparing: ${JSON.stringify(pendingChangeItem)}, ${JSON.stringify(pendingChange)}`)
 				if (pendingChangeItem && deepMatch(pendingChangeItem.Content, pendingChange.itemDiff, true)) {
 					pendingChange.resolve()
 				}
@@ -381,7 +381,7 @@ export class CoreMosDeviceHandler {
 	}
 	replaceStoryItem (roID: string, storyID: string, item: IMOSItem, itemDiff?: DeepPartial<IMOSItem>): Promise<any> {
 		// console.log(roID, storyID, item)
-		this._coreParentHandler.logger.debug(`received replaceStoryItem: ${JSON.stringify(item)}, ${JSON.stringify(itemDiff)}`)
+		// this._coreParentHandler.logger.debug(`received replaceStoryItem: ${JSON.stringify(item)}, ${JSON.stringify(itemDiff)}`)
 		return this._mosDevice.mosItemReplace({
 			roID: new MosString128(roID),
 			storyID: new MosString128(storyID),
@@ -392,7 +392,7 @@ export class CoreMosDeviceHandler {
 			if (!itemDiff) {
 				return result
 			} else {
-				this._coreParentHandler.logger.debug(`response is: ${JSON.stringify(result)}`)
+				// this._coreParentHandler.logger.debug(`response is: ${JSON.stringify(result)}`)
 				if (!result ||
 					!result.mos ||
 					!result.mos.roAck ||
@@ -411,16 +411,16 @@ export class CoreMosDeviceHandler {
 
 						itemDiff
 					}
-					this._coreParentHandler.logger.debug(`creating pending change: ${JSON.stringify(pendingChange)}`)
+					this._coreParentHandler.logger.debug(`creating pending change: ${pendingChange.storyID}:${pendingChange.itemID}`)
 					const promise = new Promise<IMOSROAck>((promiseResolve, promiseReject) => {
 						pendingChange.resolve = (value) => {
 							this.removePendingChange(pendingChange)
-							this._coreParentHandler.logger.debug(`pending change resolved: ${JSON.stringify(value || result)}`)
+							this._coreParentHandler.logger.debug(`pending change resolved: ${pendingChange.storyID}:${pendingChange.itemID}`)
 							promiseResolve(value || result)
 						}
 						pendingChange.reject = (reason) => {
 							this.removePendingChange(pendingChange)
-							this._coreParentHandler.logger.debug(`pending change rejected: ${JSON.stringify(reason)}`)
+							this._coreParentHandler.logger.debug(`pending change rejected: ${pendingChange.storyID}:${pendingChange.itemID}`)
 							promiseReject(reason)
 						}
 					})
@@ -513,11 +513,11 @@ export class CoreMosDeviceHandler {
 		})
 	}
 	private addPendingChange (change: IStoryItemChange) {
-		this._coreParentHandler.logger.debug(`adding pending change: ${JSON.stringify(change)}`)
+		// this._coreParentHandler.logger.debug(`adding pending change: ${JSON.stringify(change)}`)
 		this._pendingStoryItemChanges.push(change)
 	}
 	private removePendingChange (change: IStoryItemChange) {
-		this._coreParentHandler.logger.debug(`removing pending change: ${JSON.stringify(change)}`)
+		// this._coreParentHandler.logger.debug(`removing pending change: ${JSON.stringify(change)}`)
 		const idx = this._pendingStoryItemChanges.indexOf(change)
 		if (idx >= 0) {
 			this._pendingStoryItemChanges.splice(idx, 1)
