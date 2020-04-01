@@ -243,7 +243,7 @@ export class CoreMosDeviceHandler {
 				if (pendingChange) {
 					if (pendingChange) this._coreParentHandler.logger.debug(`Found pending change for storyID: ${pendingChange.storyID}`)
 					const pendingChangeItem = story.Items.find(item => pendingChange.itemID === item.ID.toString())
-					this._coreParentHandler.logger.debug(`comparing:`, pendingChangeItem, pendingChange)
+					this._coreParentHandler.logger.debug(`comparing: ${JSON.stringify(pendingChangeItem)}, ${JSON.stringify(pendingChange)}`, pendingChangeItem, pendingChange)
 					if (pendingChangeItem && deepMatch(pendingChangeItem, pendingChange.itemDiff, true)) {
 						pendingChange.resolve()
 					}
@@ -271,9 +271,11 @@ export class CoreMosDeviceHandler {
 
 		if (this._pendingStoryItemChanges.length > 0) {
 			Items.forEach((item) => {
-				const pendingChange = this._pendingStoryItemChanges.find(change => change.itemID === item.ID.toString())
+				const pendingChange = this._pendingStoryItemChanges.find(change =>
+					Action.StoryID.toString() === change.storyID && change.itemID === item.ID.toString()
+				)
 				if (pendingChange) this._coreParentHandler.logger.debug(`Found pending change: ${pendingChange.itemID}`)
-				this._coreParentHandler.logger.debug(`comparing:`, item, pendingChange)
+				this._coreParentHandler.logger.debug(`comparing: ${JSON.stringify(item)}, ${JSON.stringify(pendingChange)}`)
 				if (pendingChange && deepMatch(item, pendingChange.itemDiff, true)) {
 					pendingChange.resolve()
 				}
@@ -304,7 +306,7 @@ export class CoreMosDeviceHandler {
 			if (pendingChange) {
 				this._coreParentHandler.logger.debug(`Found pending change for storyID: ${pendingChange.storyID}`)
 				const pendingChangeItem = story.Body.find(item => item.Type === 'storyItem' && pendingChange.itemID === item.Content.ID.toString())
-				this._coreParentHandler.logger.debug(`comparing:`, pendingChangeItem, pendingChange)
+				this._coreParentHandler.logger.debug(`comparing: ${JSON.stringify(pendingChangeItem)}, ${JSON.stringify(pendingChange)}`)
 				if (pendingChangeItem && deepMatch(pendingChangeItem.Content, pendingChange.itemDiff, true)) {
 					pendingChange.resolve()
 				}
