@@ -234,11 +234,15 @@ export class CoreMosDeviceHandler {
 	mosRoStoryReplace (Action: IMOSStoryAction, Stories: Array<IMOSROStory>): Promise<any> {
 		const result = this._coreMosManipulate(P.methods.mosRoStoryReplace, Action, Stories)
 
+		this._coreParentHandler.logger.debug(`Pending story item changes: ${this._pendingStoryItemChanges.length}`)
+
 		if (this._pendingStoryItemChanges.length > 0) {
 			Stories.forEach((story) => {
 				const pendingChange = this._pendingStoryItemChanges.find(change => change.storyID === story.ID.toString())
 				if (pendingChange) {
+					if (pendingChange) this._coreParentHandler.logger.debug(`Found pending change for storyID: ${pendingChange.storyID}`)
 					const pendingChangeItem = story.Items.find(item => pendingChange.itemID === item.ID.toString())
+					this._coreParentHandler.logger.debug(`comparing:`, pendingChangeItem, pendingChange)
 					if (pendingChangeItem && deepMatch(pendingChangeItem, pendingChange.itemDiff, true)) {
 						pendingChange.resolve()
 					}
@@ -263,9 +267,13 @@ export class CoreMosDeviceHandler {
 	mosRoItemReplace (Action: IMOSItemAction, Items: Array<IMOSItem>): Promise<any> {
 		const result = this._coreMosManipulate(P.methods.mosRoItemReplace, Action, Items)
 
+		this._coreParentHandler.logger.debug(`Pending story item changes: ${this._pendingStoryItemChanges.length}`)
+
 		if (this._pendingStoryItemChanges.length > 0) {
 			Items.forEach((item) => {
 				const pendingChange = this._pendingStoryItemChanges.find(change => change.itemID === item.ID.toString())
+				if (pendingChange) this._coreParentHandler.logger.debug(`Found pending change: ${pendingChange.itemID}`)
+				this._coreParentHandler.logger.debug(`comparing:`, item, pendingChange)
 				if (pendingChange && deepMatch(item, pendingChange.itemDiff, true)) {
 					pendingChange.resolve()
 				}
@@ -287,7 +295,23 @@ export class CoreMosDeviceHandler {
 		return this._coreMosManipulate(P.methods.mosRoReadyToAir, Action)
 	}
 	mosRoFullStory (story: IMOSROFullStory): Promise<any> {
-		return this._coreMosManipulate(P.methods.mosRoFullStory, story)
+		const result = this._coreMosManipulate(P.methods.mosRoFullStory, story)
+
+		this._coreParentHandler.logger.debug(`Pending story item changes: ${this._pendingStoryItemChanges.length}`)
+
+		if (this._pendingStoryItemChanges.length > 0) {
+			const pendingChange = this._pendingStoryItemChanges.find(change => change.storyID === story.ID.toString())
+			if (pendingChange) {
+				this._coreParentHandler.logger.debug(`Found pending change for storyID: ${pendingChange.storyID}`)
+				const pendingChangeItem = story.Body.find(item => item.Type === 'storyItem' && pendingChange.itemID === item.Content.ID.toString())
+				this._coreParentHandler.logger.debug(`comparing:`, pendingChangeItem, pendingChange)
+				if (pendingChangeItem && deepMatch(pendingChangeItem.Content, pendingChange.itemDiff, true)) {
+					pendingChange.resolve()
+				}
+			}
+		}
+
+		return result
 	}
 
 	triggerGetAllRunningOrders (): Promise<any> {
