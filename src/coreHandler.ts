@@ -31,20 +31,21 @@ import {
 } from 'mos-connection'
 
 export type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends Array<infer U>
-    ? Array<DeepPartial<U>>
-    : T[P] extends ReadonlyArray<infer U>
-      ? ReadonlyArray<DeepPartial<U>>
-      : DeepPartial<T[P]>
+	[P in keyof T]?: T[P] extends Array<infer U>
+		? Array<DeepPartial<U>>
+			: T[P] extends ReadonlyArray<infer U>
+				? ReadonlyArray<DeepPartial<U>>
+				: DeepPartial<T[P]>
 }
 
 function deepMatch (object: any, attrs: any, deep: boolean): boolean {
-	const keys = Object.keys(attrs), length = keys.length
+	const keys = Object.keys(attrs)
+	const length = keys.length
 	if (object === null || object === undefined) return !length
 	const obj = Object(object)
 	for (let i = 0; i < length; i++) {
 		const key = keys[i]
-		if(deep && typeof attrs[key] === 'object') {
+		if (deep && typeof attrs[key] === 'object') {
 			if (!deepMatch(obj[key], attrs[key], true)) return false
 		} else if (attrs[key] !== obj[key] || !(key in obj)) return false
 	}
@@ -249,8 +250,7 @@ export class CoreMosDeviceHandler {
 				}
 			})
 		}
-
-		return result 
+		return result
 	}
 	mosRoStoryMove (Action: IMOSStoryAction, Stories: Array<MosString128>): Promise<any> {
 		return this._coreMosManipulate(P.methods.mosRoStoryMove, Action, Stories)
