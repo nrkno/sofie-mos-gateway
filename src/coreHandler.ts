@@ -400,6 +400,11 @@ export class CoreMosDeviceHandler {
 					result.mos.roAck.roStatus.toString() !== 'OK') {
 					return Promise.reject(result)
 				} else {
+					// When the result of the replaceStoryItem operation comes in,
+					// it is not confirmed if the change actually was performed or not.
+					// Therefore we put a "pendingChange" on watch, so that this operation does not resolve
+					// until the change actually has been applied (using onStoryReplace, onItemReplace or onFullStory)
+
 					const pendingChange: IStoryItemChange = {
 						roID,
 						storyID,
