@@ -211,6 +211,7 @@ export class MosHandler {
 		if (!this._settings.mosId) throw Error('mosId missing in settings!')
 		connectionConfig.mosID = this._settings.mosId
 
+		connectionConfig.debug = false
 		this.mos = new MosConnection(connectionConfig)
 		this.mos.on('rawMessage', (source, type, message) => {
 			this.debugLog('rawMessage', source, type, message)
