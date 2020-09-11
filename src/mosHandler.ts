@@ -126,7 +126,7 @@ export class MosHandler {
 			// )
 		// })
 		.then(() => {
-
+			// All initialised and ready to go
 		})
 	}
 	dispose (): Promise<void> {
