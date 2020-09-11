@@ -75,6 +75,10 @@ export class MosHandler {
 	private _coreHandler: CoreHandler
 	private _observers: Array<any> = []
 	private _triggerupdateDevicesTimeout: any = null
+	private _heartbeatsAccumulated = 0
+	private _timeOfLastHeartbeat: number = Date.now()
+	private _timeOfNextHeartReport: number = Date.now() + 60000
+	private _noHeartsForAWhile: NodeJS.Timeout
 
 	constructor (logger: Winston.LoggerInstance) {
 		this._logger = logger
@@ -122,7 +126,7 @@ export class MosHandler {
 			// )
 		// })
 		.then(() => {
-			// All connections have been made at this point
+
 		})
 	}
 	dispose (): Promise<void> {
@@ -214,7 +218,18 @@ export class MosHandler {
 		connectionConfig.debug = false
 		this.mos = new MosConnection(connectionConfig)
 		this.mos.on('rawMessage', (source, type, message) => {
-			this.debugLog('rawMessage', source, type, message)
+			if ((typeof message === 'string') && (message.match(/<heartbeat>/))) {
+				this._heartbeatsAccumulated++
+				this._timeOfLastHeartbeat = Date.now()
+				if (this._timeOfLastHeartbeat > this._timeOfNextHeartReport) {
+					this._logger.info(`Received ${this._heartbeatsAccumulated} in the last minute or so.`)
+					this._heartbeatsAccumulated = 0
+					this._timeOfNextHeartReport = this._timeOfNextHeartReport + 60000
+				}
+				this._noHeartsForAWhile = this._makeHeartTimeout(60)
+			} else {
+				this.debugLog('rawMessage', source, type, message)
+			}
 			// this._logger.debug('rawMessage', source, type, message)
 		})
 		this.mos.on('info', (message: any) => {
@@ -237,6 +252,10 @@ export class MosHandler {
 			.then((coreMosHandler) => {
 				// this._logger.info('mosDevice registered -------------')
 				// Setup message flow between the devices:
+
+				this._timeOfLastHeartbeat = Date.now()
+				this._timeOfNextHeartReport = this._timeOfLastHeartbeat + 60000
+				this._noHeartsForAWhile = this._makeHeartTimeout(60)
 
 				// Initial Status check:
 				let connectionStatus = mosDevice.getConnectionStatus()
@@ -515,5 +534,14 @@ export class MosHandler {
 			}
 			return roAck
 		})
+	}
+	private _makeHeartTimeout (wait: number): NodeJS.Timeout {
+		clearTimeout(this._noHeartsForAWhile)
+		return setTimeout(() => {
+			if (this._heartbeatsAccumulated === 0) {
+				this._logger.warning(`No heratbeat has been received for the last ${wait}s.`)
+			}
+			this._noHeartsForAWhile = this._makeHeartTimeout(wait)
+		}, wait * 1000)
 	}
 }
