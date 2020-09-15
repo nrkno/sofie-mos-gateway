@@ -46,7 +46,7 @@ export const MOS_DEVICE_CONFIG_MANIFEST: DeviceConfigManifest = {
 					{
 						id: 'primary.timeout',
 						name: '(Optional) Timeout (ms)',
-						columnName: 'Primary Timaout',
+						columnName: 'Timeout',
 						type: ConfigManifestEntryType.INT
 					},
 					{
@@ -70,7 +70,7 @@ export const MOS_DEVICE_CONFIG_MANIFEST: DeviceConfigManifest = {
 					{
 						id: 'secondary.timeout',
 						name: '(Optional) Timeout (ms)',
-						columnName: 'Secondary Timaout',
+						columnName: 'Timeout',
 						type: ConfigManifestEntryType.INT
 					},
 				]
