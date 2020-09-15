@@ -222,7 +222,7 @@ export class MosHandler {
 				this._heartbeatsAccumulated++
 				this._timeOfLastHeartbeat = Date.now()
 				if (this._timeOfLastHeartbeat > this._timeOfNextHeartReport) {
-					this._logger.info(`Received ${this._heartbeatsAccumulated} in the last minute or so.`)
+					this._logger.info(`Received ${this._heartbeatsAccumulated} heartbeats in the last minute or so.`)
 					this._heartbeatsAccumulated = 0
 					this._timeOfNextHeartReport = this._timeOfNextHeartReport + 60000
 				}
