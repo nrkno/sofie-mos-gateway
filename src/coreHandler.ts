@@ -317,10 +317,10 @@ export class CoreMosDeviceHandler {
 		})
 	}
 	triggerGetRunningOrder (roId: string): Promise<any> {
-		// console.log('triggerGetRunningOrder ' + roId)
+		console.log('triggerGetRunningOrder ' + roId)
 		return this._mosDevice.getRunningOrder(new MosString128(roId))
 		.then((ro) => {
-			// console.log('GOT REPLY', results)
+			console.log('GOT REPLY', ro)
 			return this.fixMosData(ro)
 		})
 		.catch((err) => {
@@ -720,7 +720,7 @@ export class CoreHandler {
 				}
 				this.core.callMethod(P.methods.functionReply, [cmd._id, err, res])
 				.then(() => {
-					// console.log('cb done')
+					console.log('cb done')
 				})
 				.catch((e) => {
 					this.logger.error(e)
