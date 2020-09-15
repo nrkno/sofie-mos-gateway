@@ -324,7 +324,7 @@ export class CoreMosDeviceHandler {
 			return this.fixMosData(ro)
 		})
 		.catch((err) => {
-			// console.log('GOT ERR', err)
+			console.log('GOT ERR', err)
 			throw err
 		})
 	}
@@ -714,7 +714,9 @@ export class CoreHandler {
 			this._executedFunctions[cmd._id] = true
 			// console.log('executeFunction', cmd)
 			let cb = (err: any, res?: any) => {
-				// console.log('cb', err, res)
+				console.log('cb')
+				console.log(err)
+				console.log(res)
 				if (err) {
 					this.logger.error('executeFunction error', err, err.stack)
 				}
