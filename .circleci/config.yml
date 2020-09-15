@@ -1,5 +1,6 @@
 version: 2
 jobs:
+
   validate-dependencies:
     docker:
       - image: circleci/node:12
@@ -11,9 +12,32 @@ jobs:
             - yarn-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
             - yarn-cache-{{ .Branch }}
             - yarn-cache-
-            
+
+      - run: yarn install
+      - run:
+          name: yarn validate:dependencies
+          command: |
+            if ! git log --format=oneline -n 1 | grep -q "\[ignore-audit\]"; then
+              yarn validate:dependencies
+            else
+              echo "Skipping audit"
+            fi
+
+  validate-all-dependencies:
+    docker:
+      - image: circleci/node:12
+    working_directory: ~/project
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - yarn-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - yarn-cache-{{ .Branch }}
+            - yarn-cache-
+
       - run: yarn install
       - run: yarn validate:dependencies
+      - run: yarn validate:dev-dependencies
 
   test:
     docker:
@@ -52,7 +76,7 @@ jobs:
 
   build:
     docker:
-      - image: circleci/node:12.12.0
+      - image: circleci/node:12.16.1
     steps:
       - checkout
       - restore_cache:
@@ -68,9 +92,13 @@ jobs:
           name: yarn build
           command: yarn build
           no_output_timeout: 60m
+      - run:
+          name: yarn install production
+          command: yarn install --check-files --frozen-lockfile --production --force
+          no_output_timeout: 60m
       - save_cache:
           key: yarn-cache-{{ .Branch }}-{{ checksum "yarn.lock" }}
-          paths: 
+          paths:
             - node_modules
       - persist_to_workspace:
           root: .
@@ -110,25 +138,25 @@ jobs:
           name: Build Docker Image
           command: docker build -f Dockerfile.circle . -t mos-gateway:$CIRCLE_TAG
       - run:
-          name: Publish Docker Image to Docker Hub
-          command: |
-            if [ -z "$DOCKERHUB_PASS" ]; then
-              echo "Skipping"
-            else
-              echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-              docker tag mos-gateway:$CIRCLE_TAG $DOCKERHUB_IMAGE:$CIRCLE_TAG
-              docker push $DOCKERHUB_IMAGE:$CIRCLE_TAG
-            fi
-      - run:
-          name: Publish Docker Image to Github Package Registry
-          command: |
-            if [ -z "$GITHUB_PASS" ]; then
-              echo "Skipping"
-            else
-              echo "$GITHUB_PASS" | docker login docker.pkg.github.com -u "$GITHUB_USERNAME" --password-stdin
-              docker tag mos-gateway:$CIRCLE_TAG docker.pkg.github.com/$GITHUB_IMAGE:$CIRCLE_TAG
-              docker push docker.pkg.github.com/$GITHUB_IMAGE:$CIRCLE_TAG
-            fi
+           name: Publish Docker Image to Docker Hub
+           command: |
+             if [ -z "$DOCKERHUB_PASS" ]; then
+               echo "Skipping"
+             else
+               echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+               docker tag mos-gateway:$CIRCLE_TAG $DOCKERHUB_IMAGE:$CIRCLE_TAG
+               docker push $DOCKERHUB_IMAGE:$CIRCLE_TAG
+             fi
+      # - run:
+      #      name: Publish Docker Image to Github Package Registry
+      #      command: |
+      #        if [ -z "$GITHUB_PASS" ]; then
+      #          echo "Skipping"
+      #        else
+      #          echo "$GITHUB_PASS" | docker login docker.pkg.github.com -u "$GITHUB_USERNAME" --password-stdin
+      #          docker tag mos-gateway:$CIRCLE_TAG docker.pkg.github.com/$GITHUB_IMAGE:$CIRCLE_TAG
+      #          docker push docker.pkg.github.com/$GITHUB_IMAGE:$CIRCLE_TAG
+      #        fi
   publish-branch:
     docker:
       - image: circleci/buildpack-deps:buster
@@ -141,37 +169,52 @@ jobs:
           name: Build Docker Image
           command: docker build -f Dockerfile.circle . -t mos-gateway:$CIRCLE_BRANCH
       - run:
-          name: Publish Docker Image to Docker Hub
-          command: |
-            if [ -z "$DOCKERHUB_PASS" ]; then
-              echo "Skipping"
-            else
-              echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-              docker tag mos-gateway:$CIRCLE_BRANCH $DOCKERHUB_IMAGE:$CIRCLE_BRANCH
-              docker push $DOCKERHUB_IMAGE:$CIRCLE_BRANCH
-            fi
-      - run:
-          name: Publish Docker Image to Github Package Registry
-          command: |
-            if [ -z "$GITHUB_PASS" ]; then
-              echo "Skipping"
-            else
-              echo "$GITHUB_PASS" | docker login docker.pkg.github.com -u "$GITHUB_USERNAME" --password-stdin
-              docker tag mos-gateway:$CIRCLE_BRANCH docker.pkg.github.com/$GITHUB_IMAGE:$CIRCLE_BRANCH
-              docker push docker.pkg.github.com/$GITHUB_IMAGE:$CIRCLE_BRANCH
-            fi
+           name: Publish Docker Image to Docker Hub
+           command: |
+             if [ -z "$DOCKERHUB_PASS" ]; then
+               echo "Skipping"
+             else
+               echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+               docker tag mos-gateway:$CIRCLE_BRANCH $DOCKERHUB_IMAGE:$CIRCLE_BRANCH
+               docker push $DOCKERHUB_IMAGE:$CIRCLE_BRANCH
+             fi
+      # - run:
+      #      name: Publish Docker Image to Github Package Registry
+      #      command: |
+      #        if [ -z "$GITHUB_PASS" ]; then
+      #          echo "Skipping"
+      #        else
+      #          echo "$GITHUB_PASS" | docker login docker.pkg.github.com -u "$GITHUB_USERNAME" --password-stdin
+      #          docker tag mos-gateway:$CIRCLE_BRANCH docker.pkg.github.com/$GITHUB_IMAGE:$CIRCLE_BRANCH
+      #          docker push docker.pkg.github.com/$GITHUB_IMAGE:$CIRCLE_BRANCH
+      #        fi
 
 workflows:
   version: 2
   build-test-publish:
     jobs:
-      - test
+      # - test
+      - validate-all-dependencies:
+          filters:
+            branches:
+              only:
+                - master
+                - develop
       - validate-dependencies:
           filters:
             branches:
               only:
                 - master
                 - develop
+      - build:
+          requires:
+            # - test
+            - validate-dependencies
+          filters:
+            tags:
+              only: /v.*/
+            branches:
+              only: /.*/
       # Jenkins handles release currently
       # - release: # This triggers a new pipeline, which will build that tag
       #     requires:
@@ -180,15 +223,6 @@ workflows:
       #       branches:
       #         only:
       #           - master
-      - build:
-          requires:
-            - test
-            - validate-dependencies
-          filters:
-            tags:
-              only: /v.*/
-            branches:
-              only: /.*/
       - publish-tag:
           requires:
             - build
@@ -204,7 +238,7 @@ workflows:
             tags:
               ignore: /.*/
             branches:
-              only: 
+              only:
                 - master
                 - develop
                 - stage
