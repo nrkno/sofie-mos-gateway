@@ -44,6 +44,12 @@ export const MOS_DEVICE_CONFIG_MANIFEST: DeviceConfigManifest = {
 						type: ConfigManifestEntryType.BOOLEAN
 					},
 					{
+						id: 'primary.timeout',
+						name: '(Optional) Timeout (ms)',
+						columnName: 'Primary Timaout',
+						type: ConfigManifestEntryType.INT
+					},
+					{
 						id: 'secondary.id',
 						name: 'Secondary ID (Newsroom System MOS ID)',
 						columnName: 'Secondary ID',
@@ -60,7 +66,13 @@ export const MOS_DEVICE_CONFIG_MANIFEST: DeviceConfigManifest = {
 						name: `Don't use the Query port`,
 						columnName: 'No query',
 						type: ConfigManifestEntryType.BOOLEAN
-					}
+					},
+					{
+						id: 'secondary.timeout',
+						name: '(Optional) Timeout (ms)',
+						columnName: 'Secondary Timaout',
+						type: ConfigManifestEntryType.INT
+					},
 				]
 			}
 		}
