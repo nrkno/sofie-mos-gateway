@@ -58,6 +58,7 @@ export interface MosDeviceSettingsDevice {
 export interface MosDeviceSettingsDeviceOptions {
 	id: string
 	host: string
+	timeout?: number
 }
 
 export class MosHandler {
