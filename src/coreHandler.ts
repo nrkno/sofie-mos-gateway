@@ -707,7 +707,7 @@ export class CoreHandler {
 			return
 		})
 	}
-	executeFunction (cmd: PeripheralDeviceCommand, fcnObject: any) {
+	executeFunction (cmd: PeripheralDeviceCommand, fcnObject: CoreHandler | CoreMosDeviceHandler) {
 		if (cmd) {
 			if (this._executedFunctions[cmd._id]) return // prevent it from running multiple times
 			this.logger.debug(cmd.functionName, cmd.args)
@@ -720,7 +720,7 @@ export class CoreHandler {
 				if (err) {
 					this.logger.error('executeFunction error', err, err.stack)
 				}
-				this.core.callMethod(P.methods.functionReply, [cmd._id, err, res])
+				fcnObject.core.callMethod(P.methods.functionReply, [cmd._id, err, res])
 				.then(() => {
 					console.log('cb done')
 				})
