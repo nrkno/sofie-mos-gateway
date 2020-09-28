@@ -96,7 +96,7 @@
     "production"
   ],
   "dependencies": {
-    "mos-connection": "^0.8.10",
+    "mos-connection": "0.0.1-nightly-feat-lessLogging-20200911-142900-7fcc351.0",
     "tslib": "^1.10.0",
     "tv-automation-server-core-integration": "1.5.1",
     "underscore": "^1.9.1",

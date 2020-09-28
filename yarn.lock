@@ -3531,10 +3531,10 @@ moment@^2.24.0:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
 
-mos-connection@^0.8.10:
-  version "0.8.10"
-  resolved "https://registry.yarnpkg.com/mos-connection/-/mos-connection-0.8.10.tgz#370808bc8d17a1f3396875b3dba851ed272775a3"
-  integrity sha512-K8LoxYiHifhEJVyQHgjfRsDKFsI1LR1gt+NrP8DeafVUOl5i+vEcj+1wgDZxSaJ/pHuiPdh9l9R1nd2cX0gr5A==
+mos-connection@0.0.1-nightly-feat-lessLogging-20200911-142900-7fcc351.0:
+  version "0.0.1-nightly-feat-lessLogging-20200911-142900-7fcc351.0"
+  resolved "https://registry.yarnpkg.com/mos-connection/-/mos-connection-0.0.1-nightly-feat-lessLogging-20200911-142900-7fcc351.0.tgz#1956d0d549d9f869eb5140400471f6e5243582e9"
+  integrity sha512-HySx4Atce+hTKqQPOrLB0yYl5rt0l5jLibQtnjbVpDnUJnLPGecYyB7RSpoKp2QkH/1o0sNXi2tr09J3XmGG1g==
   dependencies:
     iconv-lite "^0.5.0"
     moment "^2.24.0"
