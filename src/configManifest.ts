@@ -72,7 +72,7 @@ export const MOS_DEVICE_CONFIG_MANIFEST: DeviceConfigManifest = {
 						name: '(Optional) Timeout (ms)',
 						columnName: 'Timeout',
 						type: ConfigManifestEntryType.INT
-					},
+					}
 				]
 			}
 		}
