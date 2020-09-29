@@ -3721,21 +3721,21 @@ modify-values@^1.0.0:
   resolved "https://registry.yarnpkg.com/modify-values/-/modify-values-1.0.1.tgz#b3939fa605546474e3e3e3c63d64bd43b4ee6022"
   integrity sha512-xV2bxeN6F7oYjZWTe/YPAy6MN2M+sL4u/Rlm2AHCIVGfo2p1yGmBHQ6vHehl4bRTZBdHu3TSkWdYgkwpYzAGSw==
 
-moment@^2.24.0:
-  version "2.27.0"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.27.0.tgz#8bff4e3e26a236220dfe3e36de756b6ebaa0105d"
-  integrity sha512-al0MUK7cpIcglMv3YF13qSgdAIqxHTO7brRtaz3DlSULbqfazqkc5kEjNrLDOM7fsjshoFIihnU8snrP7zUvhQ==
+moment@^2.26.0:
+  version "2.29.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.0.tgz#fcbef955844d91deb55438613ddcec56e86a3425"
+  integrity sha512-z6IJ5HXYiuxvFTI6eiQ9dm77uE0gyy1yXNApVHqTcnIKfY9tIwEjlzsZ6u1LQXvVgKeTnv9Xm7NDvJ7lso3MtA==
 
-mos-connection@^0.8.10:
-  version "0.8.10"
-  resolved "https://registry.yarnpkg.com/mos-connection/-/mos-connection-0.8.10.tgz#370808bc8d17a1f3396875b3dba851ed272775a3"
-  integrity sha512-K8LoxYiHifhEJVyQHgjfRsDKFsI1LR1gt+NrP8DeafVUOl5i+vEcj+1wgDZxSaJ/pHuiPdh9l9R1nd2cX0gr5A==
+mos-connection@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/mos-connection/-/mos-connection-0.9.0.tgz#0a50c4ed4b48cedf48fafb6f8a66d9325ed4893a"
+  integrity sha512-girtvJzI9Wo9n5nvbw5fOyez8s9ivDqiP57g6H20e2ECo/GEUEbbOV37RQnpJ/lTw3IkxZYswsYdczi1RWcdEg==
   dependencies:
     iconv-lite "^0.5.0"
-    moment "^2.24.0"
-    tslib "^1.9.3"
+    moment "^2.26.0"
+    tslib "^1.13.0"
     xml-js "^1.6.11"
-    xmlbuilder "^13.0.2"
+    xmlbuilder "^15.1.1"
 
 mount-point@^3.0.0:
   version "3.0.0"
@@ -5405,7 +5405,7 @@ tslib@1.9.0:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.0.tgz#e37a86fda8cbbaf23a057f473c9f4dc64e5fc2e8"
   integrity sha512-f/qGG2tUkrISBlQZEjEqoZ3B2+npJjIf04H1wuAv9iA8i04Icp+61KRXxFdha22670NJopsZCIjhC3SnjPRKrQ==
 
-tslib@^1.10.0, tslib@^1.13.0, tslib@^1.8.1, tslib@^1.9.3:
+tslib@^1.10.0, tslib@^1.13.0, tslib@^1.8.1:
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.13.0.tgz#c881e13cc7015894ed914862d276436fa9a47043"
   integrity sha512-i/6DQjL8Xf3be4K/E6Wgpekn5Qasl1usyw++dAA35Ue5orEn65VIxOA+YvNNl9HV3qv70T7CNwjODHZrLwvd1Q==
@@ -5846,10 +5846,10 @@ xml-name-validator@^3.0.0:
   resolved "https://registry.yarnpkg.com/xml-name-validator/-/xml-name-validator-3.0.0.tgz#6ae73e06de4d8c6e47f9fb181f78d648ad457c6a"
   integrity sha512-A5CUptxDsvxKJEU3yO6DuWBSJz/qizqzJKOMIfUJHETbBw/sFaDxgd6fxm1ewUaM0jZ444Fc5vC5ROYurg/4Pw==
 
-xmlbuilder@^13.0.2:
-  version "13.0.2"
-  resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-13.0.2.tgz#02ae33614b6a047d1c32b5389c1fdacb2bce47a7"
-  integrity sha512-Eux0i2QdDYKbdbA6AM6xE4m6ZTZr4G4xF9kahI2ukSEMCzwce2eX9WlTI5J3s+NU7hpasFsr8hWIONae7LluAQ==
+xmlbuilder@^15.1.1:
+  version "15.1.1"
+  resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-15.1.1.tgz#9dcdce49eea66d8d10b42cae94a79c3c8d0c2ec5"
+  integrity sha512-yMqGBqtXyeN1e3TGYvgNgDVZ3j84W4cwkOXQswghol6APgZWaff9lnbvN7MHYJOiXsvGPXtjTYJEiC9J2wv9Eg==
 
 xmlchars@^2.2.0:
   version "2.2.0"

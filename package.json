@@ -1,6 +1,6 @@
 {
   "name": "mos-gateway",
-  "version": "1.5.0",
+  "version": "1.5.1-0",
   "description": "MOS-Gateway for the Sofie project",
   "license": "MIT",
   "repository": {
@@ -99,7 +99,7 @@
     "production"
   ],
   "dependencies": {
-    "mos-connection": "^0.8.10",
+    "mos-connection": "^0.9.0",
     "tslib": "^1.10.0",
     "tv-automation-server-core-integration": "2.0.0",
     "underscore": "^1.9.1",
