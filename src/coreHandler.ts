@@ -1,11 +1,11 @@
 import { CoreConnection,
 	CoreOptions,
-	PeripheralDeviceAPI as P
+	PeripheralDeviceAPI as P,
+	DDPConnectorOptions
 } from 'tv-automation-server-core-integration'
 import * as Winston from 'winston'
 import * as fs from 'fs'
 import { Process } from './process'
-import { DDPConnectorOptions } from 'tv-automation-server-core-integration/dist/lib/ddpConnector'
 
 import {
 	IMOSConnectionStatus,
