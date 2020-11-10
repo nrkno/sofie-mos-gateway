@@ -5469,10 +5469,10 @@ tunnel-agent@^0.6.0:
   dependencies:
     safe-buffer "^5.0.1"
 
-tv-automation-server-core-integration@2.1.0-nightly-release26-20201019-125028-67fdd72.0:
-  version "2.1.0-nightly-release26-20201019-125028-67fdd72.0"
-  resolved "https://registry.yarnpkg.com/tv-automation-server-core-integration/-/tv-automation-server-core-integration-2.1.0-nightly-release26-20201019-125028-67fdd72.0.tgz#814677bb7133ff561d81fa3af9433334fb3c1717"
-  integrity sha512-4i7+odL8mjH4pZmDeO1XYA1PDMrOhsLLgBj5/7nG+gbQHZBlWEeQQPxVm9LpMk7PXk30Fi91CwlRHRcqmC+k/Q==
+tv-automation-server-core-integration@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/tv-automation-server-core-integration/-/tv-automation-server-core-integration-2.1.0.tgz#d60c5e3a390c10c1897f255bcff0c6de2614a7c4"
+  integrity sha512-Y1pa6ED2Ua6TM0CE5q7pMIazo7c6/KAmjV0PgE6OIJ0mb1GCPKtN7rwsia2TgiU+MrEmP/ecVrPLQ42VMtSRXQ==
   dependencies:
     data-store "3.1.0"
     ejson "^2.2.0"
