@@ -101,7 +101,7 @@
   "dependencies": {
     "mos-connection": "^0.9.0",
     "tslib": "^2.0.3",
-    "tv-automation-server-core-integration": "2.1.0",
+    "tv-automation-server-core-integration": "2.1.1-nightly-release27-20201116-132154-3cdc207.0",
     "underscore": "^1.11.0",
     "winston": "^2.4.2"
   },
