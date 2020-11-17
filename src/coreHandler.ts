@@ -2,7 +2,7 @@ import { CoreConnection,
 	CoreOptions,
 	PeripheralDeviceAPI as P,
 	DDPConnectorOptions
-} from 'tv-automation-server-core-integration'
+} from '@sofie-automation/server-core-integration'
 import * as Winston from 'winston'
 import * as fs from 'fs'
 import { Process } from './process'
@@ -805,7 +805,7 @@ export class CoreHandler {
 		}
 
 		let dirNames = [
-			'tv-automation-server-core-integration',
+			'@sofie-automation/server-core-integration',
 			'mos-connection'
 		]
 		try {

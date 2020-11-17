@@ -2,7 +2,7 @@
  * This file contains the manifest for the config as displayed in the server-core
  * UI.
  */
-import { DeviceConfigManifest,ConfigManifestEntryType } from 'tv-automation-server-core-integration'
+import { DeviceConfigManifest,ConfigManifestEntryType } from '@sofie-automation/server-core-integration'
 
 export const MOS_DEVICE_CONFIG_MANIFEST: DeviceConfigManifest = {
 	deviceConfig: [

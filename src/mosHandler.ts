@@ -24,7 +24,7 @@ import {
 import * as _ from 'underscore'
 import * as Winston from 'winston'
 import { CoreHandler } from './coreHandler'
-import { CollectionObj } from 'tv-automation-server-core-integration'
+import { CollectionObj } from '@sofie-automation/server-core-integration'
 
 // export interface MosOptions {
 // 	mosID: string,
