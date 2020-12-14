@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.8.0-release28.0](https://github.com/nrkno/tv-automation-mos-gateway/compare/v1.7.0...v1.8.0-release28.0) (2020-12-14)
+
 ## [1.7.0](https://github.com/nrkno/tv-automation-mos-gateway/compare/v1.6.0...v1.7.0) (2020-12-08)
 
 ## [1.7.0-release27.0](https://github.com/nrkno/tv-automation-mos-gateway/compare/v1.6.0...v1.7.0-release27.0) (2020-11-16)
