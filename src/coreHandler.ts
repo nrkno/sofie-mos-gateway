@@ -497,7 +497,7 @@ export class CoreMosDeviceHandler {
 			return (
 				this.core.mosManipulate(method, ...attrs)
 				.catch(e => {
-					this._coreParentHandler.logger.info('MOS command rejected: ' + ((e && e.toString()) || e))
+					this._coreParentHandler.logger.info('MOS command rejected: ' + ((e && JSON.stringify(e)) || e))
 					throw e
 				})
 			)
