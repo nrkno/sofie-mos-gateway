@@ -508,10 +508,10 @@
   dependencies:
     execa "^2.0.1"
 
-"@sindresorhus/is@^3.1.1":
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-3.1.2.tgz#548650de521b344e3781fbdb0ece4aa6f729afb8"
-  integrity sha512-JiX9vxoKMmu8Y3Zr2RVathBL1Cdu4Nt4MuNWemt1Nc06A0RAin9c5FArkhGsyMBWfCu4zj+9b+GxtjAnE4qqLQ==
+"@sindresorhus/is@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-4.0.0.tgz#2ff674e9611b45b528896d820d3d7a812de2f0e4"
+  integrity sha512-FyD2meJpDPjyNQejSjvnhpgI/azsQkA4lGbuu5BQZfjvJ9cbRZXzeWL2HceCekW4lixO9JPesIIQkSoLjeJHNQ==
 
 "@sinonjs/commons@^1.7.0":
   version "1.8.1"
@@ -527,17 +527,17 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sofie-automation/server-core-integration@1.16.0":
-  version "1.16.0"
-  resolved "https://registry.yarnpkg.com/@sofie-automation/server-core-integration/-/server-core-integration-1.16.0.tgz#78434f90ff62299f0e1fb8c0f22519983cc89ec7"
-  integrity sha512-xrYjl6tPJdGKT4DJBcI6j0yKP+0rUnd9y9QxxkRvlWqARP/murrxSUwCP8gF37iN5bwwl9qzqs0RHInvGHpQFA==
+"@sofie-automation/server-core-integration@1.18.0-0-in-testing-R30":
+  version "1.18.0-0-in-testing-R30"
+  resolved "https://registry.yarnpkg.com/@sofie-automation/server-core-integration/-/server-core-integration-1.18.0-0-in-testing-R30.tgz#788dc0f36da7efa816e772227e7279acbcc71335"
+  integrity sha512-wAqzgoyK5nq+jpyBY2GHEUd9Ay5rfFuyKvppVLhDBfvosKWoffSLPV70qBvo5aJcmJOwzsPsAAUyggcOiVcCLA==
   dependencies:
     data-store "3.1.0"
     ejson "^2.2.0"
     faye-websocket "^0.11.3"
-    got "^11.7.0"
+    got "^11.8.1"
     tslib "^2.0.3"
-    underscore "^1.11.0"
+    underscore "^1.12.0"
 
 "@stroncium/procfs@^1.2.1":
   version "1.2.1"
@@ -2353,12 +2353,12 @@ globby@^7.1.1:
     pify "^3.0.0"
     slash "^1.0.0"
 
-got@^11.7.0:
-  version "11.7.0"
-  resolved "https://registry.yarnpkg.com/got/-/got-11.7.0.tgz#a386360305571a74548872e674932b4ef70d3b24"
-  integrity sha512-7en2XwH2MEqOsrK0xaKhbWibBoZqy+f1RSUoIeF1BLcnf+pyQdDsljWMfmOh+QKJwuvDIiKx38GtPh5wFdGGjg==
+got@^11.8.1:
+  version "11.8.1"
+  resolved "https://registry.yarnpkg.com/got/-/got-11.8.1.tgz#df04adfaf2e782babb3daabc79139feec2f7e85d"
+  integrity sha512-9aYdZL+6nHmvJwHALLwKSUZ0hMwGaJGYv3hoPLPgnT8BoBXm1SjnZeky+91tfwJaDzun2s4RsBRy48IEYv2q2Q==
   dependencies:
-    "@sindresorhus/is" "^3.1.1"
+    "@sindresorhus/is" "^4.0.0"
     "@szmarczak/http-timer" "^4.0.5"
     "@types/cacheable-request" "^6.0.1"
     "@types/responselike" "^1.0.0"
@@ -5620,11 +5620,6 @@ uglify-js@^3.1.4:
   version "3.11.3"
   resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.11.3.tgz#b2f8c87826344f091ba48c417c499d6cba5d5786"
   integrity sha512-wDRziHG94mNj2n3R864CvYw/+pc9y/RNImiTyrrf8BzgWn75JgFSwYvXrtZQMnMnOp/4UTrf3iCSQxSStPiByA==
-
-underscore@^1.11.0:
-  version "1.11.0"
-  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.11.0.tgz#dd7c23a195db34267186044649870ff1bab5929e"
-  integrity sha512-xY96SsN3NA461qIRKZ/+qox37YXPtSBswMGfiNptr+wrt6ds4HaMw23TP612fEyGekRE6LNRiLYr/aqbHXNedw==
 
 underscore@^1.12.0:
   version "1.12.0"
