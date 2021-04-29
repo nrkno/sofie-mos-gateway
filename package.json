@@ -100,7 +100,7 @@
   ],
   "dependencies": {
     "@sofie-automation/server-core-integration": "1.32.0-in-testing.0",
-    "mos-connection": "^0.9.0",
+    "mos-connection": "0.9.1-nightly-fix-mos-messages-in-chunks-20210429-155455-935ac2b.0",
     "tslib": "^2.0.3",
     "underscore": "^1.12.0",
     "winston": "^2.4.2"
