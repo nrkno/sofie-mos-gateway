@@ -207,9 +207,9 @@ workflows:
                 - master
                 - develop
       - build:
-          requires:
+          # requires:
             # - test
-            - validate-dependencies
+            # - validate-dependencies
           filters:
             tags:
               only: /v.*/
