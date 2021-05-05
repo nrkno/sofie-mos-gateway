@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.32.0](https://github.com/nrkno/tv-automation-mos-gateway/compare/v1.10.0...v1.32.0) (2021-05-05)
+
+
+### Bug Fixes
+
+* resend device statuses to core, on core reconnect ([2c139f6](https://github.com/nrkno/tv-automation-mos-gateway/commit/2c139f61937dd53e41d5884a9265c23a5fe11fbb))
+
 ## 1.10.0 (2021-05-05)
 
 
