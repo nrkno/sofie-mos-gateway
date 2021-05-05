@@ -1,6 +1,6 @@
 {
   "name": "mos-gateway",
-  "version": "1.10.0-release31",
+  "version": "1.10.0",
   "description": "MOS-Gateway for the Sofie project",
   "license": "MIT",
   "repository": {
