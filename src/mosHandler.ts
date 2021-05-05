@@ -346,7 +346,7 @@ export class MosHandler {
 			return
 		})
 	}
-	private sendStatusOfAllMosDevices() {
+	private sendStatusOfAllMosDevices () {
 		// Send an update to Core of the status of all mos devices
 		for (const handler of Object.values(this.allMosDevices)) {
 			if (handler.coreMosHandler) {
