@@ -1,4 +1,4 @@
-**Please note that this repository has been archived and further development of the playout-gateway is done in the [server-core](https://github.com/nrkno/tv-automation-server-core) repository.**
+**Please note that this repository has been archived and further development of the  MOS Gateway is done in the [server-core](https://github.com/nrkno/tv-automation-server-core) repository.**
 
 # Sofie: The Modern TV News Studio Automation System (MOS-Gateway)
 
