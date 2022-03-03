@@ -1,8 +1,8 @@
-**Please note that this repository has been archived and further development of the  MOS Gateway is done in the [server-core](https://github.com/nrkno/tv-automation-server-core) repository.**
+**Please note that this repository has been archived and further development of the  MOS Gateway is done in the [sofie-core](https://github.com/nrkno/sofie-core) repository.**
 
-# Sofie: The Modern TV News Studio Automation System (MOS-Gateway)
+# Sofie: The Modern TV News Studio Automation System (MOS Gateway)
 
-An application for piping data between [**Sofie Server Core**](https://github.com/nrkno/tv-automation-server-core) and MOS devices using the [MOS Protocol](http://mosprotocol.com/) v2.8.4.
+An application for piping data between [**Sofie Server Core**](https://github.com/nrkno/sofie-core) and MOS devices using the [MOS Protocol](http://mosprotocol.com/) v2.8.4.
 
 This application is a part of the [**Sofie** TV News Studio Automation System](https://github.com/nrkno/Sofie-TV-automation/).
 
